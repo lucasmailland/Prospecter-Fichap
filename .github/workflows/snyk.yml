@@ -1,0 +1,24 @@
+name: Snyk Security
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+jobs:
+  snyk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/node@v3
+        with:
+          command: test
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      - name: Run Snyk to check Docker image
+        uses: snyk/actions/docker@v3
+        with:
+          image: prospecter-fichap-backend:latest
+          command: test
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }} 
