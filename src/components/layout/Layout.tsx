@@ -20,7 +20,7 @@ export default function Layout({ children }: LayoutProps) {
         <Header />
         
         {/* Page Content */}
-        <main className="p-8">
+        <main className="p-6">
           <div className="max-w-7xl mx-auto">
             {children}
           </div>

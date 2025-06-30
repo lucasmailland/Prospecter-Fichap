@@ -37,7 +37,7 @@ export default function Sidebar() {
     >
       <div className="h-full flex flex-col">
         {/* Logo Section */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-gray-800">
+        <div className="flex items-center justify-between p-5 border-b border-gray-100 dark:border-gray-800">
           <AnimatePresence mode="wait">
             {!isCollapsed ? (
               <motion.div
@@ -82,7 +82,7 @@ export default function Sidebar() {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-4 py-6 space-y-1">
+        <nav className="flex-1 px-4 py-5 space-y-0.5">
           {navigation.map((item) => {
             const isActive = pathname === item.href;
             return (
@@ -90,7 +90,7 @@ export default function Sidebar() {
                 <motion.div
                   whileHover={{ x: 2 }}
                   whileTap={{ scale: 0.98 }}
-                  className={`group flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
+                  className={`group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
                     isActive 
                       ? 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white' 
                       : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white'
@@ -126,7 +126,7 @@ export default function Sidebar() {
         <div className="p-4 border-t border-gray-100 dark:border-gray-800">
           <motion.div
             whileHover={{ scale: 1.01 }}
-            className={`flex items-center p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer ${
+            className={`flex items-center p-2.5 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer ${
               isCollapsed ? 'justify-center' : ''
             }`}
           >
@@ -149,7 +149,7 @@ export default function Sidebar() {
           </motion.div>
           
           <button
-            className={`w-full flex items-center mt-2 p-3 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors ${
+            className={`w-full flex items-center mt-2 p-2.5 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors ${
               isCollapsed ? 'justify-center' : ''
             }`}
           >

@@ -4,60 +4,50 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Illustration from '@/components/ui/Illustration';
 import LoadingState from '@/components/ui/LoadingState';
+import { CreateProspectDto, UpdateProspectDto } from '@/types/api.types';
 import { 
   UserIcon, 
   BuildingOfficeIcon, 
   EnvelopeIcon, 
   PhoneIcon,
-  GlobeAltIcon,
-  TagIcon,
   XMarkIcon
 } from '@heroicons/react/24/outline';
 
-interface Lead {
+// Interfaz local simplificada que coincide con los DTOs del backend
+interface LocalLead {
   id?: string;
   name: string;
   email: string;
-  company: string;
+  company?: string;
   phone?: string;
-  website?: string;
-  industry: string;
-  status: 'hot' | 'warm' | 'cold';
-  score?: number;
+  status?: string;
 }
 
 interface LeadFormProps {
-  lead?: Lead;
-  onSubmit: (lead: Omit<Lead, 'id'>) => Promise<void>;
+  initialData?: LocalLead;
+  onSubmit: (leadData: CreateProspectDto | UpdateProspectDto) => Promise<void>;
   onCancel: () => void;
   isLoading?: boolean;
 }
 
-export default function LeadForm({ lead, onSubmit, onCancel, isLoading = false }: LeadFormProps) {
-  const [formData, setFormData] = useState<Omit<Lead, 'id'>>({
-    name: lead?.name || '',
-    email: lead?.email || '',
-    company: lead?.company || '',
-    phone: lead?.phone || '',
-    website: lead?.website || '',
-    industry: lead?.industry || 'Technology',
-    status: lead?.status || 'cold',
-    score: lead?.score || 0,
+export default function LeadForm({ initialData, onSubmit, onCancel, isLoading = false }: LeadFormProps) {
+  const [formData, setFormData] = useState({
+    name: initialData?.name || '',
+    email: initialData?.email || '',
+    company: initialData?.company || '',
+    phone: initialData?.phone || '',
+    status: initialData?.status || 'cold',
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const industries = [
-    'Technology',
-    'Finance',
-    'Healthcare',
-    'Manufacturing',
-    'Education',
-    'Retail',
-    'Consulting',
-    'Real Estate',
-    'Other'
+  const statusOptions = [
+    { value: 'qualified', label: 'Qualificado', color: 'green' },
+    { value: 'potential', label: 'Potencial', color: 'yellow' },
+    { value: 'cold', label: 'Frío', color: 'blue' },
+    { value: 'hot', label: 'Caliente', color: 'red' },
+    { value: 'warm', label: 'Tibio', color: 'orange' },
   ];
 
   const validateForm = () => {
@@ -73,14 +63,6 @@ export default function LeadForm({ lead, onSubmit, onCancel, isLoading = false }
       newErrors.email = 'Email inválido';
     }
 
-    if (!formData.company.trim()) {
-      newErrors.company = 'La empresa es requerida';
-    }
-
-    if (formData.website && !/^https?:\/\/.+/.test(formData.website)) {
-      newErrors.website = 'URL inválida (debe incluir http:// o https://)';
-    }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -93,7 +75,16 @@ export default function LeadForm({ lead, onSubmit, onCancel, isLoading = false }
     setIsSubmitting(true);
     
     try {
-      await onSubmit(formData);
+      // Preparar datos según el DTO del backend
+      const submitData: CreateProspectDto | UpdateProspectDto = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone || undefined,
+        company: formData.company || undefined,
+        status: formData.status || undefined,
+      };
+
+      await onSubmit(submitData);
     } catch (error) {
       console.error('Error submitting form:', error);
     } finally {
@@ -101,7 +92,7 @@ export default function LeadForm({ lead, onSubmit, onCancel, isLoading = false }
     }
   };
 
-  const handleChange = (field: keyof typeof formData, value: string | number) => {
+  const handleChange = (field: keyof typeof formData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     // Clear error when user starts typing
     if (errors[field]) {
@@ -113,7 +104,7 @@ export default function LeadForm({ lead, onSubmit, onCancel, isLoading = false }
     return (
       <div className="p-8">
         <LoadingState 
-          message={lead ? "Actualizando lead..." : "Creando nuevo lead..."} 
+          message={initialData ? "Actualizando lead..." : "Creando nuevo lead..."} 
           size="md" 
         />
       </div>
@@ -131,13 +122,13 @@ export default function LeadForm({ lead, onSubmit, onCancel, isLoading = false }
         <div className="flex items-center space-x-4">
           <div>
             <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">
-              {lead ? 'Editar Lead' : 'Nuevo Lead'}
+              {initialData ? 'Editar Lead' : 'Nuevo Lead'}
             </h2>
             <p className="text-gray-500 dark:text-gray-400 mt-1">
-              {lead ? 'Actualiza la información del lead' : 'Agrega un nuevo prospecto a tu base de datos'}
+              {initialData ? 'Actualiza la información del lead' : 'Agrega un nuevo prospecto a tu base de datos'}
             </p>
           </div>
-          {!lead && (
+          {!initialData && (
             <div className="hidden lg:block">
               <Illustration name="success" size="sm" className="opacity-30" />
             </div>
@@ -152,12 +143,12 @@ export default function LeadForm({ lead, onSubmit, onCancel, isLoading = false }
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Personal Info */}
+        {/* Basic Info */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               <UserIcon className="h-4 w-4 inline mr-2" />
-              Nombre completo
+              Nombre completo *
             </label>
             <input
               type="text"
@@ -176,7 +167,7 @@ export default function LeadForm({ lead, onSubmit, onCancel, isLoading = false }
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               <EnvelopeIcon className="h-4 w-4 inline mr-2" />
-              Email
+              Email *
             </label>
             <input
               type="email"
@@ -193,7 +184,7 @@ export default function LeadForm({ lead, onSubmit, onCancel, isLoading = false }
           </div>
         </div>
 
-        {/* Company Info */}
+        {/* Optional Info */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -204,41 +195,15 @@ export default function LeadForm({ lead, onSubmit, onCancel, isLoading = false }
               type="text"
               value={formData.company}
               onChange={(e) => handleChange('company', e.target.value)}
-              className={`w-full px-4 py-3 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors ${
-                errors.company 
-                  ? 'border-red-300 dark:border-red-600 focus:border-red-500 focus:ring-red-500' 
-                  : 'border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500'
-              }`}
+              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-blue-500 focus:ring-blue-500 transition-colors"
               placeholder="Tech Solutions Inc."
             />
-            {errors.company && <p className="text-red-500 text-sm mt-1">{errors.company}</p>}
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              <TagIcon className="h-4 w-4 inline mr-2" />
-              Industria
-            </label>
-            <select
-              value={formData.industry}
-              onChange={(e) => handleChange('industry', e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-blue-500 focus:ring-blue-500 transition-colors"
-            >
-              {industries.map((industry) => (
-                <option key={industry} value={industry}>
-                  {industry}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        {/* Contact Info */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               <PhoneIcon className="h-4 w-4 inline mr-2" />
-              Teléfono (opcional)
+              Teléfono
             </label>
             <input
               type="tel"
@@ -248,25 +213,6 @@ export default function LeadForm({ lead, onSubmit, onCancel, isLoading = false }
               placeholder="+54 11 1234-5678"
             />
           </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              <GlobeAltIcon className="h-4 w-4 inline mr-2" />
-              Website (opcional)
-            </label>
-            <input
-              type="url"
-              value={formData.website}
-              onChange={(e) => handleChange('website', e.target.value)}
-              className={`w-full px-4 py-3 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors ${
-                errors.website 
-                  ? 'border-red-300 dark:border-red-600 focus:border-red-500 focus:ring-red-500' 
-                  : 'border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500'
-              }`}
-              placeholder="https://empresa.com"
-            />
-            {errors.website && <p className="text-red-500 text-sm mt-1">{errors.website}</p>}
-          </div>
         </div>
 
         {/* Status */}
@@ -274,30 +220,38 @@ export default function LeadForm({ lead, onSubmit, onCancel, isLoading = false }
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
             Estado del Lead
           </label>
-          <div className="flex space-x-4">
-            {(['hot', 'warm', 'cold'] as const).map((status) => (
-              <label key={status} className="flex items-center cursor-pointer">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {statusOptions.map((option) => (
+              <label key={option.value} className="flex items-center cursor-pointer">
                 <input
                   type="radio"
                   name="status"
-                  value={status}
-                  checked={formData.status === status}
+                  value={option.value}
+                  checked={formData.status === option.value}
                   onChange={(e) => handleChange('status', e.target.value)}
                   className="sr-only"
                 />
-                <div className={`flex items-center space-x-2 px-4 py-2 rounded-lg border-2 transition-colors ${
-                  formData.status === status
-                    ? status === 'hot'
-                      ? 'border-red-500 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300'
-                      : status === 'warm'
+                <div className={`flex items-center space-x-2 px-3 py-2 rounded-lg border-2 transition-colors w-full ${
+                  formData.status === option.value
+                    ? option.color === 'green'
+                      ? 'border-green-500 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300'
+                      : option.color === 'yellow'
                       ? 'border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-300'
+                      : option.color === 'red'
+                      ? 'border-red-500 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300'
+                      : option.color === 'orange'
+                      ? 'border-orange-500 bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300'
                       : 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
                     : 'border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-500'
                 }`}>
                   <div className={`w-3 h-3 rounded-full ${
-                    status === 'hot' ? 'bg-red-500' : status === 'warm' ? 'bg-yellow-500' : 'bg-blue-500'
+                    option.color === 'green' ? 'bg-green-500' : 
+                    option.color === 'yellow' ? 'bg-yellow-500' : 
+                    option.color === 'red' ? 'bg-red-500' : 
+                    option.color === 'orange' ? 'bg-orange-500' : 
+                    'bg-blue-500'
                   }`} />
-                  <span className="font-medium capitalize">{status}</span>
+                  <span className="font-medium text-sm">{option.label}</span>
                 </div>
               </label>
             ))}
@@ -318,7 +272,7 @@ export default function LeadForm({ lead, onSubmit, onCancel, isLoading = false }
             disabled={isLoading || isSubmitting}
             className="px-6 py-3 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-200 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {lead ? 'Actualizar Lead' : 'Crear Lead'}
+            {initialData ? 'Actualizar Lead' : 'Crear Lead'}
           </button>
         </div>
       </form>

@@ -11,16 +11,15 @@ import {
   MoonIcon,
   ChevronDownIcon,
 } from '@heroicons/react/24/outline';
+import UserMenu from './UserMenu';
 
 export default function Header() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showNotifications, setShowNotifications] = useState(false);
-  const [showProfile, setShowProfile] = useState(false);
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
   
   const notificationsRef = useRef<HTMLDivElement>(null);
-  const profileRef = useRef<HTMLDivElement>(null);
 
   // Fix hydration error by waiting for component to mount
   useEffect(() => {
@@ -32,9 +31,6 @@ export default function Header() {
     function handleClickOutside(event: MouseEvent) {
       if (notificationsRef.current && !notificationsRef.current.contains(event.target as Node)) {
         setShowNotifications(false);
-      }
-      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
-        setShowProfile(false);
       }
     }
 
@@ -53,9 +49,9 @@ export default function Header() {
   // Don't render theme-dependent content until mounted
   if (!mounted) {
     return (
-      <header className="sticky top-0 z-30 mx-6 mt-6">
+      <header className="sticky top-0 z-30 mx-5 mt-5">
         <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-lg shadow-sm">
-          <div className="flex items-center justify-between px-6 py-4">
+          <div className="flex items-center justify-between px-5 py-3">
             <div className="flex-1 max-w-md">
               <div className="relative">
                 <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -80,10 +76,10 @@ export default function Header() {
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, delay: 0.2 }}
-      className="sticky top-0 z-30 mx-6 mt-6"
+      className="sticky top-0 z-30 mx-5 mt-5"
     >
       <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-lg shadow-sm">
-        <div className="flex items-center justify-between px-6 py-4">
+        <div className="flex items-center justify-between px-5 py-3">
           {/* Search Bar */}
           <div className="flex-1 max-w-md">
             <div className="relative">
@@ -93,7 +89,7 @@ export default function Header() {
                 placeholder="Buscar leads, empresas, emails..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
               />
               {searchQuery && (
                 <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -190,46 +186,7 @@ export default function Header() {
             </button>
 
             {/* User Profile */}
-            <div className="relative" ref={profileRef}>
-              <button
-                onClick={() => setShowProfile(!showProfile)}
-                className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-              >
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                  <span className="text-white font-semibold text-sm">A</span>
-                </div>
-                <div className="hidden md:block text-left">
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">Admin User</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">admin@prospecter.com</p>
-                </div>
-                <ChevronDownIcon className="h-4 w-4 text-gray-400" />
-              </button>
-              
-              <AnimatePresence>
-                {showProfile && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-lg shadow-lg"
-                  >
-                    <div className="py-2">
-                      <a href="#" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
-                        Mi Perfil
-                      </a>
-                      <a href="#" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
-                        Configuración
-                      </a>
-                      <div className="border-t border-gray-100 dark:border-gray-700 mt-2 pt-2">
-                        <a href="#" className="block px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20">
-                          Cerrar Sesión
-                        </a>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+            <UserMenu />
           </div>
         </div>
       </div>
