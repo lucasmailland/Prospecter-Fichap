@@ -7,15 +7,27 @@ const crypto = require('crypto');
 // Cargar variables de entorno
 require('dotenv').config();
 
+// Helper function to get secure database password
+function getSecurePassword() {
+  const password = process.env.DATABASE_PASSWORD;
+  if (!password) {
+    console.error('❌ ERROR: DATABASE_PASSWORD environment variable is required for security');
+    console.error('💡 Please set DATABASE_PASSWORD in your .env file');
+    console.error('🔒 For development, you can use: DATABASE_PASSWORD=your_secure_password');
+    process.exit(1);
+  }
+  return password;
+}
+
 async function setupDatabase() {
   console.log('🗄️  Configurando base de datos...');
 
-  // Conectar a PostgreSQL
+  // Conectar a PostgreSQL - SECURE VERSION
   const client = new Client({
     host: process.env.DATABASE_HOST || 'localhost',
     port: process.env.DATABASE_PORT || 5432,
     user: process.env.DATABASE_USER || 'postgres',
-    password: process.env.DATABASE_PASSWORD || 'password',
+    password: getSecurePassword(),
     database: 'postgres', // Conectar a la base de datos por defecto
   });
 
@@ -41,12 +53,12 @@ async function setupDatabase() {
 
     await client.end();
 
-    // Conectar a la nueva base de datos
+    // Conectar a la nueva base de datos - SECURE VERSION
     const dbClient = new Client({
       host: process.env.DATABASE_HOST || 'localhost',
       port: process.env.DATABASE_PORT || 5432,
       user: process.env.DATABASE_USER || 'postgres',
-      password: process.env.DATABASE_PASSWORD || 'password',
+      password: getSecurePassword(),
       database: dbName,
     });
 

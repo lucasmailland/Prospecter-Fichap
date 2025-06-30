@@ -92,7 +92,7 @@ describe('EnrichmentOrchestratorService', () => {
   describe('enrichLead', () => {
     const mockLead: Lead = {
       id: 'test-lead-id',
-      email: 'test@example.com',
+      email: 'test_1751316807@test-domain.local',
       firstName: 'John',
       lastName: 'Doe',
       company: 'Test Company',
@@ -163,7 +163,7 @@ describe('EnrichmentOrchestratorService', () => {
       // Arrange
       const mockLead = {
         id: 'test-lead-id',
-        email: 'test@example.com',
+        email: 'test_1751316807@test-domain.local',
         status: LeadStatus.NEW,
         score: 0,
         priority: 0,

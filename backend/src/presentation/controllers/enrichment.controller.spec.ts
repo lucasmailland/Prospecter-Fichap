@@ -41,7 +41,7 @@ describe('EnrichmentController', () => {
     const mockLead = new Lead();
     Object.assign(mockLead, {
       id: 'test-lead-id',
-      email: 'test@example.com',
+      email: 'test_1751316807@test-domain.local',
       fullName: 'John Doe',
       company: 'Test Company',
       status: LeadStatus.NEW,

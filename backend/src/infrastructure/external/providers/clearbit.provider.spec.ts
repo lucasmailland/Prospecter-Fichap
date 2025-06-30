@@ -65,7 +65,7 @@ describe('ClearbitProvider', () => {
 
   describe('validateEmail', () => {
     it('should return not supported error', async () => {
-      const result = await provider.validateEmail('test@example.com');
+      const result = await provider.validateEmail('test_1751316807@test-domain.local');
       expect(result.success).toBe(false);
       expect(result.error).toBe('Email validation not supported by Clearbit');
     });
@@ -73,7 +73,7 @@ describe('ClearbitProvider', () => {
 
   describe('enrichPerson', () => {
     it('should return not supported error', async () => {
-      const result = await provider.enrichPerson('test@example.com');
+      const result = await provider.enrichPerson('test_1751316807@test-domain.local');
       expect(result.success).toBe(false);
       expect(result.error).toBe('Person enrichment not supported by Clearbit');
     });

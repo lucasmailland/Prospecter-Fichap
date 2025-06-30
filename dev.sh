@@ -52,7 +52,7 @@ DATABASE_HOST=localhost
 DATABASE_PORT=5432
 DATABASE_NAME=prospecter_fichap
 DATABASE_USER=postgres
-DATABASE_PASSWORD=password
+DATABASE_PASSWORD=${DATABASE_PASSWORD:-$(openssl rand -base64 32)}
 
 # Redis
 REDIS_HOST=localhost
@@ -66,7 +66,7 @@ JWT_SECRET=dev-secret-key-change-in-production
 
 # External Services
 SLACK_WEBHOOK_URL=https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX
-SONAR_TOKEN=sq_placeholder_token
+SONAR_TOKEN=${SONAR_TOKEN:-"sq_$(openssl rand -hex 32)"}
 
 # Staging
 STAGING_HOST=localhost

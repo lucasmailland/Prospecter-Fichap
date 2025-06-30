@@ -3,6 +3,11 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './app.module';
 
+// Test data constants - using random/dynamic values to avoid hardcoded credentials
+const generateTestEmail = () => `test_${Date.now()}_${Math.random().toString(36).substring(7)}@test-domain.local`;
+const TEST_DOMAIN = 'test-domain.local';
+const TEST_COMPANY = 'Test Company Inc';
+
 describe('AppController (e2e)', () => {
   let app: INestApplication;
 
@@ -149,14 +154,14 @@ describe('AppController (e2e)', () => {
 
     it('/prospects (POST) - should create new prospect', () => {
       const createProspectDto = {
-        email: 'test@example.com',
+        email: generateTestEmail(),
         firstName: 'John',
         lastName: 'Doe',
-        company: 'Test Company',
+        company: TEST_COMPANY,
         jobTitle: 'CTO',
         phone: '+1234567890',
-        website: 'https://test.com',
-        linkedinUrl: 'https://linkedin.com/in/johndoe',
+        website: `https://${TEST_DOMAIN}`,
+        linkedinUrl: 'https://linkedin.com/in/test-profile',
         notes: 'Test prospect',
       };
 
@@ -168,7 +173,7 @@ describe('AppController (e2e)', () => {
           expect(res.body).toHaveProperty('success', true);
           expect(res.body).toHaveProperty('data');
           expect(res.body).toHaveProperty('message', 'Prospect created successfully');
-          expect(res.body.data).toHaveProperty('email', 'test@example.com');
+          expect(res.body.data).toHaveProperty('email', createProspectDto.email);
           expect(res.body.data).toHaveProperty('firstName', 'John');
           expect(res.body.data).toHaveProperty('lastName', 'Doe');
         });
@@ -194,10 +199,10 @@ describe('AppController (e2e)', () => {
     it('/prospects/:id (GET) - should return specific prospect', () => {
       // First create a prospect
       const createProspectDto = {
-        email: 'test-get@example.com',
+        email: generateTestEmail(),
         firstName: 'Jane',
         lastName: 'Smith',
-        company: 'Test Company',
+        company: TEST_COMPANY,
       };
 
       return request(app.getHttpServer())
@@ -213,7 +218,7 @@ describe('AppController (e2e)', () => {
               expect(res.body).toHaveProperty('success', true);
               expect(res.body).toHaveProperty('data');
               expect(res.body.data).toHaveProperty('id', prospectId);
-              expect(res.body.data).toHaveProperty('email', 'test-get@example.com');
+              expect(res.body.data).toHaveProperty('email', createProspectDto.email);
             });
         });
     });
@@ -231,7 +236,7 @@ describe('AppController (e2e)', () => {
     it('/prospects/:id (PUT) - should update prospect', () => {
       // First create a prospect
       const createProspectDto = {
-        email: 'test-update@example.com',
+        email: generateTestEmail(),
         firstName: 'Original',
         lastName: 'Name',
         company: 'Original Company',
@@ -266,7 +271,7 @@ describe('AppController (e2e)', () => {
     it('/prospects/:id (DELETE) - should delete prospect', () => {
       // First create a prospect
       const createProspectDto = {
-        email: 'test-delete@example.com',
+        email: generateTestEmail(),
         firstName: 'Delete',
         lastName: 'Me',
         company: 'Delete Company',
