@@ -42,7 +42,7 @@ describe('ProspectsController', () => {
 
   describe('POST /prospects', () => {
     const createProspectDto: CreateProspectDto = {
-      email: 'test@example.com',
+      email: 'test_1751316807@test-domain.local',
       name: 'John Doe',
       company: 'Test Company',
       phone: '+1234567890',
@@ -51,7 +51,7 @@ describe('ProspectsController', () => {
     const mockLead = new Lead();
     Object.assign(mockLead, {
       id: 'test-lead-id',
-      email: 'test@example.com',
+      email: 'test_1751316807@test-domain.local',
       fullName: 'John Doe',
       company: 'Test Company',
       phone: '+1234567890',
@@ -111,7 +111,7 @@ describe('ProspectsController', () => {
       const mockLead = new Lead();
       Object.assign(mockLead, {
         id: 'test-lead-id',
-        email: 'test@example.com',
+        email: 'test_1751316807@test-domain.local',
         fullName: 'John Doe',
         status: LeadStatus.NEW,
       });
@@ -143,7 +143,7 @@ describe('ProspectsController', () => {
       const mockUpdatedLead = new Lead();
       Object.assign(mockUpdatedLead, {
         id: 'test-lead-id',
-        email: 'test@example.com',
+        email: 'test_1751316807@test-domain.local',
         fullName: 'Jane Smith',
         company: 'Updated Company',
         status: LeadStatus.NEW,

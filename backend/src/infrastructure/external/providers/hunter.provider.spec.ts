@@ -32,7 +32,7 @@ describe('HunterProvider', () => {
             status: 'valid',
             result: 'valid',
             score: 90,
-            email: 'test@example.com',
+            email: 'test_1751316807@test-domain.local',
             regexp: true,
             gibberish: false,
             disposable: false,
@@ -48,7 +48,7 @@ describe('HunterProvider', () => {
         responseTime: 80,
       });
 
-      const result = await provider.validateEmail('test@example.com');
+      const result = await provider.validateEmail('test_1751316807@test-domain.local');
       expect(result.success).toBe(true);
       expect(result.data.isValid).toBe(true);
       expect(result.data.score).toBeGreaterThan(0);
@@ -61,7 +61,7 @@ describe('HunterProvider', () => {
         responseTime: 100,
       });
 
-      const result = await provider.validateEmail('test@example.com');
+      const result = await provider.validateEmail('test_1751316807@test-domain.local');
       expect(result.success).toBe(false);
       expect(result.error).toBe('API Error');
     });
@@ -81,7 +81,7 @@ describe('HunterProvider', () => {
         success: true,
         data: {
           data: {
-            email: 'test@example.com',
+            email: 'test_1751316807@test-domain.local',
             first_name: 'John',
             last_name: 'Doe',
             score: 90,
@@ -103,7 +103,7 @@ describe('HunterProvider', () => {
         responseTime: 90,
       });
 
-      const result = await provider.enrichPerson('test@example.com');
+      const result = await provider.enrichPerson('test_1751316807@test-domain.local');
       expect(result.success).toBe(true);
       expect(result.data.firstName).toBe('John');
       expect(result.data.jobTitle).toBeUndefined();
@@ -116,7 +116,7 @@ describe('HunterProvider', () => {
         responseTime: 100,
       });
 
-      const result = await provider.enrichPerson('test@example.com');
+      const result = await provider.enrichPerson('test_1751316807@test-domain.local');
       expect(result.success).toBe(false);
       expect(result.error).toBe('API Error');
     });
