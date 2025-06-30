@@ -143,14 +143,77 @@ export class AuthController {
     return req.user;
   }
 
+  /**
+   * Sanitizes and validates IP address input to prevent XSS attacks
+   * @param input - Raw IP input from headers
+   * @returns Sanitized and validated IP address or 'unknown'
+   */
+  private sanitizeIP(input: string | undefined): string {
+    if (!input || typeof input !== 'string') {
+      return 'unknown';
+    }
+
+    // Remove any potential XSS characters and whitespace
+    const cleaned = input.trim().replace(/[<>\"'&\\]/g, '');
+    
+    // Validate IPv4 format (xxx.xxx.xxx.xxx)
+    const ipv4Regex = /^(\d{1,3}\.){3}\d{1,3}$/;
+    
+    // Validate IPv6 format (basic validation)
+    const ipv6Regex = /^([0-9a-fA-F]{0,4}:){2,7}[0-9a-fA-F]{0,4}$/;
+    
+    if (ipv4Regex.test(cleaned)) {
+      // Additional validation for IPv4 ranges
+      const parts = cleaned.split('.');
+      if (parts.every(part => parseInt(part, 10) <= 255)) {
+        return cleaned;
+      }
+    }
+    
+    if (ipv6Regex.test(cleaned)) {
+      return cleaned;
+    }
+    
+    // If not a valid IP format, return 'unknown'
+    return 'unknown';
+  }
+
+  /**
+   * Securely extracts client IP address from request headers
+   * @param req - Express request object
+   * @returns Sanitized client IP address
+   */
   private getClientIP(req: any): string {
-    return (
-      req.get('X-Forwarded-For')?.split(',')[0] ||
-      req.get('X-Real-IP') ||
-      req.get('CF-Connecting-IP') ||
-      req.connection?.remoteAddress ||
-      req.socket?.remoteAddress ||
-      'unknown'
+    // Try to get IP from various headers in order of preference
+    const forwardedFor = req.get('X-Forwarded-For');
+    if (forwardedFor) {
+      // X-Forwarded-For can contain multiple IPs, take the first one
+      const firstIP = forwardedFor.split(',')[0];
+      const sanitizedIP = this.sanitizeIP(firstIP);
+      if (sanitizedIP !== 'unknown') {
+        return sanitizedIP;
+      }
+    }
+
+    // Fallback to other headers
+    const realIP = this.sanitizeIP(req.get('X-Real-IP'));
+    if (realIP !== 'unknown') {
+      return realIP;
+    }
+
+    const cfConnectingIP = this.sanitizeIP(req.get('CF-Connecting-IP'));
+    if (cfConnectingIP !== 'unknown') {
+      return cfConnectingIP;
+    }
+
+    // Fallback to connection remote address
+    const connectionIP = this.sanitizeIP(
+      req.connection?.remoteAddress || req.socket?.remoteAddress
     );
+    if (connectionIP !== 'unknown') {
+      return connectionIP;
+    }
+
+    return 'unknown';
   }
 } 
