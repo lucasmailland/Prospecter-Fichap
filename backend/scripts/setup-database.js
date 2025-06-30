@@ -7,27 +7,47 @@ const crypto = require('crypto');
 // Cargar variables de entorno
 require('dotenv').config();
 
-// Helper function to get secure database password
-function getSecurePassword() {
-  const password = process.env.DATABASE_PASSWORD;
-  if (!password) {
-    console.error('❌ ERROR: DATABASE_PASSWORD environment variable is required for security');
-    console.error('💡 Please set DATABASE_PASSWORD in your .env file');
-    console.error('🔒 For development, you can use: DATABASE_PASSWORD=your_secure_password');
+// Helper function to get secure database configuration
+function getSecureDatabaseConfig() {
+  const config = {
+    host: process.env.DATABASE_HOST,
+    port: parseInt(process.env.DATABASE_PORT) || null,
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+  };
+
+  // Validate all required environment variables
+  const requiredVars = ['DATABASE_HOST', 'DATABASE_PORT', 'DATABASE_USER', 'DATABASE_PASSWORD'];
+  const missingVars = requiredVars.filter(varName => !process.env[varName]);
+
+  if (missingVars.length > 0) {
+    console.error('❌ ERROR: Missing required environment variables for secure database connection:');
+    missingVars.forEach(varName => {
+      console.error(`   - ${varName}`);
+    });
+    console.error('💡 Please set these variables in your .env file:');
+    console.error('   DATABASE_HOST=your_db_host');
+    console.error('   DATABASE_PORT=5432');
+    console.error('   DATABASE_USER=your_db_user');
+    console.error('   DATABASE_PASSWORD=your_secure_password');
     process.exit(1);
   }
-  return password;
+
+  return config;
 }
 
 async function setupDatabase() {
   console.log('🗄️  Configurando base de datos...');
 
+  // Get secure database configuration
+  const dbConfig = getSecureDatabaseConfig();
+
   // Conectar a PostgreSQL - SECURE VERSION
   const client = new Client({
-    host: process.env.DATABASE_HOST || 'localhost',
-    port: process.env.DATABASE_PORT || 5432,
-    user: process.env.DATABASE_USER || 'postgres',
-    password: getSecurePassword(),
+    host: dbConfig.host,
+    port: dbConfig.port,
+    user: dbConfig.user,
+    password: dbConfig.password,
     database: 'postgres', // Conectar a la base de datos por defecto
   });
 
@@ -36,7 +56,12 @@ async function setupDatabase() {
     console.log('✅ Conectado a PostgreSQL');
 
     // Crear base de datos si no existe
-    const dbName = process.env.DATABASE_NAME || 'prospecter_fichap';
+    const dbName = process.env.DATABASE_NAME;
+    if (!dbName) {
+      console.error('❌ ERROR: DATABASE_NAME environment variable is required');
+      process.exit(1);
+    }
+
     const checkDbQuery = `
       SELECT 1 FROM pg_database WHERE datname = $1
     `;
@@ -55,10 +80,10 @@ async function setupDatabase() {
 
     // Conectar a la nueva base de datos - SECURE VERSION
     const dbClient = new Client({
-      host: process.env.DATABASE_HOST || 'localhost',
-      port: process.env.DATABASE_PORT || 5432,
-      user: process.env.DATABASE_USER || 'postgres',
-      password: getSecurePassword(),
+      host: dbConfig.host,
+      port: dbConfig.port,
+      user: dbConfig.user,
+      password: dbConfig.password,
       database: dbName,
     });
 
@@ -151,6 +176,9 @@ async function setupDatabase() {
     const randomPassword = crypto.randomBytes(16).toString('hex');
     const adminPassword = await bcrypt.hash(randomPassword, 12);
     
+    // Get admin email from environment or use secure default
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@prospecter-fichap.com';
+    
     const createAdminUser = `
       INSERT INTO users (name, email, password, role, is_email_verified, is_active)
       VALUES ($1, $2, $3, $4, $5, $6)
@@ -159,7 +187,7 @@ async function setupDatabase() {
 
     const result = await dbClient.query(createAdminUser, [
       'Administrator',
-      'admin@prospecter-fichap.com',
+      adminEmail,
       adminPassword,
       'admin',
       true,
@@ -168,7 +196,7 @@ async function setupDatabase() {
 
     if (result.rowCount > 0) {
       console.log('✅ Usuario administrador creado');
-      console.log('📧 Email: admin@prospecter-fichap.com');
+      console.log(`📧 Email: ${adminEmail}`);
       console.log(`🔑 Password: ${randomPassword}`);
       console.log('⚠️  IMPORTANTE: Guarda esta contraseña, se genera una vez');
       console.log('⚠️  CAMBIAR la contraseña después del primer login');

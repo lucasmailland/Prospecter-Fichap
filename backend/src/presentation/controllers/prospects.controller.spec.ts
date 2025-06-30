@@ -5,6 +5,24 @@ import { Lead, LeadStatus, LeadSource } from '../../domain/entities/lead.entity'
 import { CreateProspectDto } from '../dto/create-prospect.dto';
 import { UpdateProspectDto } from '../dto/update-prospect.dto';
 
+// Helper function to generate secure test emails dynamically
+function generateSecureTestEmail(): string {
+  const timestamp = Date.now();
+  const randomId = Math.random().toString(36).substring(2, 15);
+  return `test_${timestamp}_${randomId}@secure-test-domain.local`;
+}
+
+// Helper function to generate test data with dynamic values
+function createTestProspectData(overrides: Partial<CreateProspectDto> = {}): CreateProspectDto {
+  return {
+    email: generateSecureTestEmail(),
+    name: 'John Doe Test',
+    company: 'Test Company Inc',
+    phone: '+1234567890',
+    ...overrides
+  };
+}
+
 describe('ProspectsController', () => {
   let controller: ProspectsController;
   let prospectsService: ProspectsService;
@@ -41,20 +59,15 @@ describe('ProspectsController', () => {
   });
 
   describe('POST /prospects', () => {
-    const createProspectDto: CreateProspectDto = {
-      email: 'test_1751316807@test-domain.local',
-      name: 'John Doe',
-      company: 'Test Company',
-      phone: '+1234567890',
-    };
+    const createProspectDto = createTestProspectData();
 
     const mockLead = new Lead();
     Object.assign(mockLead, {
       id: 'test-lead-id',
-      email: 'test_1751316807@test-domain.local',
-      fullName: 'John Doe',
-      company: 'Test Company',
-      phone: '+1234567890',
+      email: createProspectDto.email,
+      fullName: createProspectDto.name,
+      company: createProspectDto.company,
+      phone: createProspectDto.phone,
       status: LeadStatus.NEW,
       source: LeadSource.MANUAL,
       score: 0,
@@ -85,8 +98,16 @@ describe('ProspectsController', () => {
   describe('GET /prospects', () => {
     it('should return all prospects', async () => {
       const mockLeads = [
-        { id: 'lead1', email: 'test1@example.com', status: LeadStatus.NEW },
-        { id: 'lead2', email: 'test2@example.com', status: LeadStatus.VALIDATED },
+        { 
+          id: 'lead1', 
+          email: generateSecureTestEmail(), 
+          status: LeadStatus.NEW 
+        },
+        { 
+          id: 'lead2', 
+          email: generateSecureTestEmail(), 
+          status: LeadStatus.VALIDATED 
+        },
       ];
 
       mockProspectsService.findAll.mockResolvedValue(mockLeads);
@@ -108,11 +129,12 @@ describe('ProspectsController', () => {
 
   describe('GET /prospects/:id', () => {
     it('should return a specific prospect', async () => {
+      const testEmail = generateSecureTestEmail();
       const mockLead = new Lead();
       Object.assign(mockLead, {
         id: 'test-lead-id',
-        email: 'test_1751316807@test-domain.local',
-        fullName: 'John Doe',
+        email: testEmail,
+        fullName: 'John Doe Test',
         status: LeadStatus.NEW,
       });
 
@@ -135,17 +157,18 @@ describe('ProspectsController', () => {
 
   describe('PUT /prospects/:id', () => {
     const updateProspectDto: UpdateProspectDto = {
-      name: 'Jane Smith',
-      company: 'Updated Company',
+      name: 'Jane Smith Test',
+      company: 'Updated Test Company',
     };
 
     it('should update a prospect successfully', async () => {
+      const testEmail = generateSecureTestEmail();
       const mockUpdatedLead = new Lead();
       Object.assign(mockUpdatedLead, {
         id: 'test-lead-id',
-        email: 'test_1751316807@test-domain.local',
-        fullName: 'Jane Smith',
-        company: 'Updated Company',
+        email: testEmail,
+        fullName: 'Jane Smith Test',
+        company: 'Updated Test Company',
         status: LeadStatus.NEW,
       });
 

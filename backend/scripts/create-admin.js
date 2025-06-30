@@ -3,23 +3,57 @@ const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 require('dotenv').config();
 
+// Helper function to get secure database configuration
+function getSecureDatabaseConfig() {
+  const config = {
+    host: process.env.DATABASE_HOST,
+    port: parseInt(process.env.DATABASE_PORT) || null,
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    database: process.env.DATABASE_NAME,
+  };
+
+  // Validate all required environment variables
+  const requiredVars = ['DATABASE_HOST', 'DATABASE_PORT', 'DATABASE_USER', 'DATABASE_PASSWORD', 'DATABASE_NAME'];
+  const missingVars = requiredVars.filter(varName => !process.env[varName]);
+
+  if (missingVars.length > 0) {
+    console.error('❌ ERROR: Missing required environment variables for secure database connection:');
+    missingVars.forEach(varName => {
+      console.error(`   - ${varName}`);
+    });
+    console.error('💡 Please set these variables in your .env file:');
+    console.error('   DATABASE_HOST=your_db_host');
+    console.error('   DATABASE_PORT=5432');
+    console.error('   DATABASE_USER=your_db_user');
+    console.error('   DATABASE_PASSWORD=your_secure_password');
+    console.error('   DATABASE_NAME=your_database_name');
+    process.exit(1);
+  }
+
+  return config;
+}
+
 async function createAdminUser() {
   console.log('👤 Creando usuario administrador...');
 
+  // Get secure database configuration
+  const dbConfig = getSecureDatabaseConfig();
+
   const client = new Client({
-    host: process.env.DATABASE_HOST || 'localhost',
-    port: process.env.DATABASE_PORT || 5432,
-    user: process.env.DATABASE_USER || 'postgres',
-    password: process.env.DATABASE_PASSWORD || (() => {
-      console.error('❌ ERROR: DATABASE_PASSWORD is required for security');
-      process.exit(1);
-    })(),
-    database: process.env.DATABASE_NAME || 'prospecter_fichap',
+    host: dbConfig.host,
+    port: dbConfig.port,
+    user: dbConfig.user,
+    password: dbConfig.password,
+    database: dbConfig.database,
   });
 
   try {
     await client.connect();
     console.log('✅ Conectado a la base de datos');
+
+    // Get admin email from environment or use secure default
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@prospecter-fichap.com';
 
     // Hash de la contraseña
     // Generar contraseña segura aleatoria
@@ -29,7 +63,7 @@ async function createAdminUser() {
     // Verificar si el usuario ya existe
     const checkUser = await client.query(
       'SELECT id FROM users WHERE email = $1',
-      ['admin@prospecter-fichap.com']
+      [adminEmail]
     );
 
     if (checkUser.rows.length > 0) {
@@ -46,7 +80,7 @@ async function createAdminUser() {
 
     const result = await client.query(createAdminQuery, [
       'Administrator',
-      'admin@prospecter-fichap.com',
+      adminEmail,
       adminPassword,
       'admin',
       true,
@@ -61,7 +95,7 @@ async function createAdminUser() {
     console.log(`   Email: ${admin.email}`);
     console.log(`   Rol: ${admin.role}`);
     console.log('🔑 Credenciales de acceso:');
-    console.log('   Email: admin@prospecter-fichap.com');
+    console.log(`   Email: ${adminEmail}`);
     console.log(`   Password: ${randomPassword}`);
     console.log('');
     console.log('⚠️  IMPORTANTE: Guarda esta contraseña, se genera solo una vez');
