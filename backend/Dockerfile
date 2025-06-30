@@ -1,5 +1,5 @@
 # Multi-stage build para optimizar el tamaño de la imagen
-FROM node:18-alpine AS builder
+FROM node:24.3.0-alpine AS builder
 
 # Instalar dependencias del sistema
 RUN apk add --no-cache python3 make g++
@@ -20,7 +20,7 @@ COPY . .
 RUN npm run build
 
 # Imagen de producción
-FROM node:18-alpine AS production
+FROM node:24.3.0-alpine AS production
 
 # Instalar dumb-init para manejo correcto de señales
 RUN apk add --no-cache dumb-init

@@ -48,7 +48,7 @@ async function bootstrap() {
 
   // Configuración de CORS más restrictiva
   app.enableCors({
-    origin: process.env.CORS_ORIGIN?.split(',') || ['http://localhost:3001'],
+    origin: process.env.CORS_ORIGIN?.split(',') || ['http://localhost:3000'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     allowedHeaders: [
@@ -106,7 +106,7 @@ async function bootstrap() {
     .addTag('enrichment', 'Enriquecimiento de leads')
     .addTag('health', 'Estado del sistema')
     .addServer('https://api.prospecter-fichap.com', 'Producción')
-    .addServer('http://localhost:3000', 'Desarrollo')
+    .addServer('http://localhost:4000', 'Desarrollo')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
@@ -138,7 +138,7 @@ async function bootstrap() {
     next();
   });
 
-  const port = process.env.PORT || 3000;
+  const port = process.env.PORT || 4000;
   await app.listen(port, '0.0.0.0'); // Escuchar en todas las interfaces
   
   console.log(`🚀 Application is running on: http://localhost:${port}`);

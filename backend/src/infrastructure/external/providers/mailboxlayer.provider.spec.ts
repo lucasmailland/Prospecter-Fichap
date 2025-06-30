@@ -19,7 +19,7 @@ describe('MailboxLayerProvider', () => {
   it('should have correct provider configuration', () => {
     expect(provider.provider).toBe('mailboxlayer');
     expect(provider.name).toBe('MailboxLayer');
-    expect(provider.baseUrl).toBe('http://apilayer.net/api');
+    expect(provider.baseUrl).toBe('https://api.apilayer.com/email_validation');
     expect(provider.costPerRequest).toBe(0.01);
   });
 

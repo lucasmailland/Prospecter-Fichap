@@ -31,7 +31,8 @@ log_error() {
 }
 
 # Variables
-# GITHUB_TOKEN="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"  # Removed for security
+# GITHUB_TOKEN debe ser configurado como variable de entorno
+# export GITHUB_TOKEN="your_github_token_here"
 GITHUB_TOKEN=""
 REPO_NAME="Prospecter-Fichap"
 USERNAME="lucasmailland"
@@ -87,7 +88,7 @@ log_success "SonarQube configurado"
 log_info "Configurando Slack webhook..."
 
 # Crear webhook de Slack (simulado)
-SLACK_WEBHOOK_URL="https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX"
+SLACK_WEBHOOK_URL="${SLACK_WEBHOOK_URL:-https://hooks.slack.com/services/REPLACE/WITH/REAL/WEBHOOK}"
 
 log_success "Slack webhook configurado"
 
@@ -111,7 +112,7 @@ log_success "Secrets configurados en GitHub"
 log_info "Configurando Docker Hub..."
 
 # Crear token de Docker Hub (simulado)
-DOCKER_TOKEN="dckr_pat_placeholder_token"
+DOCKER_TOKEN="${DOCKER_REGISTRY_TOKEN:-REPLACE_WITH_REAL_TOKEN}"
 
 gh secret set DOCKER_REGISTRY_TOKEN --body "$DOCKER_TOKEN" || log_warning "Error configurando DOCKER_REGISTRY_TOKEN"
 

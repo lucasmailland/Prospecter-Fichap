@@ -125,13 +125,13 @@ psql prospecter_fichap -f scripts/create-tables.sql
 node scripts/create-admin.js
 ```
 
-### Credenciales por Defecto
+### Credenciales de Administrador
 
 - **Email**: admin@prospecter-fichap.com
-- **Password**: admin123
+- **Password**: [GENERADO AUTOMÁTICAMENTE - Ver logs del script create-admin.js]
 - **Rol**: admin
 
-⚠️ **IMPORTANTE**: Cambia la contraseña después del primer login.
+⚠️ **IMPORTANTE**: La contraseña se genera automáticamente por seguridad.
 
 ## 🌐 Permisos de Red
 

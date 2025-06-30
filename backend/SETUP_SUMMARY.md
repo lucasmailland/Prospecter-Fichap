@@ -22,7 +22,7 @@
 
 ### 👤 **Usuario Administrador**
 - ✅ **Email**: admin@prospecter-fichap.com
-- ✅ **Password**: admin123
+- ✅ **Password**: [GENERADO AUTOMÁTICAMENTE - Ver logs de creación]
 - ✅ **Rol**: admin
 - ✅ **ID**: 10f871bc-16d6-4c3b-bd88-ec743ba854f6
 
@@ -60,7 +60,7 @@ npm run start:dev
 
 ### **3. Autenticarse**
 - **Email**: admin@prospecter-fichap.com
-- **Password**: admin123
+- **Password**: [GENERADO AUTOMÁTICAMENTE - Ver salida del script]
 
 ## 📊 **Tests y Cobertura**
 
@@ -142,7 +142,7 @@ RATE_LIMIT_LIMIT=100
 
 ### **1. Inmediatos**
 - [ ] **Iniciar el sistema** y verificar funcionamiento
-- [ ] **Cambiar contraseña** del administrador
+- [x] **Contraseña segura** generada automáticamente
 - [ ] **Configurar API keys** para enriquecimiento
 - [ ] **Corregir tests** fallidos
 

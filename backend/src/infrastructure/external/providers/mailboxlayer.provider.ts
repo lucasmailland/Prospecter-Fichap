@@ -23,7 +23,7 @@ export class MailboxLayerProvider extends BaseApiProvider {
     super({
       provider: ApiProvider.MAILBOXLAYER,
       name: 'MailboxLayer',
-      baseUrl: 'http://apilayer.net/api',
+      baseUrl: 'https://api.apilayer.com/email_validation',
       apiKey: process.env.MAILBOXLAYER_API_KEY || '',
       rateLimit: {
         requests: 100, // 100 requests per month (free tier)

@@ -1,6 +1,8 @@
 const { Client } = require('pg');
 const fs = require('fs');
 const path = require('path');
+const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 
 // Cargar variables de entorno
 require('dotenv').config();
@@ -133,8 +135,9 @@ async function setupDatabase() {
     console.log('✅ Tabla enrichment_logs creada');
 
     // Crear usuario administrador por defecto
-    const bcrypt = require('bcryptjs');
-    const adminPassword = await bcrypt.hash('admin123', 12);
+    // Generar contraseña segura aleatoria
+    const randomPassword = crypto.randomBytes(16).toString('hex');
+    const adminPassword = await bcrypt.hash(randomPassword, 12);
     
     const createAdminUser = `
       INSERT INTO users (name, email, password, role, is_email_verified, is_active)
@@ -142,7 +145,7 @@ async function setupDatabase() {
       ON CONFLICT (email) DO NOTHING
     `;
 
-    await dbClient.query(createAdminUser, [
+    const result = await dbClient.query(createAdminUser, [
       'Administrator',
       'admin@prospecter-fichap.com',
       adminPassword,
@@ -151,9 +154,15 @@ async function setupDatabase() {
       true
     ]);
 
-    console.log('✅ Usuario administrador creado');
-    console.log('📧 Email: admin@prospecter-fichap.com');
-    console.log('🔑 Password: admin123');
+    if (result.rowCount > 0) {
+      console.log('✅ Usuario administrador creado');
+      console.log('📧 Email: admin@prospecter-fichap.com');
+      console.log(`🔑 Password: ${randomPassword}`);
+      console.log('⚠️  IMPORTANTE: Guarda esta contraseña, se genera una vez');
+      console.log('⚠️  CAMBIAR la contraseña después del primer login');
+    } else {
+      console.log('✅ Usuario administrador ya existe');
+    }
 
     await dbClient.end();
     console.log('🎉 Configuración de base de datos completada');

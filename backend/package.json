@@ -20,7 +20,18 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "test:performance": "k6 run performance/load-test.js"
+    "test:performance": "k6 run performance/load-test.js",
+    "seed": "node scripts/seed-test-data.js",
+    "security:generate": "node scripts/generate-secure-secrets.js",
+    "security:verify": "node scripts/verify-security.js",
+    "security:audit": "npm audit --audit-level moderate && npm audit --json > security-audit.json",
+    "setup:secure": "npm run security:generate && npm run setup:database && npm run setup:admin",
+    "setup:database": "node scripts/setup-database.js",
+    "setup:admin": "node scripts/create-admin.js",
+    "auth:token": "node scripts/get-auth-token.js",
+    "security:audit:comprehensive": "node scripts/comprehensive-security-audit.js",
+    "security:fix:all": "npm run security:generate && npm run security:audit:comprehensive",
+    "security:fix:intelligent": "node scripts/auto-fix-vulnerabilities.js"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",

@@ -1,5 +1,6 @@
 const { Client } = require('pg');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 require('dotenv').config();
 
 async function createAdminUser() {
@@ -18,7 +19,9 @@ async function createAdminUser() {
     console.log('✅ Conectado a la base de datos');
 
     // Hash de la contraseña
-    const adminPassword = await bcrypt.hash('admin123', 12);
+    // Generar contraseña segura aleatoria
+    const randomPassword = crypto.randomBytes(16).toString('hex');
+    const adminPassword = await bcrypt.hash(randomPassword, 12);
     
     // Verificar si el usuario ya existe
     const checkUser = await client.query(
@@ -56,9 +59,10 @@ async function createAdminUser() {
     console.log(`   Rol: ${admin.role}`);
     console.log('🔑 Credenciales de acceso:');
     console.log('   Email: admin@prospecter-fichap.com');
-    console.log('   Password: admin123');
+    console.log(`   Password: ${randomPassword}`);
     console.log('');
-    console.log('⚠️  IMPORTANTE: Cambia la contraseña después del primer inicio de sesión');
+    console.log('⚠️  IMPORTANTE: Guarda esta contraseña, se genera solo una vez');
+    console.log('⚠️  CAMBIAR la contraseña después del primer inicio de sesión');
 
     await client.end();
 
