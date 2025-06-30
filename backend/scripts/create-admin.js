@@ -10,7 +10,10 @@ async function createAdminUser() {
     host: process.env.DATABASE_HOST || 'localhost',
     port: process.env.DATABASE_PORT || 5432,
     user: process.env.DATABASE_USER || 'postgres',
-    password: process.env.DATABASE_PASSWORD || 'password',
+    password: process.env.DATABASE_PASSWORD || (() => {
+      console.error('❌ ERROR: DATABASE_PASSWORD is required for security');
+      process.exit(1);
+    })(),
     database: process.env.DATABASE_NAME || 'prospecter_fichap',
   });
 
