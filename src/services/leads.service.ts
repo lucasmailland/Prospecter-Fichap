@@ -1,80 +1,261 @@
-import { apiService } from './api.service';
-import {
-  Lead,
-  CreateLeadDto,
-  UpdateLeadDto,
-  CreateProspectDto,
-  UpdateProspectDto,
-} from '../types/api.types';
+import { prisma } from '@/lib/prisma';
+import { 
+  Lead, 
+  LeadStatus, 
+  LeadSource, 
+  CreateLeadForm, 
+  UpdateLeadForm,
+  LeadFilters,
+  LeadSortOptions,
+  PaginatedResponse,
+  ApiResponse,
+  LeadWithUser,
+  LeadWithEnrichments,
+  LeadWithFullData
+} from '@/types/common.types';
 
-class LeadsService {
-  private endpoint = '/prospects';
+// ========================================================================================
+// TIPOS INTERNOS
+// ========================================================================================
 
-  // Obtener todos los leads
-  async getLeads(): Promise<Lead[]> {
-    return apiService.get<Lead[]>(this.endpoint);
-  }
+interface LeadQueryOptions {
+  page?: number;
+  limit?: number;
+  filters?: LeadFilters;
+  sort?: LeadSortOptions;
+  includeUser?: boolean;
+  includeEnrichments?: boolean;
+}
 
-  // Obtener un lead por ID
-  async getLead(id: string): Promise<Lead> {
-    return apiService.get<Lead>(`${this.endpoint}/${id}`);
-  }
+// ========================================================================================
+// UTILITY FUNCTIONS
+// ========================================================================================
 
-  // Crear nuevo lead
-  async createLead(leadData: CreateProspectDto): Promise<Lead> {
-    return apiService.post<Lead>(this.endpoint, leadData);
-  }
-
-  // Actualizar lead existente
-  async updateLead(id: string, leadData: UpdateProspectDto): Promise<Lead> {
-    return apiService.put<Lead>(`${this.endpoint}/${id}`, leadData);
-  }
-
-  // Eliminar lead
-  async deleteLead(id: string): Promise<{ message: string }> {
-    return apiService.delete<{ message: string }>(`${this.endpoint}/${id}`);
-  }
-
-  // Filtrar leads por estado
-  async getLeadsByStatus(status: string): Promise<Lead[]> {
-    const allLeads = await this.getLeads();
-    return allLeads.filter(lead => lead.status === status);
-  }
-
-  // Buscar leads por término
-  async searchLeads(searchTerm: string): Promise<Lead[]> {
-    const allLeads = await this.getLeads();
-    const term = searchTerm.toLowerCase();
-    
-    return allLeads.filter(lead =>
-      lead.email?.toLowerCase().includes(term) ||
-      lead.fullName?.toLowerCase().includes(term) ||
-      lead.company?.toLowerCase().includes(term) ||
-      lead.firstName?.toLowerCase().includes(term) ||
-      lead.lastName?.toLowerCase().includes(term)
-    );
-  }
-
-  // Obtener estadísticas básicas de leads
-  async getLeadsStats(): Promise<{
-    total: number;
-    qualified: number;
-    potential: number;
-    cold: number;
-    averageScore: number;
-  }> {
-    const leads = await this.getLeads();
-    
-    return {
-      total: leads.length,
-      qualified: leads.filter(l => l.status === 'qualified').length,
-      potential: leads.filter(l => l.status === 'potential').length,
-      cold: leads.filter(l => l.status === 'cold').length,
-      averageScore: leads.length > 0 
-        ? leads.reduce((sum, lead) => sum + lead.score, 0) / leads.length 
-        : 0,
-    };
+/**
+ * Parse JSON string safely
+ */
+function parseJsonSafely(jsonString: string | null): Record<string, any> | null {
+  if (!jsonString) return null;
+  try {
+    return JSON.parse(jsonString);
+  } catch {
+    return null;
   }
 }
 
-export const leadsService = new LeadsService(); 
+/**
+ * Stringify JSON safely
+ */
+function stringifyJsonSafely(obj: any): string | null {
+  if (!obj) return null;
+  try {
+    return JSON.stringify(obj);
+  } catch {
+    return null;
+  }
+}
+
+// ========================================================================================
+// SERVICIO PRINCIPAL
+// ========================================================================================
+
+// Cliente API para llamadas desde el frontend
+export class LeadsService {
+  
+  /**
+   * Obtener leads con paginación y filtros
+   */
+  static async getLeads(options: any = {}): Promise<any> {
+    try {
+      const { page = 1, limit = 10, filters = {} } = options;
+      
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: limit.toString(),
+      });
+      
+      if (filters.search) {
+        params.append('search', filters.search);
+      }
+      
+      if (filters.status) {
+        params.append('status', Array.isArray(filters.status) ? filters.status[0] : filters.status);
+      }
+      
+      const response = await fetch(`/api/prospects?${params}`);
+      return await response.json();
+      
+    } catch (error) {
+      console.error('Error fetching leads:', error);
+      return {
+        success: false,
+        error: 'Error al obtener leads'
+      };
+    }
+  }
+  
+  /**
+   * Crear un nuevo lead
+   */
+  static async createLead(data: any, userId: string): Promise<any> {
+    try {
+      const response = await fetch('/api/prospects', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      
+      return await response.json();
+      
+    } catch (error) {
+      console.error('Error creating lead:', error);
+      return {
+        success: false,
+        error: 'Error al crear lead'
+      };
+    }
+  }
+  
+  /**
+   * Actualizar lead
+   */
+  static async updateLead(id: string, data: any): Promise<any> {
+    try {
+      const response = await fetch(`/api/prospects/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      
+      return await response.json();
+      
+    } catch (error) {
+      console.error('Error updating lead:', error);
+      return {
+        success: false,
+        error: 'Error al actualizar lead'
+      };
+    }
+  }
+  
+  /**
+   * Eliminar lead
+   */
+  static async deleteLead(id: string): Promise<any> {
+    try {
+      const response = await fetch(`/api/prospects/${id}`, {
+        method: 'DELETE',
+      });
+      
+      return await response.json();
+      
+    } catch (error) {
+      console.error('Error deleting lead:', error);
+      return {
+        success: false,
+        error: 'Error al eliminar lead'
+      };
+    }
+  }
+  
+  /**
+   * Obtener lead por ID
+   */
+  static async getLeadById(id: string, options: any = {}): Promise<any> {
+    try {
+      const response = await fetch(`/api/prospects/${id}`);
+      return await response.json();
+      
+    } catch (error) {
+      console.error('Error getting lead:', error);
+      return {
+        success: false,
+        error: 'Error al obtener lead'
+      };
+    }
+  }
+  
+  /**
+   * Verificar si email existe
+   */
+  static async isEmailExists(email: string): Promise<boolean> {
+    try {
+      const response = await fetch(`/api/prospects/check-email?email=${email}`);
+      const result = await response.json();
+      return result.exists || false;
+      
+    } catch (error) {
+      console.error('Error checking email:', error);
+      return false;
+    }
+  }
+  
+  /**
+   * Crear múltiples leads
+   */
+  static async createBulkLeads(leadsData: any[], userId: string): Promise<any> {
+    try {
+      const response = await fetch('/api/prospects/bulk', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ leads: leadsData }),
+      });
+      
+      return await response.json();
+      
+    } catch (error) {
+      console.error('Error creating bulk leads:', error);
+      return {
+        success: false,
+        error: 'Error al crear leads en lote'
+      };
+    }
+  }
+  
+  /**
+   * Actualizar múltiples leads
+   */
+  static async updateBulkLeads(updates: Array<{ id: string; data: any }>): Promise<any> {
+    try {
+      const response = await fetch('/api/prospects/bulk', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ updates }),
+      });
+      
+      return await response.json();
+      
+    } catch (error) {
+      console.error('Error updating bulk leads:', error);
+      return {
+        success: false,
+        error: 'Error al actualizar leads en lote'
+      };
+    }
+  }
+  
+  /**
+   * Obtener estadísticas de leads
+   */
+  static async getLeadStats(userId: string): Promise<any> {
+    try {
+      const response = await fetch(`/api/prospects/stats?userId=${userId}`);
+      return await response.json();
+      
+    } catch (error) {
+      console.error('Error getting lead stats:', error);
+      return {
+        success: false,
+        error: 'Error al obtener estadísticas'
+      };
+    }
+  }
+} 

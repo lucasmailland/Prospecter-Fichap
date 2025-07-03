@@ -1,0 +1,543 @@
+// ========================================================================================
+// PRISMA SEED SCRIPT - Datos de prueba para desarrollo
+// ========================================================================================
+
+import { PrismaClient, UserRole, LeadStatus, LeadSource, EnrichmentStatus } from '@prisma/client';
+import bcrypt from 'bcryptjs';
+
+const prisma = new PrismaClient();
+
+// ========================================================================================
+// DATOS DE PRUEBA
+// ========================================================================================
+
+const users = [
+  {
+    id: 'user-1',
+    name: 'Lucas Mailland',
+    email: 'lucas@prospecter.com',
+    role: UserRole.ADMIN,
+    company: 'Prospecter Inc.',
+    position: 'CEO',
+    linkedin: 'https://linkedin.com/in/lucasmailland',
+    twoFactorEnabled: false,
+    loginFailures: 0,
+    accountLocked: false,
+    password: bcrypt.hashSync('Admin1234!', 10),
+  },
+  {
+    id: 'user-2',
+    name: 'María García',
+    email: 'maria@prospecter.com',
+    role: UserRole.MANAGER,
+    company: 'Prospecter Inc.',
+    position: 'Sales Manager',
+    linkedin: 'https://linkedin.com/in/mariagarcia',
+    twoFactorEnabled: true,
+    loginFailures: 0,
+    accountLocked: false,
+    password: bcrypt.hashSync('Manager1234!', 10),
+  },
+  {
+    id: 'user-3',
+    name: 'Carlos López',
+    email: 'carlos@prospecter.com',
+    role: UserRole.USER,
+    company: 'Prospecter Inc.',
+    position: 'Sales Rep',
+    linkedin: 'https://linkedin.com/in/carloslopez',
+    twoFactorEnabled: false,
+    loginFailures: 0,
+    accountLocked: false,
+    password: bcrypt.hashSync('User1234!', 10),
+  }
+];
+
+const leads = [
+  {
+    id: 'lead-1',
+    firstName: 'Ana',
+    lastName: 'Rodríguez',
+    fullName: 'Ana Rodríguez',
+    email: 'ana.rodriguez@techcorp.com',
+    phone: '+1 (555) 123-4567',
+    company: 'TechCorp',
+    jobTitle: 'CTO',
+    website: 'https://techcorp.com',
+    linkedinUrl: 'https://linkedin.com/in/anarodriguez',
+    companySize: '500-1000',
+    industry: 'Technology',
+    location: 'San Francisco, CA',
+    country: 'USA',
+    city: 'San Francisco',
+    state: 'CA',
+    timezone: 'America/Los_Angeles',
+    language: 'en',
+    isEmailValid: true,
+    emailValidationScore: 0.95,
+    emailValidationDetails: 'Valid email format',
+    score: 85.5,
+    priority: 1,
+    status: LeadStatus.ENRICHED,
+    source: LeadSource.MANUAL,
+    notes: 'Interesada en nuestra solución de prospectos',
+    userId: 'user-1'
+  },
+  {
+    id: 'lead-2',
+    firstName: 'Juan',
+    lastName: 'Martínez',
+    fullName: 'Juan Martínez',
+    email: 'juan.martinez@startupxyz.com',
+    phone: '+1 (555) 234-5678',
+    company: 'StartupXYZ',
+    jobTitle: 'Founder',
+    website: 'https://startupxyz.com',
+    linkedinUrl: 'https://linkedin.com/in/juanmartinez',
+    companySize: '10-50',
+    industry: 'SaaS',
+    location: 'Austin, TX',
+    country: 'USA',
+    city: 'Austin',
+    state: 'TX',
+    timezone: 'America/Chicago',
+    language: 'en',
+    isEmailValid: true,
+    emailValidationScore: 0.92,
+    emailValidationDetails: 'Valid email format',
+    score: 78.3,
+    priority: 2,
+    status: LeadStatus.VALIDATED,
+    source: LeadSource.WEBSITE,
+    notes: 'Startup en crecimiento, buen prospecto',
+    userId: 'user-1'
+  },
+  {
+    id: 'lead-3',
+    firstName: 'Sofía',
+    lastName: 'González',
+    fullName: 'Sofía González',
+    email: 'sofia.gonzalez@enterprise.com',
+    phone: '+1 (555) 345-6789',
+    company: 'Enterprise Solutions',
+    jobTitle: 'VP of Sales',
+    website: 'https://enterprise.com',
+    linkedinUrl: 'https://linkedin.com/in/sofiagonzalez',
+    companySize: '1000+',
+    industry: 'Enterprise Software',
+    location: 'New York, NY',
+    country: 'USA',
+    city: 'New York',
+    state: 'NY',
+    timezone: 'America/New_York',
+    language: 'en',
+    isEmailValid: true,
+    emailValidationScore: 0.98,
+    emailValidationDetails: 'Valid email format',
+    score: 92.1,
+    priority: 1,
+    status: LeadStatus.PRIORITIZED,
+    source: LeadSource.MANUAL,
+    notes: 'Empresa grande, alto potencial',
+    userId: 'user-2'
+  },
+  {
+    id: 'lead-4',
+    firstName: 'Miguel',
+    lastName: 'Hernández',
+    fullName: 'Miguel Hernández',
+    email: 'miguel.hernandez@consulting.com',
+    phone: '+1 (555) 456-7890',
+    company: 'Consulting Partners',
+    jobTitle: 'Managing Director',
+    website: 'https://consulting.com',
+    linkedinUrl: 'https://linkedin.com/in/miguelhernandez',
+    companySize: '100-500',
+    industry: 'Consulting',
+    location: 'Chicago, IL',
+    country: 'USA',
+    city: 'Chicago',
+    state: 'IL',
+    timezone: 'America/Chicago',
+    language: 'en',
+    isEmailValid: true,
+    emailValidationScore: 0.89,
+    emailValidationDetails: 'Valid email format',
+    score: 65.7,
+    priority: 3,
+    status: LeadStatus.NEW,
+    source: LeadSource.REFERRAL,
+    notes: 'Recomendado por cliente existente',
+    userId: 'user-3'
+  },
+  {
+    id: 'lead-5',
+    firstName: 'Laura',
+    lastName: 'Pérez',
+    fullName: 'Laura Pérez',
+    email: 'laura.perez@innovate.com',
+    phone: '+1 (555) 567-8901',
+    company: 'Innovate Labs',
+    jobTitle: 'Product Manager',
+    website: 'https://innovatelabs.com',
+    linkedinUrl: 'https://linkedin.com/in/lauraperez',
+    companySize: '50-100',
+    industry: 'Product Development',
+    location: 'Seattle, WA',
+    country: 'USA',
+    city: 'Seattle',
+    state: 'WA',
+    timezone: 'America/Los_Angeles',
+    language: 'en',
+    isEmailValid: true,
+    emailValidationScore: 0.94,
+    emailValidationDetails: 'Valid email format',
+    score: 71.2,
+    priority: 2,
+    status: LeadStatus.CONTACTED,
+    source: LeadSource.API,
+    notes: 'Ya contactada, esperando respuesta',
+    userId: 'user-2'
+  }
+];
+
+const enrichmentLogs = [
+  {
+    id: 'enrich-1',
+    leadId: 'lead-1',
+    type: 'email_validation',
+    provider: 'hunter',
+    status: EnrichmentStatus.SUCCESS,
+    data: JSON.stringify({
+      valid: true,
+      score: 0.95,
+      details: 'Valid email format'
+    }),
+    responseTime: 250,
+    cost: 0.01
+  },
+  {
+    id: 'enrich-2',
+    leadId: 'lead-1',
+    type: 'company_enrichment',
+    provider: 'clearbit',
+    status: EnrichmentStatus.SUCCESS,
+    data: JSON.stringify({
+      company: 'TechCorp',
+      size: '500-1000',
+      industry: 'Technology',
+      location: 'San Francisco, CA'
+    }),
+    responseTime: 450,
+    cost: 0.05
+  },
+  {
+    id: 'enrich-3',
+    leadId: 'lead-2',
+    type: 'email_validation',
+    provider: 'hunter',
+    status: EnrichmentStatus.SUCCESS,
+    data: JSON.stringify({
+      valid: true,
+      score: 0.92,
+      details: 'Valid email format'
+    }),
+    responseTime: 280,
+    cost: 0.01
+  },
+  {
+    id: 'enrich-4',
+    leadId: 'lead-3',
+    type: 'person_enrichment',
+    provider: 'clearbit',
+    status: EnrichmentStatus.SUCCESS,
+    data: JSON.stringify({
+      name: 'Sofía González',
+      title: 'VP of Sales',
+      company: 'Enterprise Solutions',
+      linkedin: 'https://linkedin.com/in/sofiagonzalez'
+    }),
+    responseTime: 520,
+    cost: 0.03
+  }
+];
+
+// ========================================================================================
+// FUNCIÓN PRINCIPAL
+// ========================================================================================
+
+async function main() {
+  console.log('🌱 Iniciando seeding de la base de datos...');
+  
+  // Limpiar datos existentes
+  console.log('🧹 Limpiando datos existentes...');
+  await prisma.enrichmentLog.deleteMany();
+  await prisma.lead.deleteMany();
+  await prisma.user.deleteMany();
+  
+  // Crear usuarios de prueba
+  console.log('👥 Creando usuarios de prueba...');
+  
+  const hashedPassword = await bcrypt.hash('Admin1234!', 12);
+  
+  const adminUser = await prisma.user.create({
+    data: {
+      name: 'Lucas Mailland',
+      email: 'lucas@prospecter.com',
+      password: hashedPassword,
+      role: UserRole.ADMIN,
+      company: 'Prospecter Inc.',
+      position: 'CEO & Founder',
+      linkedin: 'https://linkedin.com/in/lucasmailland',
+      emailVerified: new Date(),
+    }
+  });
+
+  const managerUser = await prisma.user.create({
+    data: {
+      name: 'María González',
+      email: 'maria@prospecter.com',
+      password: await bcrypt.hash('Manager1234!', 12),
+      role: UserRole.MANAGER,
+      company: 'Prospecter Inc.',
+      position: 'Sales Manager',
+      emailVerified: new Date(),
+    }
+  });
+
+  const salesUser = await prisma.user.create({
+    data: {
+      name: 'Carlos Rodríguez',
+      email: 'carlos@prospecter.com',
+      password: await bcrypt.hash('User1234!', 12),
+      role: UserRole.USER,
+      company: 'Prospecter Inc.',
+      position: 'Sales Representative',
+      emailVerified: new Date(),
+    }
+  });
+
+  console.log('✅ Usuarios creados');
+
+  // Crear leads de prueba realistas
+  console.log('📋 Creando leads de prueba...');
+  
+  const leadsData = [
+    {
+      firstName: 'Ana',
+      lastName: 'Martínez',
+      fullName: 'Ana Martínez',
+      email: 'ana.martinez@techcorp.com',
+      phone: '+34 666 111 222',
+      company: 'TechCorp Solutions',
+      jobTitle: 'CTO',
+      website: 'https://techcorp.com',
+      linkedinUrl: 'https://linkedin.com/in/anamartinez',
+      industry: 'Technology',
+      location: 'Madrid, España',
+      country: 'España',
+      city: 'Madrid',
+      companySize: '50-200',
+      status: LeadStatus.QUALIFIED,
+      source: LeadSource.WEBSITE,
+      score: 85,
+      priority: 3,
+      notes: 'Interesada en soluciones de automatización para su equipo de ventas.',
+      userId: adminUser.id
+    },
+    {
+      firstName: 'David',
+      lastName: 'Thompson',
+      fullName: 'David Thompson',
+      email: 'david.thompson@innovatetech.io',
+      phone: '+1 555 123 4567',
+      company: 'InnovateTech',
+      jobTitle: 'VP of Sales',
+      website: 'https://innovatetech.io',
+      linkedinUrl: 'https://linkedin.com/in/davidthompson',
+      industry: 'SaaS',
+      location: 'San Francisco, CA',
+      country: 'Estados Unidos',
+      city: 'San Francisco',
+      companySize: '200-500',
+      status: LeadStatus.CONTACTED,
+      source: LeadSource.API,
+      score: 92,
+      priority: 4,
+      notes: 'Reunión programada para próxima semana. Muy interesado en la demo.',
+      userId: managerUser.id
+    },
+    {
+      firstName: 'Sophie',
+      lastName: 'Dubois',
+      fullName: 'Sophie Dubois',
+      email: 'sophie.dubois@digitalparis.fr',
+      phone: '+33 1 45 67 89 12',
+      company: 'Digital Paris',
+      jobTitle: 'Marketing Director',
+      website: 'https://digitalparis.fr',
+      linkedinUrl: 'https://linkedin.com/in/sophiedubois',
+      industry: 'Digital Marketing',
+      location: 'París, Francia',
+      country: 'Francia',
+      city: 'París',
+      companySize: '20-50',
+      status: LeadStatus.ENRICHED,
+      source: LeadSource.REFERRAL,
+      score: 78,
+      priority: 2,
+      notes: 'Referida por cliente actual. Busca soluciones para lead generation.',
+      userId: salesUser.id
+    },
+    {
+      firstName: 'Michael',
+      lastName: 'Schmidt',
+      fullName: 'Michael Schmidt',
+      email: 'michael.schmidt@germantech.de',
+      phone: '+49 30 123 456 78',
+      company: 'GermanTech GmbH',
+      jobTitle: 'Head of Business Development',
+      website: 'https://germantech.de',
+      linkedinUrl: 'https://linkedin.com/in/michaelschmidt',
+      industry: 'Manufacturing',
+      location: 'Berlín, Alemania',
+      country: 'Alemania',
+      city: 'Berlín',
+      companySize: '500-1000',
+      status: LeadStatus.NEW,
+      source: LeadSource.IMPORT,
+      score: 65,
+      priority: 2,
+      notes: 'Lead importado de lista de LinkedIn. Pendiente de primer contacto.',
+      userId: adminUser.id
+    },
+    {
+      firstName: 'Elena',
+      lastName: 'Rossi',
+      fullName: 'Elena Rossi',
+      email: 'elena.rossi@italiadigital.it',
+      phone: '+39 02 1234 5678',
+      company: 'Italia Digital',
+      jobTitle: 'CEO',
+      website: 'https://italiadigital.it',
+      linkedinUrl: 'https://linkedin.com/in/elenarossi',
+      industry: 'Consulting',
+      location: 'Milán, Italia',
+      country: 'Italia',
+      city: 'Milán',
+      companySize: '10-20',
+      status: LeadStatus.VALIDATED,
+      source: LeadSource.MANUAL,
+      score: 88,
+      priority: 4,
+      notes: 'CEO de consultora digital. Muy buena prospección para cliente enterprise.',
+      userId: managerUser.id
+    },
+    {
+      firstName: 'James',
+      lastName: 'Wilson',
+      fullName: 'James Wilson',
+      email: 'james.wilson@ukstartup.co.uk',
+      phone: '+44 20 7946 0958',
+      company: 'UK Startup Ltd',
+      jobTitle: 'Co-founder',
+      website: 'https://ukstartup.co.uk',
+      linkedinUrl: 'https://linkedin.com/in/jameswilson',
+      industry: 'FinTech',
+      location: 'Londres, Reino Unido',
+      country: 'Reino Unido',
+      city: 'Londres',
+      companySize: '5-10',
+      status: LeadStatus.PRIORITIZED,
+      source: LeadSource.WEBSITE,
+      score: 72,
+      priority: 3,
+      notes: 'Startup en fase de crecimiento. Interesado en herramientas de ventas escalables.',
+      userId: salesUser.id
+    },
+    {
+      firstName: 'Hiroshi',
+      lastName: 'Tanaka',
+      fullName: 'Hiroshi Tanaka',
+      email: 'hiroshi.tanaka@japantech.jp',
+      phone: '+81 3 1234 5678',
+      company: 'Japan Tech Solutions',
+      jobTitle: 'Sales Manager',
+      website: 'https://japantech.jp',
+      linkedinUrl: 'https://linkedin.com/in/hiroshitanaka',
+      industry: 'Technology',
+      location: 'Tokio, Japón',
+      country: 'Japón',
+      city: 'Tokio',
+      companySize: '100-500',
+      status: LeadStatus.NEW,
+      source: LeadSource.API,
+      score: 69,
+      priority: 2,
+      notes: 'Mercado asiático interesante. Pendiente de análisis de viabilidad regional.',
+      userId: adminUser.id
+    },
+    {
+      firstName: 'Isabella',
+      lastName: 'Silva',
+      fullName: 'Isabella Silva',
+      email: 'isabella.silva@brasiltech.com.br',
+      phone: '+55 11 9876 5432',
+      company: 'Brasil Tech',
+      jobTitle: 'Diretora Comercial',
+      website: 'https://brasiltech.com.br',
+      linkedinUrl: 'https://linkedin.com/in/isabellasilva',
+      industry: 'E-commerce',
+      location: 'São Paulo, Brasil',
+      country: 'Brasil',
+      city: 'São Paulo',
+      companySize: '50-100',
+      status: LeadStatus.CONTACTED,
+      source: LeadSource.REFERRAL,
+      score: 81,
+      priority: 3,
+      notes: 'Contacto establecido por WhatsApp. Interesada en demo en portugués.',
+      userId: managerUser.id
+    }
+  ];
+
+  for (const leadData of leadsData) {
+    await prisma.lead.create({
+      data: {
+        ...leadData,
+        isEmailValid: true,
+        emailValidationScore: Math.random() * 100,
+        enrichedAt: new Date(),
+        validatedAt: new Date()
+      }
+    });
+  }
+
+  console.log('✅ Leads creados');
+
+  // Mostrar resumen
+  const totalUsers = await prisma.user.count();
+  const totalLeads = await prisma.lead.count();
+  
+  console.log('\n📊 Resumen del seeding:');
+  console.log(`👥 Usuarios creados: ${totalUsers}`);
+  console.log(`📋 Leads creados: ${totalLeads}`);
+  console.log('\n🔐 Credenciales de acceso:');
+  console.log('Admin: lucas@prospecter.com / Admin1234!');
+  console.log('Manager: maria@prospecter.com / Manager1234!');
+  console.log('User: carlos@prospecter.com / User1234!');
+  console.log('\n✨ Base de datos lista para usar!');
+}
+
+// ========================================================================================
+// EJECUCIÓN
+// ========================================================================================
+
+main()
+  .catch((e) => {
+    console.error('❌ Error durante el seeding:', e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  }); 

@@ -1,0 +1,171 @@
+# =============================================================================
+# REDIS ULTRA-SECURE CONFIGURATION
+# =============================================================================
+# Configuración de seguridad máxima para Redis en contenedores
+# Basado en mejores prácticas de OWASP y Redis Security Guidelines
+
+# =============================================================================
+# CONFIGURACIÓN DE AUTENTICACIÓN Y AUTORIZACIÓN
+# =============================================================================
+# Autenticación requerida - configurada via variable de entorno
+# requirepass configurado dinámicamente via Docker
+
+# ACL (Access Control List) configuración avanzada
+acllog-max-len 128
+
+# =============================================================================
+# CONFIGURACIÓN DE RED Y CONEXIONES
+# =============================================================================
+# Configuración de red segura
+bind 0.0.0.0
+protected-mode yes
+port 6379
+
+# Límites de conexión para prevenir DoS
+maxclients 10000
+timeout 300
+tcp-keepalive 300
+
+# =============================================================================
+# CONFIGURACIÓN DE SEGURIDAD DE COMANDOS
+# =============================================================================
+# Deshabilitar comandos peligrosos
+rename-command FLUSHDB DISABLE_FLUSHDB_SECURITY
+rename-command FLUSHALL DISABLE_FLUSHALL_SECURITY
+rename-command EVAL DISABLE_EVAL_SECURITY
+rename-command DEBUG DISABLE_DEBUG_SECURITY
+rename-command SHUTDOWN DISABLE_SHUTDOWN_SECURITY
+rename-command CONFIG DISABLE_CONFIG_SECURITY
+rename-command SCRIPT DISABLE_SCRIPT_SECURITY
+
+# =============================================================================
+# CONFIGURACIÓN DE PERSISTENCIA SEGURA
+# =============================================================================
+# Configuración de snapshots (RDB) segura
+save 900 1
+save 300 10
+save 60 10000
+
+stop-writes-on-bgsave-error yes
+rdbcompression yes
+rdbchecksum yes
+dbfilename dump.rdb
+
+# Configuración de AOF (Append Only File) ultra-segura
+appendonly yes
+appendfilename "appendonly.aof"
+appendfsync always
+no-appendfsync-on-rewrite no
+auto-aof-rewrite-percentage 100
+auto-aof-rewrite-min-size 64mb
+aof-load-truncated yes
+aof-use-rdb-preamble yes
+
+# =============================================================================
+# CONFIGURACIÓN DE MEMORIA Y RENDIMIENTO SEGURO
+# =============================================================================
+# Límites de memoria para prevenir agotamiento
+maxmemory 256mb
+maxmemory-policy allkeys-lru
+maxmemory-samples 5
+
+# =============================================================================
+# CONFIGURACIÓN DE LOGGING Y MONITOREO
+# =============================================================================
+# Logging para auditoría y seguridad
+loglevel notice
+logfile ""
+syslog-enabled no
+
+# Configuración de logs de conexiones lentas
+slowlog-log-slower-than 10000
+slowlog-max-len 128
+
+# =============================================================================
+# CONFIGURACIÓN DE SEGURIDAD DE CLIENTES
+# =============================================================================
+# Configuración de cliente segura
+client-output-buffer-limit normal 0 0 0
+client-output-buffer-limit replica 256mb 64mb 60
+client-output-buffer-limit pubsub 32mb 8mb 60
+
+# Configuración de query buffer
+client-query-buffer-limit 1gb
+
+# =============================================================================
+# CONFIGURACIÓN DE REPLICACIÓN SEGURA
+# =============================================================================
+# Configuración de replicación (si se usa)
+replica-serve-stale-data yes
+replica-read-only yes
+repl-diskless-sync no
+repl-diskless-sync-delay 5
+repl-ping-replica-period 10
+repl-timeout 60
+repl-disable-tcp-nodelay no
+repl-backlog-size 1mb
+repl-backlog-ttl 3600
+
+# =============================================================================
+# CONFIGURACIÓN DE HASH Y ESTRUCTURAS DE DATOS
+# =============================================================================
+# Configuración optimizada y segura para estructuras de datos
+hash-max-ziplist-entries 512
+hash-max-ziplist-value 64
+list-max-ziplist-size -2
+list-compress-depth 0
+set-max-intset-entries 512
+zset-max-ziplist-entries 128
+zset-max-ziplist-value 64
+hll-sparse-max-bytes 3000
+
+# =============================================================================
+# CONFIGURACIÓN DE THREADING Y CONCURRENCIA
+# =============================================================================
+# Configuración de threading segura
+lazyfree-lazy-eviction no
+lazyfree-lazy-expire no
+lazyfree-lazy-server-del no
+replica-lazy-flush no
+
+# =============================================================================
+# CONFIGURACIÓN DE NOTIFICACIONES Y EVENTOS
+# =============================================================================
+# Configuración de notificaciones de keyspace (deshabilitadas por seguridad)
+notify-keyspace-events ""
+
+# =============================================================================
+# CONFIGURACIÓN DE LATENCIA Y RENDIMIENTO
+# =============================================================================
+# Configuración de latencia para monitoreo
+latency-monitor-threshold 100
+
+# =============================================================================
+# CONFIGURACIÓN DE SEGURIDAD ADICIONAL
+# =============================================================================
+# Deshabilitar características potencialmente peligrosas
+lua-time-limit 5000
+
+# Configuración de TLS (si se habilita)
+# tls-port 6380
+# tls-cert-file redis.crt
+# tls-key-file redis.key
+# tls-ca-cert-file ca.crt
+
+# =============================================================================
+# CONFIGURACIÓN DE MÓDULOS
+# =============================================================================
+# No cargar módulos externos por seguridad
+# loadmodule disabled
+
+# =============================================================================
+# CONFIGURACIÓN DE DATABASE
+# =============================================================================
+# Configuración de bases de datos
+databases 16
+
+# =============================================================================
+# CONFIGURACIÓN DE TIMEZONE
+# =============================================================================
+# Usar UTC para consistencia de logs
+# timezone UTC 

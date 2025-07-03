@@ -1,28 +1,32 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { HeroUIProvider } from '@heroui/react';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
-import { useRouter } from 'next/navigation';
-import { SessionProvider } from 'next-auth/react';
-import { ToastProvider } from '@/components/ui/Toast';
+import { AuthProvider } from '@/contexts/AuthContext';
+import LoadingSystem from '@/components/ui/LoadingSystem';
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const router = useRouter();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
-    <SessionProvider>
-      <HeroUIProvider navigate={router.push}>
-        <NextThemesProvider 
-          attribute="class" 
-          defaultTheme="light"
-          enableSystem={false}
-          disableTransitionOnChange={false}
-        >
-          <ToastProvider>
-            {children}
-          </ToastProvider>
-        </NextThemesProvider>
+    <NextThemesProvider
+      attribute="class"
+      defaultTheme="light"
+      enableSystem={false}
+      themes={['light', 'dark']}
+    >
+      <HeroUIProvider>
+        <AuthProvider>
+          <div suppressHydrationWarning>
+            {mounted ? children : <LoadingSystem variant="page" message="Iniciando aplicación..." size="lg" />}
+          </div>
+        </AuthProvider>
       </HeroUIProvider>
-    </SessionProvider>
+    </NextThemesProvider>
   );
 } 

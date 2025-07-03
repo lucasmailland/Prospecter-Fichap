@@ -5,27 +5,91 @@
  * y prevenir ataques de Cross-Site Scripting (XSS).
  */
 
+import clsx from 'clsx';
+
 /**
- * Escapa caracteres HTML peligrosos
+ * Sanitiza texto eliminando caracteres peligrosos
+ */
+export function sanitizeText(text: string): string {
+  if (typeof text !== 'string') return '';
+  
+  return text
+    .replace(/[<>]/g, '') // Eliminar < y >
+    .replace(/javascript:/gi, '') // Eliminar javascript:
+    .replace(/on\w+=/gi, '') // Eliminar event handlers
+    .trim();
+}
+
+/**
+ * Sanitiza URL para prevenir XSS
+ */
+export function sanitizeUrl(url: string): string {
+  if (typeof url !== 'string') return '';
+  
+  // Lista blanca de protocolos seguros
+  const allowedProtocols = ['http:', 'https:', 'mailto:', 'tel:'];
+  
+  try {
+    const urlObj = new URL(url);
+    if (!allowedProtocols.includes(urlObj.protocol)) {
+      return '';
+    }
+    return url;
+  } catch {
+    // Si no es una URL válida, sanitizar como texto
+    return sanitizeText(url);
+  }
+}
+
+/**
+ * Validaciones de entrada
+ */
+export const validators = {
+  email: (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  },
+  
+  phone: (phone: string): boolean => {
+    const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+    return phoneRegex.test(phone.replace(/\s/g, ''));
+  },
+  
+  url: (url: string): boolean => {
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+};
+
+/**
+ * Escapar caracteres especiales para prevenir injection
  */
 export function escapeHtml(text: string): string {
-  if (typeof text !== 'string') {
-    return '';
-  }
-
-  const map: Record<string, string> = {
+  const map: { [key: string]: string } = {
     '&': '&amp;',
     '<': '&lt;',
     '>': '&gt;',
     '"': '&quot;',
-    "'": '&#039;',
-    '/': '&#x2F;',
-    '`': '&#x60;',
-    '=': '&#x3D;'
+    "'": '&#39;',
   };
-
-  return text.replace(/[&<>"'`=\/]/g, (s) => map[s]);
+  
+  return text.replace(/[&<>"']/g, (m) => map[m]);
 }
+
+/**
+ * Función para combinar clases CSS de forma segura
+ * Soporta strings, objetos condicionales, arrays, etc.
+ */
+export function cn(...inputs: Parameters<typeof clsx>): string {
+  return clsx(...inputs).trim();
+}
+
+// Re-exportar clsx para compatibilidad
+export { clsx };
 
 /**
  * Sanitiza texto para uso en atributos HTML
@@ -42,47 +106,6 @@ export function sanitizeAttribute(value: string): string {
     .replace(/vbscript:/gi, '')
     .replace(/on\w+=/gi, '')
     .trim();
-}
-
-/**
- * Sanitiza URLs para prevenir javascript: y data: schemes maliciosos
- */
-export function sanitizeUrl(url: string): string {
-  if (typeof url !== 'string') {
-    return '';
-  }
-
-  const normalizedUrl = url.toLowerCase().trim();
-  
-  // Bloquear esquemas peligrosos
-  const dangerousSchemes = [
-    'javascript:',
-    'vbscript:',
-    'data:text/html',
-    'data:text/javascript',
-    'data:application/javascript'
-  ];
-
-  for (const scheme of dangerousSchemes) {
-    if (normalizedUrl.startsWith(scheme)) {
-      return '';
-    }
-  }
-
-  // Solo permitir esquemas seguros
-  const allowedSchemes = ['http:', 'https:', 'mailto:', 'tel:', 'ftp:'];
-  const hasValidScheme = allowedSchemes.some(scheme => 
-    normalizedUrl.startsWith(scheme)
-  );
-
-  // Si no tiene esquema, asumir que es relativo y seguro
-  const hasScheme = normalizedUrl.includes(':');
-  
-  if (hasScheme && !hasValidScheme) {
-    return '';
-  }
-
-  return url;
 }
 
 /**
@@ -119,28 +142,6 @@ export function sanitizeEmail(email: string): string {
   }
 
   return sanitized;
-}
-
-/**
- * Sanitiza texto general removiendo scripts y elementos peligrosos
- */
-export function sanitizeText(text: string): string {
-  if (typeof text !== 'string') {
-    return '';
-  }
-
-  return text
-    // Remover tags script
-    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-    // Remover event handlers
-    .replace(/\s*on\w+\s*=\s*['""][^'""]*['""]?/gi, '')
-    // Remover javascript: y vbscript:
-    .replace(/javascript:/gi, '')
-    .replace(/vbscript:/gi, '')
-    // Escapar HTML básico
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .trim();
 }
 
 /**

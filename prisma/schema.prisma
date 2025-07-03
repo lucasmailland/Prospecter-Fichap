@@ -1,13 +1,10 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Account {
@@ -23,8 +20,7 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -37,26 +33,631 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  role          String    @default("user")
-  company       String?
-  position      String?
-  linkedin      String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  accounts      Account[]
-  sessions      Session[]
-}
-
 model VerificationToken {
   identifier String
   token      String   @unique
   expires    DateTime
 
   @@unique([identifier, token])
-} 
+}
+
+model User {
+  id                       String    @id @default(cuid())
+  firstName                String?
+  lastName                 String?
+  name                     String?   // Mantenemos por compatibilidad con NextAuth
+  email                    String    @unique
+  emailVerified            DateTime?
+  image                    String?
+  password                 String
+  role                     UserRole  @default(USER)
+  linkedin                 String?
+  twoFactorEnabled         Boolean   @default(false)
+  twoFactorSecret          String?
+  twoFactorBackupCodes     String?
+  resetToken               String?
+  resetTokenExpires        DateTime?
+  emailVerificationToken   String?
+  emailVerificationExpires DateTime?
+  lastLogin                DateTime?
+  loginFailures            Int       @default(0)
+  accountLocked            Boolean   @default(false)
+  accountLockedUntil       DateTime?
+  createdAt                DateTime  @default(now())
+  updatedAt                DateTime  @updatedAt
+  accounts                 Account[]
+  sessions                 Session[]
+  leads                    Lead[]
+  openAIConfig             OpenAIConfig?
+  promptTemplates          PromptTemplate[]
+  aiGenerations            AIGeneration[]
+  aiConversations          AIConversation[]
+  aiUsageStats             AIUsageStats[]
+
+  @@map("users")
+}
+
+model Lead {
+  id                     String          @id @default(cuid())
+  firstName              String?
+  lastName               String?
+  fullName               String?
+  email                  String          @unique
+  phone                  String?
+  company                String?
+  jobTitle               String?
+  website                String?
+  linkedinUrl            String?
+  companySize            String?
+  industry               String?
+  location               String?
+  country                String?
+  city                   String?
+  state                  String?
+  timezone               String?
+  language               String?
+  isEmailValid           Boolean         @default(false)
+  emailValidationScore   Float?
+  emailValidationDetails String?
+  score                  Float           @default(0)
+  priority               Int             @default(0)
+  scoringFactors         String?
+  status                 LeadStatus      @default(NEW)
+  source                 LeadSource      @default(MANUAL)
+  hubspotId              String?
+  notes                  String?
+  metadata               String?
+  createdAt              DateTime        @default(now())
+  updatedAt              DateTime        @updatedAt
+  enrichedAt             DateTime?
+  validatedAt            DateTime?
+  lastContactedAt        DateTime?
+  userId                 String
+  enrichments            EnrichmentLog[]
+  hubspotContact         HubSpotContact?
+  leadScores             LeadScore[]
+  conversationAnalyses   ConversationAnalysis[]
+  aiGenerations          AIGeneration[]
+  aiInsights             AIInsight[]
+  user                   User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([email])
+  @@index([status])
+  @@index([score])
+  @@index([priority])
+  @@index([createdAt])
+  @@index([company])
+  @@index([hubspotId])
+  @@map("leads")
+}
+
+model EnrichmentLog {
+  id           String           @id @default(cuid())
+  leadId       String
+  type         String
+  provider     String
+  status       EnrichmentStatus @default(PENDING)
+  data         String?
+  error        String?
+  responseTime Int?
+  cost         Float?
+  createdAt    DateTime         @default(now())
+  lead         Lead             @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@index([leadId])
+  @@index([provider])
+  @@index([status])
+  @@index([createdAt])
+  @@map("enrichment_logs")
+}
+
+model Analytics {
+  id        String   @id @default(cuid())
+  userId    String
+  date      DateTime @default(now())
+  type      String
+  metrics   String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, date, type])
+  @@index([userId])
+  @@index([date])
+  @@index([type])
+  @@map("analytics")
+}
+
+// ========================================================================================
+// HUBSPOT MODELS
+// ========================================================================================
+
+model HubSpotContact {
+  id                    String                 @id @default(cuid())
+  hubspotId             String                 @unique
+  leadId                String?                @unique
+  email                 String
+  firstName             String?
+  lastName              String?
+  company               String?
+  jobTitle              String?
+  phone                 String?
+  website               String?
+  linkedinUrl           String?
+  country               String?
+  state                 String?
+  city                  String?
+  industry              String?
+  numEmployees          String?
+  annualRevenue         String?
+  lifecycleStage        String?
+  leadStatus            String?
+  hsLeadStatus          String?
+  hubspotOwnerId        String?
+  timezone              String?
+  lastActivityDate      DateTime?
+  hubspotCreateDate     DateTime?
+  hubspotModifiedDate   DateTime?
+  syncedAt              DateTime              @default(now())
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
+  lead                  Lead?                 @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  emailMetrics          HubSpotEmailMetrics?
+  conversations         HubSpotConversation[]
+  activities            HubSpotActivity[]
+
+  @@index([hubspotId])
+  @@index([email])
+  @@index([leadId])
+  @@index([syncedAt])
+  @@map("hubspot_contacts")
+}
+
+model HubSpotEmailMetrics {
+  id               String         @id @default(cuid())
+  contactId        String         @unique
+  emailsSent       Int            @default(0)
+  emailsOpened     Int            @default(0)
+  emailsClicked    Int            @default(0)
+  emailsReplied    Int            @default(0)
+  emailsBounced    Int            @default(0)
+  openRate         Float          @default(0)
+  clickRate        Float          @default(0)
+  replyRate        Float          @default(0)
+  lastEmailDate    DateTime?
+  lastOpenDate     DateTime?
+  lastClickDate    DateTime?
+  calculatedAt     DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  contact          HubSpotContact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@index([contactId])
+  @@index([calculatedAt])
+  @@map("hubspot_email_metrics")
+}
+
+model HubSpotConversation {
+  id            String         @id @default(cuid())
+  hubspotId     String         @unique
+  threadId      String
+  contactId     String
+  subject       String?
+  content       String
+  htmlContent   String?
+  timestamp     DateTime
+  direction     String // 'INCOMING' | 'OUTGOING'
+  emailStatus   String? // 'SENT' | 'DELIVERED' | 'OPENED' | 'CLICKED' | 'BOUNCED'
+  attachments   String? // JSON string
+  syncedAt      DateTime       @default(now())
+  createdAt     DateTime       @default(now())
+  contact       HubSpotContact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@index([hubspotId])
+  @@index([contactId])
+  @@index([threadId])
+  @@index([timestamp])
+  @@index([direction])
+  @@map("hubspot_conversations")
+}
+
+model HubSpotActivity {
+  id             String         @id @default(cuid())
+  hubspotId      String         @unique
+  contactId      String
+  activityType   String // 'EMAIL' | 'CALL' | 'MEETING' | 'TASK' | 'NOTE'
+  timestamp      DateTime
+  subject        String?
+  body           String?
+  outcome        String?
+  duration       Int? // en minutos
+  meetingOutcome String?
+  syncedAt       DateTime       @default(now())
+  createdAt      DateTime       @default(now())
+  contact        HubSpotContact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@index([hubspotId])
+  @@index([contactId])
+  @@index([activityType])
+  @@index([timestamp])
+  @@map("hubspot_activities")
+}
+
+// ========================================================================================
+// AI ANALYSIS MODELS
+// ========================================================================================
+
+model ConversationAnalysis {
+  id                      String   @id @default(cuid())
+  leadId                  String
+  contactId               String?
+  analysisDate            DateTime @default(now())
+  
+  // Sentiment Analysis
+  sentimentScore          Float    @default(0) // -1 to 1
+  sentimentConfidence     Float    @default(0) // 0 to 1
+  sentimentTrend          String   @default("stable") // 'improving' | 'declining' | 'stable'
+  sentimentHistory        String? // JSON array
+  
+  // Intent Analysis
+  buyingSignals           Int      @default(0) // 0-100
+  objections              Int      @default(0) // 0-100
+  interestLevel           Int      @default(0) // 0-100
+  urgency                 Int      @default(0) // 0-100
+  budgetMentions          Int      @default(0) // 0-100
+  authorityIndicators     Int      @default(0) // 0-100
+  
+  // Keywords
+  positiveKeywords        String? // JSON array
+  negativeKeywords        String? // JSON array
+  technicalKeywords       String? // JSON array
+  businessKeywords        String? // JSON array
+  urgencyKeywords         String? // JSON array
+  budgetKeywords          String? // JSON array
+  
+  // Conversation Quality
+  responseTimeAvg         Float    @default(0) // horas
+  messageLengthAvg        Int      @default(0) // caracteres
+  questionRatio           Float    @default(0) // porcentaje
+  engagementScore         Int      @default(0) // 0-100
+  
+  // Predictions
+  conversionProbability   Int      @default(0) // 0-100
+  optimalFollowupTime     DateTime?
+  recommendedAction       String   @default("EMAIL") // 'CALL' | 'EMAIL' | 'MEETING' | 'PROPOSAL' | 'NURTURE' | 'DISQUALIFY'
+  predictionConfidence    Int      @default(0) // 0-100
+  
+  // Metadata
+  analysisVersion         String   @default("1.0")
+  processingTimeMs        Int?
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+  
+  lead                    Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@index([leadId])
+  @@index([contactId])
+  @@index([analysisDate])
+  @@index([conversionProbability])
+  @@index([recommendedAction])
+  @@map("conversation_analyses")
+}
+
+// ========================================================================================
+// LEAD SCORING MODELS
+// ========================================================================================
+
+model LeadScore {
+  id                        String   @id @default(cuid())
+  leadId                    String
+  totalScore                Int      @default(0) // 0-100
+  previousScore             Int?
+  scoreChange               Int      @default(0)
+  confidence                Int      @default(0) // 0-100
+  category                  String   @default("COLD") // 'HOT' | 'WARM' | 'COLD' | 'QUALIFIED' | 'NURTURE' | 'DISQUALIFIED'
+  
+  // ICP Alignment Factors (30% weight)
+  icpCompanySize            Int      @default(0) // 0-25
+  icpIndustry               Int      @default(0) // 0-25
+  icpRole                   Int      @default(0) // 0-25
+  icpGeography              Int      @default(0) // 0-15
+  icpTechnology             Int      @default(0) // 0-10
+  
+  // AI Conversation Analysis (25% weight)
+  aiBuyingSignals           Int      @default(0) // 0-30
+  aiInterestLevel           Int      @default(0) // 0-25
+  aiSentiment               Int      @default(0) // 0-20
+  aiUrgency                 Int      @default(0) // 0-15
+  aiAuthority               Int      @default(0) // 0-10
+  
+  // HubSpot Engagement (25% weight)
+  emailEngagement           Int      @default(0) // 0-30
+  activityFrequency         Int      @default(0) // 0-25
+  responseVelocity          Int      @default(0) // 0-20
+  contentInteraction        Int      @default(0) // 0-15
+  meetingAcceptance         Int      @default(0) // 0-10
+  
+  // Data Quality (20% weight)
+  profileCompleteness       Int      @default(0) // 0-25
+  dataFreshness             Int      @default(0) // 0-25
+  contactReachability       Int      @default(0) // 0-25
+  informationAccuracy       Int      @default(0) // 0-25
+  
+  // Metadata
+  recommendedActions        String? // JSON array
+  scoringNotes              String?
+  calculatedAt              DateTime @default(now())
+  expiresAt                 DateTime
+  scoringVersion            String   @default("1.0")
+  processingTimeMs          Int?
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
+  
+  lead                      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@index([leadId])
+  @@index([totalScore])
+  @@index([category])
+  @@index([calculatedAt])
+  @@index([expiresAt])
+  @@map("lead_scores")
+}
+
+// ========================================================================================
+// SYNC AND CONFIGURATION MODELS
+// ========================================================================================
+
+model HubSpotSyncStatus {
+  id                 String   @id @default(cuid())
+  syncType           String // 'CONTACTS' | 'CONVERSATIONS' | 'ACTIVITIES' | 'DEALS' | 'COMPANIES'
+  status             String   @default("PENDING") // 'PENDING' | 'RUNNING' | 'COMPLETED' | 'FAILED' | 'CANCELLED'
+  startedAt          DateTime @default(now())
+  completedAt        DateTime?
+  recordsProcessed   Int      @default(0)
+  recordsTotal       Int      @default(0)
+  errors             String? // JSON array
+  progressPercentage Int      @default(0)
+  syncVersion        String   @default("1.0")
+  triggeredBy        String? // user ID or 'SYSTEM'
+  metadata           String? // JSON object
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([syncType])
+  @@index([status])
+  @@index([startedAt])
+  @@index([completedAt])
+  @@map("hubspot_sync_status")
+}
+
+model SystemConfiguration {
+  id                 String   @id @default(cuid())
+  key                String   @unique
+  value              String
+  type               String   @default("STRING") // 'STRING' | 'NUMBER' | 'BOOLEAN' | 'JSON'
+  description        String?
+  category           String   @default("GENERAL") // 'HUBSPOT' | 'AI' | 'SCORING' | 'GENERAL'
+  isEncrypted        Boolean  @default(false)
+  isEditable         Boolean  @default(true)
+  validationRegex    String?
+  defaultValue       String?
+  lastModifiedBy     String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([key])
+  @@index([category])
+  @@map("system_configuration")
+}
+
+// ========================================================================================
+// ENUMS
+// ========================================================================================
+
+enum LeadStatus {
+  NEW
+  ENRICHED
+  VALIDATED
+  PRIORITIZED
+  CONTACTED
+  CONVERTED
+  LOST
+}
+
+enum LeadSource {
+  HUBSPOT
+  MANUAL
+  IMPORT
+  API
+  WEBSITE
+  REFERRAL
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  USER
+  VIEWER
+}
+
+enum EnrichmentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  RATE_LIMITED
+}
+
+// OpenAI Integration Models
+model OpenAIConfig {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  apiKey      String   // Encrypted
+  model       String   @default("gpt-4o")
+  temperature Float    @default(0.7)
+  maxTokens   Int      @default(1000)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("openai_configs")
+}
+
+model PromptTemplate {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  category    PromptCategory
+  prompt      String   @db.Text
+  variables   Json     // Dynamic variables like {firstName}, {company}, etc.
+  isActive    Boolean  @default(true)
+  isPublic    Boolean  @default(false) // For sharing templates
+  version     Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  generations AIGeneration[]
+  
+  @@map("prompt_templates")
+}
+
+model AIGeneration {
+  id               String         @id @default(cuid())
+  userId           String
+  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  leadId           String?
+  lead             Lead?          @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  promptTemplateId String?
+  promptTemplate   PromptTemplate? @relation(fields: [promptTemplateId], references: [id], onDelete: SetNull)
+  
+  type             GenerationType
+  input            String         @db.Text
+  output           String         @db.Text
+  model            String
+  tokensUsed       Int
+  cost             Float?
+  
+  // Metadata
+  parameters       Json           // temperature, max_tokens, etc.
+  quality          Int?           // User rating 1-5
+  wasUsed          Boolean        @default(false)
+  
+  createdAt        DateTime       @default(now())
+  
+  @@map("ai_generations")
+}
+
+model AIInsight {
+  id        String      @id @default(cuid())
+  leadId    String
+  lead      Lead        @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  type      InsightType
+  title     String
+  content   String      @db.Text
+  score     Float?      // Confidence score 0-1
+  metadata  Json?       // Additional data
+  isActive  Boolean     @default(true)
+  createdAt DateTime    @default(now())
+  
+  @@map("ai_insights")
+}
+
+model AIConversation {
+  id        String              @id @default(cuid())
+  userId    String
+  user      User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  context   String?             @db.Text
+  messages  AIConversationMessage[]
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+  
+  @@map("ai_conversations")
+}
+
+model AIConversationMessage {
+  id             String         @id @default(cuid())
+  conversationId String
+  conversation   AIConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           MessageRole
+  content        String         @db.Text
+  tokensUsed     Int?
+  createdAt      DateTime       @default(now())
+  
+  @@map("ai_conversation_messages")
+}
+
+model AIUsageStats {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date          DateTime @db.Date
+  totalTokens   Int      @default(0)
+  totalCost     Float    @default(0)
+  requestCount  Int      @default(0)
+  
+  // Breakdown by type
+  emailTokens   Int      @default(0)
+  chatTokens    Int      @default(0)
+  analysisTokens Int     @default(0)
+  
+  @@unique([userId, date])
+  @@map("ai_usage_stats")
+}
+
+// Enums
+enum PromptCategory {
+  EMAIL
+  LINKEDIN
+  WHATSAPP
+  ANALYSIS
+  FOLLOW_UP
+  PROPOSAL
+  OBJECTION_HANDLING
+  RESEARCH
+  CUSTOM
+}
+
+enum GenerationType {
+  EMAIL
+  MESSAGE
+  ANALYSIS
+  SUMMARY
+  PROPOSAL
+  CHAT_RESPONSE
+  LEAD_SCORING
+  CONTENT_OPTIMIZATION
+}
+
+enum InsightType {
+  LEAD_SCORE
+  SENTIMENT_ANALYSIS
+  NEXT_BEST_ACTION
+  CONVERSION_PROBABILITY
+  COMPETITOR_ANALYSIS
+  PAIN_POINT_DETECTION
+  BUYING_SIGNAL
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+  SYSTEM
+}
+
+// Ejemplo de claves para APIs globales:
+// key: 'OPENAI_API_KEY', type: 'STRING', category: 'AI', isEncrypted: true
+// key: 'OPENAI_MODEL', type: 'STRING', category: 'AI'
+// key: 'OPENAI_TEMPERATURE', type: 'NUMBER', category: 'AI'
+// key: 'OPENAI_MAX_TOKENS', type: 'NUMBER', category: 'AI'
+// key: 'OPENAI_IS_ACTIVE', type: 'BOOLEAN', category: 'AI'
+// key: 'HUBSPOT_API_KEY', type: 'STRING', category: 'HUBSPOT', isEncrypted: true
+// key: 'HUBSPOT_ENV', type: 'STRING', category: 'HUBSPOT'
+// key: 'HUBSPOT_ACCOUNT_NAME', type: 'STRING', category: 'HUBSPOT'
+// key: 'CLEARBIT_API_KEY', type: 'STRING', category: 'CLEARBIT', isEncrypted: true
+// key: 'CLEARBIT_NAME', type: 'STRING', category: 'CLEARBIT'
+// key: 'HUNTERIO_API_KEY', type: 'STRING', category: 'HUNTERIO', isEncrypted: true
+// key: 'HUNTERIO_NAME', type: 'STRING', category: 'HUNTERIO'
+// key: 'MAILBOXLAYER_API_KEY', type: 'STRING', category: 'MAILBOXLAYER', isEncrypted: true
+// key: 'MAILBOXLAYER_NAME', type: 'STRING', category: 'MAILBOXLAYER'
