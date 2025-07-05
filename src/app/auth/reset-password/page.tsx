@@ -243,7 +243,7 @@ export default function ResetPasswordPage() {
               </label>
               <div className="relative">
                 <input
-                  type={showPassword ? 'text' : process.env.NEXT_PUBLIC_DEMO_DEMO_PASSWORD || 'SECURE_DEMO'}
+                  type={showPassword ? 'text' : 'password'}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   required

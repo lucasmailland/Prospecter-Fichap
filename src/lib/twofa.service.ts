@@ -101,10 +101,19 @@ class TwoFAService {
     if (!key) {
       throw new Error('NEXTAUTH_SECRET must be set for backup codes encryption');
     }
-    const cipher = crypto.createCipher('aes-256-cbc', key);
+    
+    // Generar clave de 32 bytes y IV de 16 bytes para AES-256-GCM
+    const keyBuffer = crypto.createHash('sha256').update(key).digest();
+    const iv = crypto.randomBytes(16);
+    
+    const cipher = crypto.createCipherGCM('aes-256-gcm', keyBuffer, iv);
     let encrypted = cipher.update(JSON.stringify(codes), 'utf8', 'hex');
     encrypted += cipher.final('hex');
-    return encrypted;
+    
+    const authTag = cipher.getAuthTag();
+    
+    // Retornar IV + AuthTag + Encrypted data
+    return iv.toString('hex') + ':' + authTag.toString('hex') + ':' + encrypted;
   }
 
   /**
@@ -116,9 +125,26 @@ class TwoFAService {
       if (!key) {
         throw new Error('NEXTAUTH_SECRET must be set for backup codes decryption');
       }
-      const decipher = crypto.createDecipher('aes-256-cbc', key);
-      let decrypted = decipher.update(encryptedCodes, 'hex', 'utf8');
+      
+      // Separar IV, AuthTag y datos encriptados
+      const parts = encryptedCodes.split(':');
+      if (parts.length !== 3) {
+        throw new Error('Invalid encrypted data format');
+      }
+      
+      const iv = Buffer.from(parts[0], 'hex');
+      const authTag = Buffer.from(parts[1], 'hex');
+      const encrypted = parts[2];
+      
+      // Generar la misma clave de 32 bytes
+      const keyBuffer = crypto.createHash('sha256').update(key).digest();
+      
+      const decipher = crypto.createDecipherGCM('aes-256-gcm', keyBuffer, iv);
+      decipher.setAuthTag(authTag);
+      
+      let decrypted = decipher.update(encrypted, 'hex', 'utf8');
       decrypted += decipher.final('utf8');
+      
       return JSON.parse(decrypted);
     } catch (error) {
       console.error('Error decrypting backup codes:', error);

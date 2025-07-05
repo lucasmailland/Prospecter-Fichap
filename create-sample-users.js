@@ -18,28 +18,28 @@ async function createSampleUsers() {
         lastName: 'Rodríguez',
         email: 'carlos@prospecter.com',
         role: 'MANAGER',
-        password: 'Manager123!'
+        password: process.env.SAMPLE_MANAGER_PASSWORD || `Manager${Math.random().toString(36).substring(2, 10)}!`
       },
       {
         firstName: 'María',
         lastName: 'González',
         email: 'maria@prospecter.com',
         role: 'MANAGER',
-        password: 'Manager123!'
+        password: process.env.SAMPLE_MANAGER_PASSWORD || `Manager${Math.random().toString(36).substring(2, 10)}!`
       },
       {
         firstName: 'Ana',
         lastName: 'López',
         email: 'ana@prospecter.com',
         role: 'USER',
-        password: 'User123!'
+        password: process.env.SAMPLE_USER_PASSWORD || `User${Math.random().toString(36).substring(2, 10)}!`
       },
       {
         firstName: 'Pedro',
         lastName: 'Martínez',
         email: 'pedro@prospecter.com',
         role: 'USER',
-        password: 'User123!'
+        password: process.env.SAMPLE_USER_PASSWORD || `User${Math.random().toString(36).substring(2, 10)}!`
       }
     ];
 
@@ -106,10 +106,11 @@ async function createSampleUsers() {
     });
 
     console.log('\n🎉 Usuarios de ejemplo creados exitosamente!');
-    console.log('\n🔑 Contraseñas por defecto:');
-    console.log('- Administrador: Admin1234!');
-    console.log('- Managers: Manager123!');
-    console.log('- Usuarios: User123!');
+    console.log('\n🔑 Contraseñas configuradas:');
+    console.log('- Administrador: [Ver variable SAMPLE_ADMIN_PASSWORD]');
+    console.log('- Managers: [Ver variable SAMPLE_MANAGER_PASSWORD]');
+    console.log('- Usuarios: [Ver variable SAMPLE_USER_PASSWORD]');
+    console.log('\n⚠️  IMPORTANTE: Configurar variables de entorno para contraseñas específicas.');
 
   } catch (error) {
     console.error('❌ Error creando usuarios:', error);
