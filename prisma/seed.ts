@@ -23,7 +23,7 @@ const users = [
     twoFactorEnabled: false,
     loginFailures: 0,
     accountLocked: false,
-    password: bcrypt.hashSync('Admin1234!', 10),
+    password: bcrypt.hashSync(process.env.SEED_ADMIN_PASSWORD || `Admin${Math.random().toString(36).substring(2, 10)}!`, 10),
   },
   {
     id: 'user-2',
@@ -36,7 +36,7 @@ const users = [
     twoFactorEnabled: true,
     loginFailures: 0,
     accountLocked: false,
-    password: bcrypt.hashSync('Manager1234!', 10),
+    password: bcrypt.hashSync(process.env.SEED_MANAGER_PASSWORD || `Manager${Math.random().toString(36).substring(2, 10)}!`, 10),
   },
   {
     id: 'user-3',
@@ -49,7 +49,7 @@ const users = [
     twoFactorEnabled: false,
     loginFailures: 0,
     accountLocked: false,
-    password: bcrypt.hashSync('User1234!', 10),
+    password: bcrypt.hashSync(process.env.SEED_USER_PASSWORD || `User${Math.random().toString(36).substring(2, 10)}!`, 10),
   }
 ];
 
@@ -278,7 +278,8 @@ async function main() {
   // Crear usuarios de prueba
   console.log('👥 Creando usuarios de prueba...');
   
-  const hashedPassword = await bcrypt.hash('Admin1234!', 12);
+  const adminPassword = process.env.SEED_ADMIN_PASSWORD || `Admin${Math.random().toString(36).substring(2, 10)}!`;
+  const hashedPassword = await bcrypt.hash(adminPassword, 12);
   
   const adminUser = await prisma.user.create({
     data: {
@@ -297,7 +298,7 @@ async function main() {
     data: {
       name: 'María González',
       email: 'maria@prospecter.com',
-      password: await bcrypt.hash('Manager1234!', 12),
+      password: await bcrypt.hash(process.env.SEED_MANAGER_PASSWORD || `Manager${Math.random().toString(36).substring(2, 10)}!`, 12),
       role: UserRole.MANAGER,
       company: 'Prospecter Inc.',
       position: 'Sales Manager',
@@ -309,7 +310,7 @@ async function main() {
     data: {
       name: 'Carlos Rodríguez',
       email: 'carlos@prospecter.com',
-      password: await bcrypt.hash('User1234!', 12),
+      password: await bcrypt.hash(process.env.SEED_USER_PASSWORD || `User${Math.random().toString(36).substring(2, 10)}!`, 12),
       role: UserRole.USER,
       company: 'Prospecter Inc.',
       position: 'Sales Representative',
@@ -523,10 +524,11 @@ async function main() {
   console.log(`👥 Usuarios creados: ${totalUsers}`);
   console.log(`📋 Leads creados: ${totalLeads}`);
   console.log('\n🔐 Credenciales de acceso:');
-  console.log('Admin: lucas@prospecter.com / Admin1234!');
-  console.log('Manager: maria@prospecter.com / Manager1234!');
-  console.log('User: carlos@prospecter.com / User1234!');
-  console.log('\n✨ Base de datos lista para usar!');
+  console.log('Admin: lucas@prospecter.com / [Ver variable SEED_ADMIN_PASSWORD]');
+  console.log('Manager: maria@prospecter.com / [Ver variable SEED_MANAGER_PASSWORD]');
+  console.log('User: carlos@prospecter.com / [Ver variable SEED_USER_PASSWORD]');
+  console.log('\n⚠️  IMPORTANTE: Configurar variables de entorno para contraseñas específicas.');
+  console.log('✨ Base de datos lista para usar!');
 }
 
 // ========================================================================================

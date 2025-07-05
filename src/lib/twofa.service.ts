@@ -97,7 +97,10 @@ class TwoFAService {
    * Encripta los códigos de respaldo para almacenamiento
    */
   encryptBackupCodes(codes: string[]): string {
-    const key = process.env.NEXTAUTH_SECRET || 'fallback-key';
+    const key = process.env.NEXTAUTH_SECRET;
+    if (!key) {
+      throw new Error('NEXTAUTH_SECRET must be set for backup codes encryption');
+    }
     const cipher = crypto.createCipher('aes-256-cbc', key);
     let encrypted = cipher.update(JSON.stringify(codes), 'utf8', 'hex');
     encrypted += cipher.final('hex');
@@ -109,7 +112,10 @@ class TwoFAService {
    */
   decryptBackupCodes(encryptedCodes: string): string[] {
     try {
-      const key = process.env.NEXTAUTH_SECRET || 'fallback-key';
+      const key = process.env.NEXTAUTH_SECRET;
+      if (!key) {
+        throw new Error('NEXTAUTH_SECRET must be set for backup codes decryption');
+      }
       const decipher = crypto.createDecipher('aes-256-cbc', key);
       let decrypted = decipher.update(encryptedCodes, 'hex', 'utf8');
       decrypted += decipher.final('utf8');

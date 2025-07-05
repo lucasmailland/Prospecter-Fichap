@@ -6,10 +6,10 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('🌱 Creando usuarios de prueba...');
 
-  // Hash de contraseñas
-  const adminPassword = await bcrypt.hash('admin123', 12);
-  const demoPassword = await bcrypt.hash('demo123', 12);
-  const testPassword = await bcrypt.hash('test123', 12);
+  // Hash de contraseñas usando variables de entorno o generando securas
+  const adminPassword = await bcrypt.hash(process.env.SEED_ADMIN_PASSWORD || 'TempAdmin' + Math.random().toString(36).substring(2, 15), 12);
+  const demoPassword = await bcrypt.hash(process.env.SEED_DEMO_PASSWORD || 'TempDemo' + Math.random().toString(36).substring(2, 15), 12);
+  const testPassword = await bcrypt.hash(process.env.SEED_TEST_PASSWORD || 'TempTest' + Math.random().toString(36).substring(2, 15), 12);
 
   // Crear usuarios de prueba
   const users = [
@@ -64,9 +64,10 @@ async function main() {
 
   console.log('🎉 ¡Usuarios de prueba creados!');
   console.log('\n📋 Credenciales para probar:');
-  console.log('Admin: admin@prospecter.com / admin123');
-  console.log('Demo: demo@prospecter.com / demo123');
-  console.log('Test: test@prospecter.com / test123');
+  console.log('Admin: admin@prospecter.com / [Ver variable SEED_ADMIN_PASSWORD]');
+  console.log('Demo: demo@prospecter.com / [Ver variable SEED_DEMO_PASSWORD]');
+  console.log('Test: test@prospecter.com / [Ver variable SEED_TEST_PASSWORD]');
+  console.log('\n⚠️  IMPORTANTE: Configurar variables de entorno para contraseñas específicas.');
 }
 
 main()

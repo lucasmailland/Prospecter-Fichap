@@ -1,6 +1,11 @@
 import crypto from 'crypto';
 
-const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || 'your-32-character-secret-key-here';
+const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || (() => {
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('ENCRYPTION_KEY must be set in production');
+  }
+  return crypto.randomBytes(32).toString('hex');
+})();
 const ALGORITHM = 'aes-256-gcm';
 
 export function encrypt(text: string): string {
