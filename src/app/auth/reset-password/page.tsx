@@ -57,9 +57,9 @@ export default function ResetPasswordPage() {
     setError('');
 
     // Validaciones
-    const passwordError = validatePassword(newPassword);
-    if (passwordError) {
-      setError(passwordError);
+    const passwordValidationMessage = validatePassword(newPassword);
+    if (passwordValidationMessage) {
+      setError(passwordValidationMessage);
       return;
     }
 
