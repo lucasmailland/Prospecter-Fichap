@@ -214,7 +214,7 @@ export class HubSpotService {
       {
         id: 'hs_001',
         properties: {
-          email: 'sarah.johnson@techcorp.com',
+          email: 'demo.user@example.com',
           firstname: 'Sarah',
           lastname: 'Johnson',
           company: 'TechCorp Solutions',

@@ -15,7 +15,7 @@ export const MOCK_LEADS: Lead[] = [
   {
     id: '1',
     name: 'Sarah Johnson',
-    email: 'sarah.johnson@techcorp.com',
+    email: 'demo.user@example.com',
     company: 'TechCorp Inc.',
     jobTitle: 'CTO',
     phone: '+1 555-0123',
