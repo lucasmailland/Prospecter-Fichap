@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { UserRole } from '@prisma/client';
 import bcrypt from 'bcryptjs';
-import { getServerSession } from 'next-auth';
+import { getServerSession } from '@/lib/auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 // GET - Listar todos los usuarios del equipo
@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
       users,
     });
   } catch (error) {
-    console.error('❌ Error obteniendo usuarios:', error);
+// console.error('❌ Error obteniendo usuarios:', error);
     return NextResponse.json(
       { success: false, message: 'Error interno del servidor' },
       { status: 500 }
@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    console.log(`✅ Usuario invitado: ${email} con contraseña temporal: ${tempPassword}`);
+// Debug: console.log(`✅ Usuario invitado: ${email} con contraseña temporal: ${tempPassword}`);
 
     return NextResponse.json({
       success: true,
@@ -133,7 +133,7 @@ export async function POST(request: NextRequest) {
       tempPassword, // En producción, esto se enviaría por email
     });
   } catch (error) {
-    console.error('❌ Error creando usuario:', error);
+// console.error('❌ Error creando usuario:', error);
     return NextResponse.json(
       { success: false, message: 'Error interno del servidor' },
       { status: 500 }

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { UserRole } from '@prisma/client';
-import { getServerSession } from 'next-auth';
+import { getServerSession } from '@/lib/auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import bcrypt from 'bcryptjs';
 
@@ -50,7 +50,7 @@ export async function GET(
       user,
     });
   } catch (error) {
-    console.error('❌ Error obteniendo usuario:', error);
+// console.error('❌ Error obteniendo usuario:', error);
     return NextResponse.json(
       { success: false, message: 'Error interno del servidor' },
       { status: 500 }
@@ -264,7 +264,7 @@ export async function PUT(
       user: updatedUser,
     });
   } catch (error) {
-    console.error('❌ Error actualizando usuario:', error);
+// console.error('❌ Error actualizando usuario:', error);
     return NextResponse.json(
       { success: false, message: 'Error interno del servidor' },
       { status: 500 }
@@ -328,14 +328,14 @@ export async function DELETE(
       where: { id },
     });
 
-    console.log(`✅ Usuario eliminado: ${userToDelete.email}`);
+// Debug: console.log(`✅ Usuario eliminado: ${userToDelete.email}`);
 
     return NextResponse.json({
       success: true,
       message: 'Usuario eliminado exitosamente',
     });
   } catch (error) {
-    console.error('❌ Error eliminando usuario:', error);
+// console.error('❌ Error eliminando usuario:', error);
     return NextResponse.json(
       { success: false, message: 'Error interno del servidor' },
       { status: 500 }

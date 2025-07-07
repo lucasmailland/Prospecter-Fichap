@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
 
     // Por seguridad, siempre devolvemos éxito aunque el email no exista
     if (!user) {
-      console.log(`Reset password solicitado para email no existente: ${email}`);
+// Debug: console.log(`Reset password solicitado para email no existente: ${email}`);
       return NextResponse.json(
         { message: 'Si el email existe, recibirás instrucciones de recuperación' },
         { status: 200 }
@@ -60,9 +60,9 @@ export async function POST(request: NextRequest) {
     });
 
     if (emailSent) {
-      console.log(`✅ Email de reset password enviado a: ${email}`);
+// Debug: console.log(`✅ Email de reset password enviado a: ${email}`);
     } else {
-      console.log(`⚠️ No se pudo enviar email a: ${email} (simulación activa)`);
+// Debug: console.log(`⚠️ No se pudo enviar email a: ${email} (simulación activa)`);
     }
 
     return NextResponse.json(
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
     );
 
   } catch (error) {
-    console.error('Error en reset password:', error);
+// console.error('Error en reset password:', error);
     return NextResponse.json(
       { message: 'Error interno del servidor' },
       { status: 500 }
@@ -137,7 +137,7 @@ export async function PUT(request: NextRequest) {
     );
 
   } catch (error) {
-    console.error('Error actualizando contraseña:', error);
+// console.error('Error actualizando contraseña:', error);
     return NextResponse.json(
       { message: 'Error interno del servidor' },
       { status: 500 }

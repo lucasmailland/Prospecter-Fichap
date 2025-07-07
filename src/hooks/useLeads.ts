@@ -109,7 +109,7 @@ export function useLeads(options: UseLeadsOptions = {}): UseLeadsReturn {
         setPagination(null);
       }
     } catch (err) {
-      console.error('Error fetching leads:', err);
+// console.error('Error fetching leads:', err);
       setError('Error interno del servidor');
       setLeads([]);
       setPagination(null);
@@ -137,7 +137,7 @@ export function useLeads(options: UseLeadsOptions = {}): UseLeadsReturn {
       
       return result;
     } catch (err) {
-      console.error('Error creating lead:', err);
+// console.error('Error creating lead:', err);
       return { success: false, error: 'Error interno del servidor' };
     }
   }, [session?.user?.id, fetchLeads]);
@@ -157,7 +157,7 @@ export function useLeads(options: UseLeadsOptions = {}): UseLeadsReturn {
       
       return result;
     } catch (err) {
-      console.error('Error updating lead:', err);
+// console.error('Error updating lead:', err);
       return { success: false, error: 'Error interno del servidor' };
     }
   }, []);
@@ -182,7 +182,7 @@ export function useLeads(options: UseLeadsOptions = {}): UseLeadsReturn {
       
       return result;
     } catch (err) {
-      console.error('Error deleting lead:', err);
+// console.error('Error deleting lead:', err);
       return { success: false, error: 'Error interno del servidor' };
     }
   }, [pagination]);
@@ -191,7 +191,7 @@ export function useLeads(options: UseLeadsOptions = {}): UseLeadsReturn {
     try {
       return await LeadsService.getLeadById(id, { includeUser, includeEnrichments });
     } catch (err) {
-      console.error('Error getting lead by id:', err);
+// console.error('Error getting lead by id:', err);
       return { success: false, error: 'Error interno del servidor' };
     }
   }, [includeUser, includeEnrichments]);
@@ -215,7 +215,7 @@ export function useLeads(options: UseLeadsOptions = {}): UseLeadsReturn {
       
       return result;
     } catch (err) {
-      console.error('Error creating bulk leads:', err);
+// console.error('Error creating bulk leads:', err);
       return { success: false, error: 'Error interno del servidor' };
     }
   }, [session?.user?.id, fetchLeads]);
@@ -231,7 +231,7 @@ export function useLeads(options: UseLeadsOptions = {}): UseLeadsReturn {
       
       return result;
     } catch (err) {
-      console.error('Error updating bulk leads:', err);
+// console.error('Error updating bulk leads:', err);
       return { success: false, error: 'Error interno del servidor' };
     }
   }, [fetchLeads]);
@@ -244,7 +244,7 @@ export function useLeads(options: UseLeadsOptions = {}): UseLeadsReturn {
     try {
       return await LeadsService.isEmailExists(email);
     } catch (err) {
-      console.error('Error checking email existence:', err);
+// console.error('Error checking email existence:', err);
       return false;
     }
   }, []);
@@ -257,7 +257,7 @@ export function useLeads(options: UseLeadsOptions = {}): UseLeadsReturn {
     try {
       return await LeadsService.getLeadStats(session.user.id);
     } catch (err) {
-      console.error('Error getting lead stats:', err);
+// console.error('Error getting lead stats:', err);
       return { success: false, error: 'Error interno del servidor' };
     }
   }, [session?.user?.id]);

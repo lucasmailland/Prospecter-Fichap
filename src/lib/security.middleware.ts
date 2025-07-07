@@ -141,7 +141,7 @@ export async function validateJWT(token: string): Promise<boolean> {
   try {
     // Implementar validación JWT aquí
     // Por ahora, verificación básica
-    return token && token.split('.').length === 3;
+    return typeof token === 'string' && token.split('.').length === 3;
   } catch {
     return false;
   }

@@ -160,7 +160,7 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error al obtener leads:', error);
+    // console.error('Error al obtener leads:', error);
     return NextResponse.json(
       { success: false, error: 'Error interno del servidor' },
       { status: 500 }
@@ -325,7 +325,7 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error al crear lead:', error);
+// console.error('Error al crear lead:', error);
     return NextResponse.json(
       { success: false, error: 'Error interno del servidor' },
       { status: 500 }
@@ -384,7 +384,7 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json(result);
     
   } catch (error) {
-    console.error('Error in PUT /api/prospects:', error);
+// console.error('Error in PUT /api/prospects:', error);
     return NextResponse.json(
       { error: 'Error interno del servidor' },
       { status: 500 }

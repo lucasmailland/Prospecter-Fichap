@@ -24,7 +24,7 @@ export default function AIPage() {
       const data = await response.json();
       setIsConfigured(data.configured);
     } catch (error) {
-      console.error('Error checking OpenAI config:', error);
+      // console.error('Error checking OpenAI config:', error);
       setIsConfigured(false);
     } finally {
       setIsLoading(false);

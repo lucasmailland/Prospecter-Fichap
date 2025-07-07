@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error en setup 2FA:', error);
+// console.error('Error en setup 2FA:', error);
     return NextResponse.json(
       { message: 'Error interno del servidor' },
       { status: 500 }
@@ -111,7 +111,7 @@ export async function POST(_request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error activando 2FA:', error);
+// console.error('Error activando 2FA:', error);
     return NextResponse.json(
       { message: 'Error interno del servidor' },
       { status: 500 }

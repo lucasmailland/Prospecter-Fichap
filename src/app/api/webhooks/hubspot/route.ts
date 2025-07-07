@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
   try {
     const events = await request.json();
     
-    console.log('🔔 Evento de HubSpot recibido:', events);
+// Debug: console.log('🔔 Evento de HubSpot recibido:', events);
 
     for (const event of events) {
       await processHubSpotEvent(event);
@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true });
 
   } catch (error) {
-    console.error('❌ Error procesando webhook de HubSpot:', error);
+// console.error('❌ Error procesando webhook de HubSpot:', error);
     return NextResponse.json(
       { error: 'Error procesando webhook' },
       { status: 500 }
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
 async function processHubSpotEvent(event: any) {
   const { eventType, objectId, propertyName, propertyValue } = event;
 
-  console.log(`📊 Procesando evento: ${eventType} para objeto ${objectId}`);
+// Debug: console.log(`📊 Procesando evento: ${eventType} para objeto ${objectId}`);
 
   switch (eventType) {
     case 'contact.propertyChange':
@@ -72,12 +72,12 @@ async function handleContactPropertyChange(objectId: string, propertyName: strin
     }
 
   } catch (error) {
-    console.error('❌ Error manejando cambio de propiedad:', error);
+// console.error('❌ Error manejando cambio de propiedad:', error);
   }
 }
 
 async function handleContactCreation(objectId: string) {
-  console.log(`👤 Nuevo contacto creado en HubSpot: ${objectId}`);
+// Debug: console.log(`👤 Nuevo contacto creado en HubSpot: ${objectId}`);
 }
 
 async function handleEngagementCreation(event: any) {
@@ -105,7 +105,7 @@ async function handleEngagementCreation(event: any) {
     await recalculateLeadScore(hubspotContact.lead.id);
 
   } catch (error) {
-    console.error('❌ Error manejando engagement:', error);
+// console.error('❌ Error manejando engagement:', error);
   }
 }
 
@@ -138,9 +138,9 @@ async function recalculateLeadScore(leadId: string) {
       }
     });
 
-    console.log(`✅ Score recalculado automáticamente: ${newScore}/100`);
+// Debug: console.log(`✅ Score recalculado automáticamente: ${newScore}/100`);
 
   } catch (error) {
-    console.error('❌ Error recalculando score:', error);
+// console.error('❌ Error recalculando score:', error);
   }
 }

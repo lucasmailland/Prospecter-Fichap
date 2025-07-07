@@ -97,7 +97,7 @@ export default function SignUpPage() {
     validateOnBlur: true,
     onSubmit: async (formData) => {
       setSubmitError('');
-      console.log('Datos enviados:', formData);
+      // Debug: console.log('Datos enviados:', formData);
       const result = await registerUser(formData.name, formData.email, formData.password);
       
       if (result.success) {

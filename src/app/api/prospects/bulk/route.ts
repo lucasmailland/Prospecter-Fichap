@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
+import { getServerSession } from '@/lib/auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { prisma } from '@/lib/prisma';
 
@@ -137,7 +137,7 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error en operación masiva:', error);
+    // console.error('Error en operación masiva:', error);
     return NextResponse.json(
       { success: false, error: 'Error interno del servidor' },
       { status: 500 }
@@ -195,7 +195,7 @@ export async function DELETE(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error al eliminar leads:', error);
+    // console.error('Error al eliminar leads:', error);
     return NextResponse.json(
       { success: false, error: 'Error interno del servidor' },
       { status: 500 }
@@ -261,7 +261,7 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error al obtener estadísticas:', error);
+    // console.error('Error al obtener estadísticas:', error);
     return NextResponse.json(
       { success: false, error: 'Error interno del servidor' },
       { status: 500 }

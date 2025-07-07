@@ -84,7 +84,7 @@ export default function ApiSettingsTabs({ isAdmin }: { isAdmin: boolean }) {
         setError(data.error || 'Error al cargar configuración');
       }
     } catch (e) {
-      console.error('Error fetching configs:', e);
+// console.error('Error fetching configs:', e);
       setError('Error de conexión. Verifica que el servidor esté funcionando.');
     } finally {
       setLoading(false);
@@ -136,7 +136,7 @@ export default function ApiSettingsTabs({ isAdmin }: { isAdmin: boolean }) {
 
   return (
     <div>
-      <Tabs selectedKey={activeTab} onSelectionChange={setActiveTab} className="mb-6">
+      <Tabs selectedKey={activeTab} onSelectionChange={(key) => setActiveTab(key as string)} className="mb-6">
         {API_TABS.map(tab => (
           <Tab key={tab.id} title={<span className="flex items-center"><tab.icon className="w-5 h-5 mr-2" />{tab.name}</span>} />
         ))}

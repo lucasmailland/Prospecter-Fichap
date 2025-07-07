@@ -13,7 +13,7 @@ const OPENAI_KEYS = [
   'OPENAI_IS_ACTIVE',
 ];
 
-export default function OpenAIConfig({ onConfigComplete }) {
+export default function OpenAIConfig({ onConfigComplete }: { onConfigComplete?: () => void }) {
   const [config, setConfig] = useState({
     OPENAI_API_KEY: '',
     OPENAI_MODEL: 'gpt-4o',
@@ -47,7 +47,7 @@ export default function OpenAIConfig({ onConfigComplete }) {
         setIsConfigured(true);
       }
     } catch (error) {
-      console.error('Error fetching config:', error);
+// console.error('Error fetching config:', error);
     } finally {
       setIsLoading(false);
     }
@@ -82,7 +82,7 @@ export default function OpenAIConfig({ onConfigComplete }) {
         toast.error('Error al guardar la configuración');
       }
     } catch (error) {
-      console.error('Error saving config:', error);
+// console.error('Error saving config:', error);
       toast.error('Error de conexión');
     } finally {
       setIsSaving(false);

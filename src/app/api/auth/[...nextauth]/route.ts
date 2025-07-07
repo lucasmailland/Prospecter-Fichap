@@ -63,7 +63,7 @@ export const authOptions: AuthOptions = {
         password: { label: 'Password', type: process.env.NEXT_PUBLIC_DEMO_DEMO_PASSWORD || 'SECURE_DEMO' },
       },
       async authorize(credentials) {
-        console.log('Credenciales recibidas:', credentials);
+// Debug: console.log('Credenciales recibidas:', credentials);
         if (!credentials?.email || !credentials?.password) {
           throw new Error('Credenciales inválidas');
         }
@@ -73,7 +73,7 @@ export const authOptions: AuthOptions = {
           const user = await prisma.user.findUnique({
             where: { email: credentials.email },
           });
-          console.log('Usuario encontrado:', user);
+// Debug: console.log('Usuario encontrado:', user);
 
           if (!user || !user.password) {
             throw new Error('Usuario no encontrado');
@@ -84,7 +84,7 @@ export const authOptions: AuthOptions = {
             credentials.password,
             user.password
           );
-          console.log('¿Password válido?', isPasswordValid);
+// Debug: console.log('¿Password válido?', isPasswordValid);
 
           if (!isPasswordValid) {
             throw new Error('Contraseña incorrecta');
@@ -98,7 +98,7 @@ export const authOptions: AuthOptions = {
             role: user.role,
           };
         } catch (error) {
-          console.error('Error en autorización:', error);
+// console.error('Error en autorización:', error);
           return null;
         }
       },
@@ -165,8 +165,8 @@ export const authOptions: AuthOptions = {
   },
 
   events: {
-    async signIn({ user, account, profile, isNewUser }) {
-      console.log(`✅ Usuario autenticado: ${user.email} via ${account?.provider}`);
+    async signIn({ user, account, profile, isNewUser }: { user: any; account: any; profile?: any; isNewUser?: boolean }) {
+// Debug: console.log(`✅ Usuario autenticado: ${user.email} via ${account?.provider}`);
       
       // Actualizar información del usuario en SSO
       if (account?.provider !== 'credentials' && user.email) {
@@ -180,20 +180,21 @@ export const authOptions: AuthOptions = {
             email: user.email,
             name: user.name,
             image: user.image,
-            role: 'user',
+            role: 'USER',
           },
         });
       }
     },
 
-    async signOut({ token }) {
-      console.log(`👋 Usuario desconectado: ${token?.email}`);
+    async signOut({ token }: { token?: any }) {
+// Debug: console.log(`👋 Usuario desconectado: ${token?.email}`);
     },
   },
 
   debug: process.env.NODE_ENV === 'development',
 };
 
-const handler = NextAuth(authOptions);
+const { handlers } = NextAuth(authOptions);
+const { GET, POST } = handlers;
 
-export { handler as GET, handler as POST }; 
+export { GET, POST }; 

@@ -359,7 +359,7 @@ export type LoadingState = 'idle' | 'loading' | 'success' | 'error';
 
 export type ThemeMode = 'light' | 'dark';
 
-export type StatusType = 'qualified' | 'potential' | 'cold' | 'hot' | 'warm';
+export type StatusType = 'QUALIFIED' | 'POTENTIAL' | 'cold' | 'hot' | 'warm';
 
 export type ChangeType = 'positive' | 'negative' | 'neutral';
 

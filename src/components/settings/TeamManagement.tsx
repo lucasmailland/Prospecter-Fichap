@@ -754,7 +754,7 @@ export default function TeamManagement() {
         setError(data.message || 'Error cargando usuarios');
       }
     } catch (error) {
-      console.error('Error loading users:', error);
+// console.error('Error loading users:', error);
       setError('Error de conexión');
     } finally {
       setLoading(false);
@@ -766,7 +766,7 @@ export default function TeamManagement() {
     setError('');
     
     // Debug: verificar los datos que se envían
-    console.log('📤 Datos enviados al backend:', userData);
+// Debug: console.log('📤 Datos enviados al backend:', userData);
     
     try {
       const response = await fetch('/api/users', {
@@ -776,7 +776,7 @@ export default function TeamManagement() {
       });
       
       const data = await response.json();
-      console.log('📥 Respuesta del backend:', data);
+// Debug: console.log('📥 Respuesta del backend:', data);
       
       if (data.success) {
         toast.success(`Usuario invitado exitosamente. Contraseña temporal: ${data.tempPassword}`);
@@ -787,7 +787,7 @@ export default function TeamManagement() {
         toast.error(data.message || 'Error invitando usuario');
       }
     } catch (error) {
-      console.error('Error inviting user:', error);
+// console.error('Error inviting user:', error);
       setError('Error de conexión');
       toast.error('Error de conexión');
     } finally {
@@ -811,7 +811,7 @@ export default function TeamManagement() {
         setError(data.message || 'Error eliminando usuario');
       }
     } catch (error) {
-      console.error('Error deleting user:', error);
+// console.error('Error deleting user:', error);
       setError('Error de conexión');
     }
   };
@@ -838,7 +838,7 @@ export default function TeamManagement() {
         toast.error(data.message || 'Error actualizando usuario');
       }
     } catch (error) {
-      console.error('Error updating user:', error);
+// console.error('Error updating user:', error);
       setError('Error de conexión');
       toast.error('Error de conexión');
     } finally {
@@ -869,7 +869,7 @@ export default function TeamManagement() {
         setError(data.message || 'Error en acción masiva');
       }
     } catch (error) {
-      console.error('Error in bulk action:', error);
+// console.error('Error in bulk action:', error);
       setError('Error de conexión');
     }
   };

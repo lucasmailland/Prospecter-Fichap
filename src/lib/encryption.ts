@@ -20,7 +20,7 @@ export function encrypt(text: string): string {
     
     return iv.toString('hex') + ':' + authTag.toString('hex') + ':' + encrypted;
   } catch (error) {
-    console.error('Encryption error:', error);
+// console.error('Encryption error:', error);
     throw new Error('Failed to encrypt data');
   }
 }
@@ -44,7 +44,7 @@ export function decrypt(encryptedData: string): string {
     
     return decrypted;
   } catch (error) {
-    console.error('Decryption error:', error);
+// console.error('Decryption error:', error);
     throw new Error('Failed to decrypt data');
   }
 }

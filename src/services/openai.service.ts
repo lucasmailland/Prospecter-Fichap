@@ -59,7 +59,7 @@ export class OpenAIService {
 
       return { success: true, config: openaiConfig };
     } catch (error) {
-      console.error('Error setting up OpenAI config:', error);
+// console.error('Error setting up OpenAI config:', error);
       return { success: false, error: 'Invalid API key or configuration' };
     }
   }
@@ -103,7 +103,7 @@ export class OpenAIService {
       
       return client;
     } catch (error) {
-      console.error('Error creating OpenAI client:', error);
+// console.error('Error creating OpenAI client:', error);
       return null;
     }
   }
@@ -277,7 +277,7 @@ export class OpenAIService {
       };
 
     } catch (error) {
-      console.error('Error generating content:', error);
+// console.error('Error generating content:', error);
       throw error;
     }
   }

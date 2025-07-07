@@ -27,7 +27,10 @@ interface TwoFASetup {
 
 export default function SecuritySettingsPage() {
   const { user } = useAuth();
-  const { showToast } = useToast();
+  const showToast = (message: string, type: string) => {
+    // Implementar toast o usar otra librería
+    console.log(`${type}: ${message}`);
+  };
   const [is2FAEnabled, setIs2FAEnabled] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showSetupModal, setShowSetupModal] = useState(false);
@@ -47,7 +50,7 @@ export default function SecuritySettingsPage() {
       // Por ahora, asumimos que no está activado
       setIs2FAEnabled(false);
     } catch (error) {
-      console.error('Error checking 2FA status:', error);
+      // console.error('Error checking 2FA status:', error);
     }
   };
 
@@ -63,7 +66,7 @@ export default function SecuritySettingsPage() {
       setSetupData(data);
       setShowSetupModal(true);
     } catch (error) {
-      console.error('Error:', error);
+      // console.error('Error:', error);
       showToast('Error iniciando configuración 2FA', 'error');
     } finally {
       setLoading(false);
@@ -103,7 +106,7 @@ export default function SecuritySettingsPage() {
         showBackupCodes(result.backupCodes);
       }
     } catch (error) {
-      console.error('Error:', error);
+      // console.error('Error:', error);
       showToast('Error activando 2FA', 'error');
     } finally {
       setLoading(false);
@@ -137,7 +140,7 @@ export default function SecuritySettingsPage() {
       setDisableCode('');
       showToast('2FA desactivado exitosamente', 'info');
     } catch (error) {
-      console.error('Error:', error);
+      // console.error('Error:', error);
       showToast('Error desactivando 2FA', 'error');
     } finally {
       setLoading(false);

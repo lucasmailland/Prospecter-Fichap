@@ -185,10 +185,10 @@ export default function LeadForm({ isOpen, onClose, onSubmit, initialData, mode 
         nextFollowUpDate: formData.nextFollowUpDate,
       };
       
-      console.log('📤 Enviando datos del formulario:', submitData);
+// Debug: console.log('📤 Enviando datos del formulario:', submitData);
       await onSubmit(submitData);
     } catch (error) {
-      console.error('Error submitting form:', error);
+// console.error('Error submitting form:', error);
     } finally {
       setIsSubmitting(false);
     }

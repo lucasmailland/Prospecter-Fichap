@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
     }
 
   } catch (error) {
-    console.error('Error analyzing lead:', error);
+// console.error('Error analyzing lead:', error);
     
     if (error instanceof Error) {
       return NextResponse.json({ 

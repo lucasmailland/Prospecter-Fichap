@@ -89,7 +89,7 @@ export class LeadsService {
       return await response.json();
       
     } catch (error) {
-      console.error('Error fetching leads:', error);
+// console.error('Error fetching leads:', error);
       return {
         success: false,
         error: 'Error al obtener leads'
@@ -113,7 +113,7 @@ export class LeadsService {
       return await response.json();
       
     } catch (error) {
-      console.error('Error creating lead:', error);
+// console.error('Error creating lead:', error);
       return {
         success: false,
         error: 'Error al crear lead'
@@ -137,7 +137,7 @@ export class LeadsService {
       return await response.json();
       
     } catch (error) {
-      console.error('Error updating lead:', error);
+// console.error('Error updating lead:', error);
       return {
         success: false,
         error: 'Error al actualizar lead'
@@ -157,7 +157,7 @@ export class LeadsService {
       return await response.json();
       
     } catch (error) {
-      console.error('Error deleting lead:', error);
+// console.error('Error deleting lead:', error);
       return {
         success: false,
         error: 'Error al eliminar lead'
@@ -174,7 +174,7 @@ export class LeadsService {
       return await response.json();
       
     } catch (error) {
-      console.error('Error getting lead:', error);
+// console.error('Error getting lead:', error);
       return {
         success: false,
         error: 'Error al obtener lead'
@@ -192,7 +192,7 @@ export class LeadsService {
       return result.exists || false;
       
     } catch (error) {
-      console.error('Error checking email:', error);
+// console.error('Error checking email:', error);
       return false;
     }
   }
@@ -213,7 +213,7 @@ export class LeadsService {
       return await response.json();
       
     } catch (error) {
-      console.error('Error creating bulk leads:', error);
+// console.error('Error creating bulk leads:', error);
       return {
         success: false,
         error: 'Error al crear leads en lote'
@@ -237,7 +237,7 @@ export class LeadsService {
       return await response.json();
       
     } catch (error) {
-      console.error('Error updating bulk leads:', error);
+// console.error('Error updating bulk leads:', error);
       return {
         success: false,
         error: 'Error al actualizar leads en lote'
@@ -254,7 +254,7 @@ export class LeadsService {
       return await response.json();
       
     } catch (error) {
-      console.error('Error getting lead stats:', error);
+// console.error('Error getting lead stats:', error);
       return {
         success: false,
         error: 'Error al obtener estadísticas'

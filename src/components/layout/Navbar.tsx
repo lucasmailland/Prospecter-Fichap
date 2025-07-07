@@ -36,7 +36,7 @@ export default function Navbar({ user, logout }: NavbarProps) {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      console.log('Buscar:', searchQuery);
+// Debug: console.log('Buscar:', searchQuery);
       // Aquí implementarías la lógica de búsqueda
     }
   };
@@ -99,7 +99,7 @@ export default function Navbar({ user, logout }: NavbarProps) {
                 className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
                 <img 
-                  src={user.avatar} 
+                  src={user.image} 
                   alt={user.name}
                   className="w-8 h-8 rounded-full border-2 border-gray-200 dark:border-gray-600"
                 />

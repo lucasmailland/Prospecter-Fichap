@@ -2,7 +2,7 @@
 // DATOS MOCK CENTRALIZADOS - Evita hardcodeo en componentes
 // ========================================================================================
 
-import { Lead, User } from '@/types/common.types';
+import { Lead, User, LeadStatus, UserRole } from '@/types/common.types';
 
 // ========================================================================================
 // MOCK DATA - Para desarrollo y testing
@@ -21,13 +21,13 @@ export const MOCK_LEADS: Lead[] = [
     phone: '+1 555-0123',
     score: 92,
     priority: 5,
-    status: 'qualified',
+    status: 'QUALIFIED' as LeadStatus,
     isEmailValid: true,
     isHighPriority: true,
     isReadyForContact: true,
     notes: 'Lead altamente calificado con presupuesto confirmado',
-    createdAt: '2024-01-15T10:30:00Z',
-    updatedAt: '2024-01-15T14:20:00Z',
+    createdAt: new Date('2024-01-15T10:30:00Z'),
+    updatedAt: new Date('2024-01-15T14:20:00Z'),
   },
   {
     id: '2',
@@ -38,13 +38,13 @@ export const MOCK_LEADS: Lead[] = [
     phone: '+1 555-0456',
     score: 87,
     priority: 4,
-    status: 'qualified',
+    status: 'QUALIFIED' as LeadStatus,
     isEmailValid: true,
     isHighPriority: true,
     isReadyForContact: true,
     notes: 'Startup en crecimiento, necesita solución escalable',
-    createdAt: '2024-01-14T15:45:00Z',
-    updatedAt: '2024-01-15T09:10:00Z',
+    createdAt: new Date('2024-01-14T15:45:00Z'),
+    updatedAt: new Date('2024-01-15T09:10:00Z'),
   },
   {
     id: '3',
@@ -55,13 +55,13 @@ export const MOCK_LEADS: Lead[] = [
     phone: '+1 555-0789',
     score: 94,
     priority: 5,
-    status: 'qualified',
+    status: 'QUALIFIED' as LeadStatus,
     isEmailValid: true,
     isHighPriority: true,
     isReadyForContact: true,
     notes: 'Empresa consolidada, busca modernizar stack',
-    createdAt: '2024-01-13T08:15:00Z',
-    updatedAt: '2024-01-14T16:30:00Z',
+    createdAt: new Date('2024-01-13T08:15:00Z'),
+    updatedAt: new Date('2024-01-14T16:30:00Z'),
   },
   {
     id: '4',
@@ -72,13 +72,13 @@ export const MOCK_LEADS: Lead[] = [
     phone: '+1 555-0321',
     score: 76,
     priority: 3,
-    status: 'potential',
+    status: 'POTENTIAL' as LeadStatus,
     isEmailValid: true,
     isHighPriority: false,
     isReadyForContact: true,
     notes: 'Mostró interés, pendiente de demo',
-    createdAt: '2024-01-12T11:20:00Z',
-    updatedAt: '2024-01-13T13:45:00Z',
+    createdAt: new Date('2024-01-12T11:20:00Z'),
+    updatedAt: new Date('2024-01-13T13:45:00Z'),
   },
   {
     id: '5',
@@ -89,13 +89,13 @@ export const MOCK_LEADS: Lead[] = [
     phone: '+1 555-0654',
     score: 88,
     priority: 4,
-    status: 'qualified',
+    status: 'QUALIFIED' as LeadStatus,
     isEmailValid: true,
     isHighPriority: true,
     isReadyForContact: true,
     notes: 'Referido por cliente actual',
-    createdAt: '2024-01-11T14:10:00Z',
-    updatedAt: '2024-01-12T10:25:00Z',
+    createdAt: new Date('2024-01-11T14:10:00Z'),
+    updatedAt: new Date('2024-01-12T10:25:00Z'),
   },
 ];
 
@@ -104,7 +104,7 @@ export const MOCK_USER: User = {
   name: 'Lucas Mailland',
   email: 'lucas@prospecter.com',
   avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face',
-  role: 'admin',
+  role: 'ADMIN' as UserRole,
   lastLogin: new Date('2024-01-15T14:30:00Z'),
 };
 
@@ -148,7 +148,7 @@ export const MOCK_RECENT_LEADS = [
     name: 'Sarah Johnson',
     company: 'TechCorp Inc.',
     score: 92,
-    status: 'qualified',
+    status: 'QUALIFIED' as LeadStatus,
     email: 'sarah@techcorp.com',
     addedAt: '2 min ago',
   },
@@ -156,7 +156,7 @@ export const MOCK_RECENT_LEADS = [
     name: 'Michael Chen',
     company: 'StartupXYZ',
     score: 87,
-    status: 'qualified',
+    status: 'QUALIFIED' as LeadStatus,
     email: 'michael@startupxyz.com',
     addedAt: '15 min ago',
   },
@@ -164,7 +164,7 @@ export const MOCK_RECENT_LEADS = [
     name: 'Emma Davis',
     company: 'Enterprise Solutions',
     score: 94,
-    status: 'qualified',
+    status: 'QUALIFIED' as LeadStatus,
     email: 'emma@enterprise.com',
     addedAt: '1 hour ago',
   },
@@ -172,7 +172,7 @@ export const MOCK_RECENT_LEADS = [
     name: 'James Wilson',
     company: 'InnovateLab',
     score: 76,
-    status: 'potential',
+    status: 'POTENTIAL' as LeadStatus,
     email: 'james@innovatelab.com',
     addedAt: '2 hours ago',
   },
@@ -275,7 +275,8 @@ export function searchLeads(leads: Lead[], query: string): Lead[] {
   
   const lowerQuery = query.toLowerCase();
   return leads.filter(lead =>
-    lead.name && lead.name.toLowerCase().includes(lowerQuery) ||
+    (lead.firstName && lead.firstName.toLowerCase().includes(lowerQuery)) ||
+    (lead.lastName && lead.lastName.toLowerCase().includes(lowerQuery)) ||
     lead.email.toLowerCase().includes(lowerQuery) ||
     lead.company?.toLowerCase().includes(lowerQuery) ||
     lead.jobTitle?.toLowerCase().includes(lowerQuery)

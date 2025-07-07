@@ -3,7 +3,7 @@
 // ========================================================================================
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
+import { getServerSession } from '@/lib/auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { prisma } from '@/lib/prisma';
 
@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
     }
 
   } catch (error) {
-    console.error('❌ Error en HubSpot API:', error);
+// console.error('❌ Error en HubSpot API:', error);
     return NextResponse.json(
       { error: 'Error interno del servidor' },
       { status: 500 }
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
     }
 
   } catch (error) {
-    console.error('❌ Error en POST HubSpot:', error);
+// console.error('❌ Error en POST HubSpot:', error);
     return NextResponse.json(
       { error: 'Error procesando solicitud' },
       { status: 500 }
@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
 
 async function getEnrichedLeadData(leadId: string) {
   try {
-    console.log(`📊 Obteniendo datos enriquecidos para lead: ${leadId}`);
+// Debug: console.log(`📊 Obteniendo datos enriquecidos para lead: ${leadId}`);
 
     // Obtener lead con todos los datos relacionados
     const lead = await prisma.lead.findUnique({
@@ -223,7 +223,7 @@ async function getEnrichedLeadData(leadId: string) {
     });
 
   } catch (error) {
-    console.error('❌ Error obteniendo datos enriquecidos:', error);
+// console.error('❌ Error obteniendo datos enriquecidos:', error);
     return NextResponse.json(
       { error: 'Error al obtener datos enriquecidos' },
       { status: 500 }
@@ -284,7 +284,7 @@ async function getHubSpotSummary() {
     });
 
   } catch (error) {
-    console.error('❌ Error obteniendo resumen de HubSpot:', error);
+// console.error('❌ Error obteniendo resumen de HubSpot:', error);
     return NextResponse.json(
       { error: 'Error al obtener resumen' },
       { status: 500 }
@@ -398,7 +398,7 @@ async function syncLeadWithHubSpot(leadId: string) {
     }
 
     // Simular sincronización con HubSpot
-    console.log(`🔄 Sincronizando lead ${leadId} con HubSpot...`);
+// Debug: console.log(`🔄 Sincronizando lead ${leadId} con HubSpot...`);
     
     // En un entorno real, aquí se haría la llamada a la API de HubSpot
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -410,7 +410,7 @@ async function syncLeadWithHubSpot(leadId: string) {
     });
 
   } catch (error) {
-    console.error('❌ Error sincronizando con HubSpot:', error);
+// console.error('❌ Error sincronizando con HubSpot:', error);
     return NextResponse.json(
       { error: 'Error en sincronización' },
       { status: 500 }
@@ -430,7 +430,7 @@ async function recalculateLeadScore(leadId: string) {
       }
     });
 
-    console.log(`🧮 Score recalculado para lead ${leadId}: ${newScore}/100`);
+// Debug: console.log(`🧮 Score recalculado para lead ${leadId}: ${newScore}/100`);
 
     return NextResponse.json({
       success: true,
@@ -439,7 +439,7 @@ async function recalculateLeadScore(leadId: string) {
     });
 
   } catch (error) {
-    console.error('❌ Error recalculando score:', error);
+// console.error('❌ Error recalculando score:', error);
     return NextResponse.json(
       { error: 'Error recalculando score' },
       { status: 500 }
@@ -458,7 +458,7 @@ async function analyzeConversations(leadId: string) {
       recommendedAction: ['CALL', 'EMAIL', 'MEETING', 'PROPOSAL'][Math.floor(Math.random() * 4)]
     };
 
-    console.log(`🧠 Conversaciones analizadas para lead ${leadId}`);
+// Debug: console.log(`🧠 Conversaciones analizadas para lead ${leadId}`);
 
     return NextResponse.json({
       success: true,
@@ -467,7 +467,7 @@ async function analyzeConversations(leadId: string) {
     });
 
   } catch (error) {
-    console.error('❌ Error analizando conversaciones:', error);
+// console.error('❌ Error analizando conversaciones:', error);
     return NextResponse.json(
       { error: 'Error en análisis de IA' },
       { status: 500 }

@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error in AI chat:', error);
+// console.error('Error in AI chat:', error);
     
     if (error instanceof Error) {
       return NextResponse.json({ 

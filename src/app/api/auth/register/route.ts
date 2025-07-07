@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
   try {
     const { name, email, password } = await request.json();
 
-    console.log('🔗 API Registro - Creando usuario:', { name, email });
+// Debug: console.log('🔗 API Registro - Creando usuario:', { name, email });
 
     // Validaciones básicas
     if (!name || !email || !password) {
@@ -47,13 +47,13 @@ export async function POST(request: NextRequest) {
         );
       }
     } catch (prismaError) {
-      console.log('⚠️ Error de Prisma (usando fallback):', prismaError);
+// Debug: console.log('⚠️ Error de Prisma (usando fallback):', prismaError);
       // Fallback: permitir registro sin verificación duplicada
     }
 
     // Hash de la contraseña
     const hashedPassword = await bcrypt.hash(password, 12);
-    console.log('Hash generado para password:', hashedPassword);
+// Debug: console.log('Hash generado para password:', hashedPassword);
 
     // Crear usuario en la base de datos
     const user = await prisma.user.create({
@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
         password: true,
       },
     });
-    console.log('✅ Usuario creado en BD:', user);
+// Debug: console.log('✅ Usuario creado en BD:', user);
 
     // Enviar email de bienvenida (opcional)
     try {
@@ -84,9 +84,9 @@ export async function POST(request: NextRequest) {
         html: welcomeTemplate.html,
         text: welcomeTemplate.text,
       });
-      console.log(`✅ Email de bienvenida enviado a: ${email}`);
+// Debug: console.log(`✅ Email de bienvenida enviado a: ${email}`);
     } catch (emailError) {
-      console.log(`⚠️ No se pudo enviar email de bienvenida: ${emailError}`);
+// Debug: console.log(`⚠️ No se pudo enviar email de bienvenida: ${emailError}`);
     }
 
     return NextResponse.json(
@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
     );
 
   } catch (error) {
-    console.error('❌ Error en registro:', error);
+// console.error('❌ Error en registro:', error);
     return NextResponse.json(
       { 
         success: false,

@@ -229,7 +229,7 @@ export class HubSpotService {
           num_employees: '250',
           annual_revenue: '50000000',
           lifecycle_stage: 'opportunity',
-          lead_status: 'qualified',
+          lead_status: 'QUALIFIED' as LeadStatus,
           hs_lead_status: 'QUALIFIED',
           createdate: '2024-01-15T10:30:00Z',
           lastmodifieddate: '2024-01-20T14:45:00Z',
@@ -376,11 +376,11 @@ class Logger {
   constructor(private context: string) {}
 
   info(message: string, data?: any): void {
-    console.log(`[${this.context}] INFO: ${message}`, data || '');
+// Debug: console.log(`[${this.context}] INFO: ${message}`, data || '');
   }
 
   error(message: string, data?: any): void {
-    console.error(`[${this.context}] ERROR: ${message}`, data || '');
+// console.error(`[${this.context}] ERROR: ${message}`, data || '');
   }
 
   warn(message: string, data?: any): void {

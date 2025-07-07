@@ -91,7 +91,7 @@ export default function ContentGenerator() {
       // Load templates
       await loadTemplates();
     } catch (error) {
-      console.error('Error loading data:', error);
+// console.error('Error loading data:', error);
       setToast({ message: 'Error al cargar datos', type: 'error' });
     } finally {
       setIsLoading(false);
@@ -107,7 +107,7 @@ export default function ContentGenerator() {
         setTemplates(data.data);
       }
     } catch (error) {
-      console.error('Error loading templates:', error);
+// console.error('Error loading templates:', error);
     }
   };
 
@@ -203,7 +203,7 @@ export default function ContentGenerator() {
         setToast({ message: data.error || 'Error al generar contenido', type: 'error' });
       }
     } catch (error) {
-      console.error('Error generating content:', error);
+// console.error('Error generating content:', error);
       setToast({ message: 'Error al generar contenido', type: 'error' });
     } finally {
       setIsGenerating(false);
@@ -373,13 +373,11 @@ export default function ContentGenerator() {
         </CardBody>
       </Card>
 
-      {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast(null)}
-        />
+            {toast && (
+        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+          {toast.message}
+        </div>
       )}
     </div>
   );
-} 
+}  

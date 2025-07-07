@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error generating AI message:', error);
+// console.error('Error generating AI message:', error);
     return NextResponse.json(
       { success: false, error: 'Error al generar mensaje' },
       { status: 500 }

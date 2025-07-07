@@ -77,7 +77,7 @@ export default function Layout({ children }: LayoutProps) {
         <div className="border-t border-gray-200 dark:border-gray-700 p-4">
           <div className="flex items-center mb-3">
             <img 
-              src={user.avatar} 
+              src={user.image} 
               alt={user.name || 'User'}
               className="w-8 h-8 rounded-full mr-3"
             />

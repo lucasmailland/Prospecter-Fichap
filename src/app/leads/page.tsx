@@ -41,7 +41,7 @@ export default function LeadsPage() {
         throw new Error(data.error || 'Error al cargar leads');
       }
     } catch (err) {
-      console.error('Error fetching leads:', err);
+      // console.error('Error fetching leads:', err);
       setError((err as Error).message);
       toast.error('Error al cargar leads');
     } finally {
@@ -74,7 +74,7 @@ export default function LeadsPage() {
         throw new Error(result.error || 'Error al crear lead');
       }
     } catch (err) {
-      console.error('Error creating lead:', err);
+      // console.error('Error creating lead:', err);
       toast.error((err as Error).message);
     }
   };
@@ -84,7 +84,7 @@ export default function LeadsPage() {
     if (!editingLead) return;
 
     try {
-      console.log('📝 Enviando datos de edición:', leadData);
+      // Debug: console.log('📝 Enviando datos de edición:', leadData);
       
       const response = await fetch(`/api/prospects/${editingLead.id}`, {
         method: 'PUT',
@@ -95,7 +95,7 @@ export default function LeadsPage() {
       });
 
       const result = await response.json();
-      console.log('📝 Respuesta de edición:', result);
+      // Debug: console.log('📝 Respuesta de edición:', result);
 
       if (result.success) {
         setShowEditModal(false);
@@ -106,7 +106,7 @@ export default function LeadsPage() {
         throw new Error(result.error || 'Error al actualizar lead');
       }
     } catch (err) {
-      console.error('Error updating lead:', err);
+      // console.error('Error updating lead:', err);
       toast.error((err as Error).message);
     }
   };
@@ -145,7 +145,7 @@ export default function LeadsPage() {
         throw new Error(result.error || 'Error al eliminar lead');
       }
     } catch (err) {
-      console.error('Error deleting lead:', err);
+      // console.error('Error deleting lead:', err);
       toast.error((err as Error).message);
     } finally {
       setShowDeleteConfirm(false);
@@ -213,7 +213,7 @@ export default function LeadsPage() {
         throw new Error(result.error || 'Error en acción masiva');
       }
     } catch (err) {
-      console.error('Error in bulk action:', err);
+      // console.error('Error in bulk action:', err);
       toast.error((err as Error).message);
     }
   };

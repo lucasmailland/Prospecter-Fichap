@@ -115,7 +115,7 @@ export default function LeadDetailsModal({ isOpen, onClose, leadId, onEdit }: Le
         generateRecommendations(data);
       }
     } catch (error) {
-      console.error('Error fetching enriched data:', error);
+// console.error('Error fetching enriched data:', error);
       toast.error('Error al cargar datos del lead');
     } finally {
       setLoading(false);

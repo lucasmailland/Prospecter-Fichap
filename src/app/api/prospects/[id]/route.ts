@@ -3,7 +3,7 @@
 // ========================================================================================
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
+import { getServerSession } from '@/lib/auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { prisma } from '@/lib/prisma';
 
@@ -28,13 +28,13 @@ export async function PUT(
     const { id } = await params;
     const body = await request.json();
 
-    console.log('🔄 Actualizando lead:', id, 'con datos:', body);
+// Debug: console.log('🔄 Actualizando lead:', id, 'con datos:', body);
 
     // Mapear valores de enum correctamente
     const statusMapping: { [key: string]: string } = {
       'new': 'NEW',
       'contacted': 'CONTACTED', 
-      'qualified': 'VALIDATED',
+      'QUALIFIED': 'VALIDATED',
       'proposal': 'PRIORITIZED',
       'negotiation': 'CONTACTED',
       'closed-won': 'CONVERTED',
@@ -112,7 +112,7 @@ export async function PUT(
       }
     });
 
-    console.log('✅ Lead actualizado exitosamente');
+// Debug: console.log('✅ Lead actualizado exitosamente');
 
     // Mapear respuesta
     const mappedLead = {
@@ -153,7 +153,7 @@ export async function PUT(
     });
 
   } catch (error) {
-    console.error('Error al actualizar lead:', error);
+// console.error('Error al actualizar lead:', error);
     return NextResponse.json(
       { success: false, error: 'Error interno del servidor' },
       { status: 500 }
@@ -244,7 +244,7 @@ export async function GET(
     });
 
   } catch (error) {
-    console.error('Error al obtener lead:', error);
+// console.error('Error al obtener lead:', error);
     return NextResponse.json(
       { success: false, error: 'Error interno del servidor' },
       { status: 500 }
@@ -295,7 +295,7 @@ export async function DELETE(
     });
 
   } catch (error) {
-    console.error('Error al eliminar lead:', error);
+// console.error('Error al eliminar lead:', error);
     return NextResponse.json(
       { success: false, error: 'Error interno del servidor' },
       { status: 500 }

@@ -33,7 +33,7 @@ function AuthProviderInner({ children }: { children: ReactNode }) {
     id: session.user.id!,
     name: session.user.name!,
     email: session.user.email!,
-    avatar: session.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(session.user.name || session.user.email || '')}&background=3b82f6&color=ffffff`,
+    image: session.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(session.user.name || session.user.email || '')}&background=3b82f6&color=ffffff`,
     role: (session.user as any).role || 'user',
     lastLogin: (session.user as any).lastLogin ? new Date((session.user as any).lastLogin) : undefined,
   } : null;

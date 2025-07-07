@@ -10,6 +10,7 @@ import {
   ClockIcon,
 } from '@heroicons/react/24/outline';
 import { designSystem } from '@/styles/design-system';
+import { LeadStatus } from '@/types/common.types';
 
 export default function Dashboard() {
   const [selectedPeriod, setSelectedPeriod] = useState('30d');
@@ -52,7 +53,7 @@ export default function Dashboard() {
       name: 'Sarah Johnson',
       company: 'TechCorp Inc.',
       score: 92,
-      status: 'qualified',
+      status: 'QUALIFIED' as LeadStatus,
       email: 'sarah@techcorp.com',
       addedAt: '2 min ago',
     },
@@ -60,7 +61,7 @@ export default function Dashboard() {
       name: 'Michael Chen',
       company: 'StartupXYZ',
       score: 87,
-      status: 'qualified',
+      status: 'QUALIFIED' as LeadStatus,
       email: 'michael@startupxyz.com',
       addedAt: '15 min ago',
     },
@@ -68,7 +69,7 @@ export default function Dashboard() {
       name: 'Emma Davis',
       company: 'Enterprise Solutions',
       score: 94,
-      status: 'qualified',
+      status: 'QUALIFIED' as LeadStatus,
       email: 'emma@enterprise.com',
       addedAt: '1 hour ago',
     },
@@ -76,7 +77,7 @@ export default function Dashboard() {
       name: 'James Wilson',
       company: 'InnovateLab',
       score: 76,
-      status: 'potential',
+      status: 'POTENTIAL' as LeadStatus,
       email: 'james@innovatelab.com',
       addedAt: '2 hours ago',
     },
@@ -106,8 +107,8 @@ export default function Dashboard() {
 
   const getStatusStyles = (status: string) => {
     const statusMap = {
-      'qualified': designSystem.leadStatus.qualified,
-      'potential': designSystem.leadStatus.potential,
+      'QUALIFIED': designSystem.leadStatus.qualified,
+      'POTENTIAL': designSystem.leadStatus.potential,
       'cold': designSystem.leadStatus.cold,
     };
     return statusMap[status as keyof typeof statusMap] || designSystem.leadStatus.cold;

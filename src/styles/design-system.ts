@@ -138,8 +138,8 @@ export const designSystem = {
 // Funciones helper
 export const getStatusStyles = (status: string) => {
   const statusMap: Record<string, keyof typeof designSystem.leadStatus> = {
-    'qualified': 'qualified',
-    'potential': 'potential', 
+    'QUALIFIED': 'qualified',
+    'POTENTIAL': 'potential', 
     'cold': 'cold',
     'hot': 'hot',
     'warm': 'warm',

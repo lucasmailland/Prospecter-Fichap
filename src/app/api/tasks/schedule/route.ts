@@ -130,7 +130,7 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error scheduling task:', error);
+    // console.error('Error scheduling task:', error);
     return NextResponse.json(
       { success: false, error: 'Error al programar tarea' },
       { status: 500 }
@@ -199,7 +199,7 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error fetching tasks:', error);
+    // console.error('Error fetching tasks:', error);
     return NextResponse.json(
       { success: false, error: 'Error al obtener tareas' },
       { status: 500 }

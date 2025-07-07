@@ -84,7 +84,7 @@ export default function PromptManager() {
         setTemplates(data.data);
       }
     } catch (error) {
-      console.error('Error loading templates:', error);
+// console.error('Error loading templates:', error);
       setToast({ message: 'Error al cargar templates', type: 'error' });
     } finally {
       setIsLoading(false);
@@ -263,16 +263,14 @@ export default function PromptManager() {
         onToast={setToast}
       />
 
-      {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast(null)}
-        />
+            {toast && (
+        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+          {toast.message}
+        </div>
       )}
     </div>
   );
-}
+} 
 
 interface PromptModalProps {
   isOpen: boolean;
@@ -344,7 +342,7 @@ function PromptModal({ isOpen, onClose, template, onSave, onToast }: PromptModal
         onToast({ message: data.error || 'Error al guardar prompt', type: 'error' });
       }
     } catch (error) {
-      console.error('Error saving prompt:', error);
+// console.error('Error saving prompt:', error);
       onToast({ message: 'Error al guardar prompt', type: 'error' });
     } finally {
       setIsSaving(false);

@@ -286,7 +286,7 @@ export class PerformanceMonitor {
     this.measurements.delete(name);
 
     if (log) {
-      console.log(`⚡ ${name}: ${duration.toFixed(2)}ms`);
+// Debug: console.log(`⚡ ${name}: ${duration.toFixed(2)}ms`);
     }
 
     return duration;

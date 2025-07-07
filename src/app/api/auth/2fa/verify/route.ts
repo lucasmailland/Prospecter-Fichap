@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error verificando 2FA:', error);
+// console.error('Error verificando 2FA:', error);
     return NextResponse.json(
       { message: 'Error interno del servidor' },
       { status: 500 }

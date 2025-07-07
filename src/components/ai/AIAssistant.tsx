@@ -66,7 +66,7 @@ export default function AIAssistant() {
         }
       }
     } catch (error) {
-      console.error('Error loading conversations:', error);
+// console.error('Error loading conversations:', error);
       setToast({ message: 'Error al cargar conversaciones', type: 'error' });
     } finally {
       setIsLoading(false);
@@ -103,7 +103,7 @@ export default function AIAssistant() {
         setToast({ message: data.error || 'Error al crear conversación', type: 'error' });
       }
     } catch (error) {
-      console.error('Error creating conversation:', error);
+// console.error('Error creating conversation:', error);
       setToast({ message: 'Error al crear conversación', type: 'error' });
     }
   };
@@ -159,7 +159,7 @@ export default function AIAssistant() {
         } : null);
       }
     } catch (error) {
-      console.error('Error sending message:', error);
+// console.error('Error sending message:', error);
       setToast({ message: 'Error al enviar mensaje', type: 'error' });
       // Remove the optimistic message on error
       setCurrentConversation(prev => prev ? {
@@ -180,7 +180,7 @@ export default function AIAssistant() {
         setCurrentConversation(data.data);
       }
     } catch (error) {
-      console.error('Error loading conversation messages:', error);
+// console.error('Error loading conversation messages:', error);
     }
   };
 

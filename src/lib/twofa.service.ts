@@ -106,7 +106,7 @@ class TwoFAService {
     const keyBuffer = crypto.createHash('sha256').update(key).digest();
     const iv = crypto.randomBytes(16);
     
-    const cipher = crypto.createCipherGCM('aes-256-gcm', keyBuffer, iv);
+    const cipher = crypto.createCipher('aes-256-gcm', keyBuffer);
     let encrypted = cipher.update(JSON.stringify(codes), 'utf8', 'hex');
     encrypted += cipher.final('hex');
     
@@ -139,7 +139,7 @@ class TwoFAService {
       // Generar la misma clave de 32 bytes
       const keyBuffer = crypto.createHash('sha256').update(key).digest();
       
-      const decipher = crypto.createDecipherGCM('aes-256-gcm', keyBuffer, iv);
+      const decipher = crypto.createDecipher('aes-256-gcm', keyBuffer);
       decipher.setAuthTag(authTag);
       
       let decrypted = decipher.update(encrypted, 'hex', 'utf8');
@@ -147,7 +147,7 @@ class TwoFAService {
       
       return JSON.parse(decrypted);
     } catch (error) {
-      console.error('Error decrypting backup codes:', error);
+// console.error('Error decrypting backup codes:', error);
       return [];
     }
   }

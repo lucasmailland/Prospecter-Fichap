@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
         html: template.html,
         text: template.text,
       });
-      console.log(`📧 Notificación de 2FA desactivado enviada a: ${user.email}`);
+// Debug: console.log(`📧 Notificación de 2FA desactivado enviada a: ${user.email}`);
     } catch (emailError) {
       console.warn(`⚠️ No se pudo enviar notificación de 2FA desactivado: ${emailError}`);
       // No fallar la operación por problemas de email
@@ -116,7 +116,7 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error desactivando 2FA:', error);
+// console.error('Error desactivando 2FA:', error);
     return NextResponse.json(
       { message: 'Error interno del servidor' },
       { status: 500 }

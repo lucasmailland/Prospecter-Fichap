@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error checking 2FA status:', error);
+// console.error('Error checking 2FA status:', error);
     return NextResponse.json(
       { message: 'Error interno del servidor' },
       { status: 500 }

@@ -19,8 +19,10 @@ RUN npm run build
 # Imagen de producción con nginx
 FROM nginx:alpine AS production
 
-# Instalar dumb-init para manejo correcto de señales
-RUN apk add --no-cache dumb-init
+# Actualizar sistema y OpenSSL para corregir CVE-2025-4575
+RUN apk update && \
+    apk upgrade && \
+    apk add --no-cache dumb-init
 
 # Copiar archivos construidos
 COPY --from=builder /app/out /usr/share/nginx/html
