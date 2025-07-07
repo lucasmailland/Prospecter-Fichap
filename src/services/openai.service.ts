@@ -1,7 +1,7 @@
 import OpenAI from 'openai';
 import { prisma } from '@/lib/prisma';
 import { encrypt, decrypt } from '@/lib/encryption';
-import { GenerationType, PromptCategory, InsightType, MessageRole } from '@prisma/client';
+import { GenerationType, PromptCategory } from '@prisma/client';
 
 export class OpenAIService {
   private static instance: OpenAIService;
@@ -117,7 +117,7 @@ export class OpenAIService {
     description?: string;
     category: PromptCategory;
     prompt: string;
-    variables?: Record<string, any>;
+    variables?: Record<string, unknown>;
     isPublic?: boolean;
   }) {
     return await prisma.promptTemplate.create({
@@ -156,7 +156,7 @@ export class OpenAIService {
     });
   }
 
-  async updatePromptTemplate(userId: string, templateId: string, data: any) {
+  async updatePromptTemplate(userId: string, templateId: string, data: Record<string, unknown>) {
     return await prisma.promptTemplate.update({
       where: { 
         id: templateId,

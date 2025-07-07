@@ -1,59 +1,62 @@
-import { prisma } from '@/lib/prisma';
-import { 
-  Lead, 
-  LeadStatus, 
-  LeadSource, 
-  CreateLeadForm, 
-  UpdateLeadForm,
-  LeadFilters,
-  LeadSortOptions,
-  PaginatedResponse,
-  ApiResponse,
-  LeadWithUser,
-  LeadWithEnrichments,
-  LeadWithFullData
-} from '@/types/common.types';
+// Imports comentados para evitar errores de linting mientras no se usan
+// import { prisma } from '@/lib/prisma';
+// import { 
+//   Lead, 
+//   LeadStatus, 
+//   LeadSource, 
+//   CreateLeadForm, 
+//   UpdateLeadForm,
+//   LeadFilters,
+//   LeadSortOptions,
+//   PaginatedResponse,
+//   ApiResponse,
+//   LeadWithUser,
+//   LeadWithEnrichments,
+//   LeadWithFullData
+// } from '@/types/common.types';
 
 // ========================================================================================
 // TIPOS INTERNOS
 // ========================================================================================
 
-interface LeadQueryOptions {
-  page?: number;
-  limit?: number;
-  filters?: LeadFilters;
-  sort?: LeadSortOptions;
-  includeUser?: boolean;
-  includeEnrichments?: boolean;
-}
+// Interface comentada para evitar errores de linting
+// interface LeadQueryOptions {
+//   page?: number;
+//   limit?: number;
+//   filters?: LeadFilters;
+//   sort?: LeadSortOptions;
+//   includeUser?: boolean;
+//   includeEnrichments?: boolean;
+// }
 
 // ========================================================================================
 // UTILITY FUNCTIONS
 // ========================================================================================
 
-/**
- * Parse JSON string safely
- */
-function parseJsonSafely(jsonString: string | null): Record<string, any> | null {
-  if (!jsonString) return null;
-  try {
-    return JSON.parse(jsonString);
-  } catch {
-    return null;
-  }
-}
+// Funciones comentadas temporalmente para evitar errores de linting
+// /**
+//  * Parse JSON string safely
+//  */
+// function parseJsonSafely(jsonString: string | null): Record<string, unknown> | null {
+//   if (!jsonString) return null;
+//   try {
+//     return JSON.parse(jsonString);
+//   } catch {
+//     return null;
+//   }
+// }
 
-/**
- * Stringify JSON safely
- */
-function stringifyJsonSafely(obj: any): string | null {
-  if (!obj) return null;
-  try {
-    return JSON.stringify(obj);
-  } catch {
-    return null;
-  }
-}
+// /**
+//  * Stringify JSON safely
+//  */
+// function stringifyJsonSafely(obj: unknown): string | null {
+//   if (!obj) return null;
+//   try {
+//     return JSON.stringify(obj);
+//   } catch {
+//     return null;
+//   }
+// }
 
 // ========================================================================================
 // SERVICIO PRINCIPAL
@@ -65,7 +68,7 @@ export class LeadsService {
   /**
    * Obtener leads con paginación y filtros
    */
-  static async getLeads(options: any = {}): Promise<any> {
+  static async getLeads(options: Record<string, unknown> = {}): Promise<unknown> {
     try {
       const { page = 1, limit = 10, filters = {} } = options;
       
@@ -97,7 +100,7 @@ export class LeadsService {
   /**
    * Crear un nuevo lead
    */
-  static async createLead(data: any, userId: string): Promise<any> {
+  static async createLead(data: Record<string, unknown>, _userId: string): Promise<unknown> {
     try {
       const response = await fetch('/api/prospects', {
         method: 'POST',
@@ -121,7 +124,7 @@ export class LeadsService {
   /**
    * Actualizar lead
    */
-  static async updateLead(id: string, data: any): Promise<any> {
+  static async updateLead(id: string, data: Record<string, unknown>): Promise<unknown> {
     try {
       const response = await fetch(`/api/prospects/${id}`, {
         method: 'PUT',
