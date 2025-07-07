@@ -25,7 +25,7 @@ ENV NEXTAUTH_URL=http://localhost:3000
 RUN npm run build || echo "Build completed with warnings"
 
 # Imagen de producción basada en Alpine 3.21 con OpenSSL actualizado
-FROM alpine:3.21 AS production
+FROM alpine:3.22 AS production
 
 # Instalar nginx, OpenSSL actualizado y dumb-init para corregir CVE-2025-4575
 RUN apk update && \
