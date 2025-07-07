@@ -31,7 +31,7 @@ class EmailService {
           pass: process.env.GMAIL_APP_DEMO_PASSWORD,
         },
       });
-      console.log('✅ Gmail SMTP configurado');
+// Debug: console.log('✅ Gmail SMTP configurado');
       
     // SMTP genérico  
     } else if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_DEMO_PASSWORD) {
@@ -44,7 +44,7 @@ class EmailService {
           pass: process.env.SMTP_DEMO_PASSWORD,
         },
       });
-      console.log('📧 Email service initialized with SMTP');
+// Debug: console.log('📧 Email service initialized with SMTP');
       return;
     }
 
@@ -54,11 +54,11 @@ class EmailService {
   async sendEmail(options: EmailOptions): Promise<boolean> {
     try {
       if (!this.transporter) {
-        console.log('📧 [EMAIL SIMULATION]', {
-          to: options.to,
-          subject: options.subject,
-          text: options.text || 'HTML content available',
-        });
+        // Debug: console.log('📧 [EMAIL SIMULATION]', {
+        //   to: options.to,
+        //   subject: options.subject,
+        //   text: options.text || 'HTML content available',
+        // });
         return true;
       }
 
@@ -70,10 +70,10 @@ class EmailService {
         text: options.text,
       });
 
-      console.log('✅ Email sent successfully:', info.messageId);
+// Debug: console.log('✅ Email sent successfully:', info.messageId);
       return true;
     } catch (error) {
-      console.error('❌ Email sending failed:', error);
+// console.error('❌ Email sending failed:', error);
       return false;
     }
   }

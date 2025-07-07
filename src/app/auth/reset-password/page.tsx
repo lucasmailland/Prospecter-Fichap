@@ -42,11 +42,14 @@ export default function ResetPasswordPage() {
     }
   }, [searchParams]);
 
-  const validatePassword = (password: string) => {
-    if (password.length < 8) {
-      return 'La contraseña debe tener al menos 8 caracteres';
+  const validatePassword = (inputPassword: string) => {
+    const MIN_LENGTH = 8;
+    const PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+    
+    if (inputPassword.length < MIN_LENGTH) {
+      return `La contraseña debe tener al menos ${MIN_LENGTH} caracteres`;
     }
-    if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
+    if (!PASSWORD_PATTERN.test(inputPassword)) {
       return 'La contraseña debe contener al menos una mayúscula, una minúscula y un número';
     }
     return null;
@@ -57,9 +60,9 @@ export default function ResetPasswordPage() {
     setError('');
 
     // Validaciones
-    const passwordValidationMessage = validatePassword(newPassword);
-    if (passwordValidationMessage) {
-      setError(passwordValidationMessage);
+    const validationError = validatePassword(newPassword);
+    if (validationError) {
+      setError(validationError);
       return;
     }
 
@@ -94,23 +97,29 @@ export default function ResetPasswordPage() {
       }, 3000);
 
     } catch (error) {
-      console.error('Error:', error);
+      // console.error('Error:', error);
       setError(error instanceof Error ? error.message : 'Error al restablecer contraseña');
     } finally {
       setLoading(false);
     }
   };
 
-  const getPasswordStrength = (password: string) => {
-    let score = 0;
-    if (password.length >= 8) score++;
-    if (/[a-z]/.test(password)) score++;
-    if (/[A-Z]/.test(password)) score++;
-    if (/\d/.test(password)) score++;
-    if (/[^a-zA-Z\d]/.test(password)) score++;
+  const getPasswordStrength = (inputValue: string) => {
+    let strengthScore = 0;
+    const checks = {
+      hasMinLength: inputValue.length >= 8,
+      hasLowercase: /[a-z]/.test(inputValue),
+      hasUppercase: /[A-Z]/.test(inputValue),
+      hasNumbers: /\d/.test(inputValue),
+      hasSpecialChars: /[^a-zA-Z\d]/.test(inputValue)
+    };
 
-    if (score < 2) return { level: 'weak', color: 'red', text: 'Débil' };
-    if (score < 4) return { level: 'medium', color: 'yellow', text: 'Media' };
+    Object.values(checks).forEach(check => {
+      if (check) strengthScore++;
+    });
+
+    if (strengthScore < 2) return { level: 'weak', color: 'red', text: 'Débil' };
+    if (strengthScore < 4) return { level: 'medium', color: 'yellow', text: 'Media' };
     return { level: 'strong', color: 'green', text: 'Fuerte' };
   };
 
@@ -248,7 +257,7 @@ export default function ResetPasswordPage() {
                   onChange={(e) => setNewPassword(e.target.value)}
                   required
                   className={commonClasses.input}
-                  placeholder="Mínimo 8 caracteres"
+                  placeholder="Ingresa tu nueva contraseña"
                 />
                 <button
                   type="button"
@@ -299,7 +308,7 @@ export default function ResetPasswordPage() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 className={commonClasses.input}
-                placeholder="Repite la contraseña"
+                placeholder="Confirma tu nueva contraseña"
               />
             </div>
 
