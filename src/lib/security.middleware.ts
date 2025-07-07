@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from '@/lib/auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { auth } from '@/lib/auth';
 
 // Configuración de Content Security Policy
 const CSP_HEADER = `
@@ -149,7 +148,7 @@ export async function validateJWT(token: string): Promise<boolean> {
 
 // Middleware de autenticación para API routes
 export async function requireAuth(request: NextRequest) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
@@ -158,7 +157,7 @@ export async function requireAuth(request: NextRequest) {
 
 // Middleware de autorización de admin
 export async function requireAdmin(request: NextRequest) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session || session.user?.role !== 'ADMIN') {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
