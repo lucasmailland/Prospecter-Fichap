@@ -7,7 +7,6 @@ export async function middleware(request: NextRequest) {
   // Obtener IP del cliente para rate limiting
   const clientIP = request.headers.get('x-forwarded-for') || 
                    request.headers.get('x-real-ip') || 
-                   request.ip || 
                    'unknown';
 
   // Aplicar rate limiting a API routes

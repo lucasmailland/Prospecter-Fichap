@@ -1,0 +1,1539 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { Loader2, RefreshCw, Database, Users, Building, DollarSign, Globe, TrendingUp, Mail, ClipboardList, AlertCircle, Calendar, Phone, MessageSquare, FileText, Ticket, Eye } from 'lucide-react';
+import ContactDetailModal from '@/components/hubspot/ContactDetailModal';
+
+interface HealthStatus {
+  status: 'healthy' | 'unhealthy';
+  apiKey: 'valid' | 'invalid';
+  rateLimit: { remaining: number };
+  lastSync: string;
+}
+
+interface OverviewData {
+  contacts: number;
+  companies: number;
+  deals: number;
+  total: number;
+  leads: number;
+  syncedContacts: number;
+  activities: number;
+  averageScore: number;
+}
+
+export default function HubSpotAdminPage() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState('overview');
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [data, setData] = useState<any[]>([]);
+  const [overviewData, setOverviewData] = useState<OverviewData | null>(null);
+  const [healthStatus, setHealthStatus] = useState<HealthStatus | null>(null);
+  const [pagination, setPagination] = useState({ offset: 0, limit: 10, total: 0, hasMore: false });
+  const [searchTerm, setSearchTerm] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  
+  // Modal de detalle del contacto
+  const [selectedContactId, setSelectedContactId] = useState<string | null>(null);
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+
+  const openContactDetail = (contactId: string) => {
+    setSelectedContactId(contactId);
+    setIsContactModalOpen(true);
+  };
+
+  const closeContactDetail = () => {
+    setIsContactModalOpen(false);
+    setSelectedContactId(null);
+  };
+
+  // Cargar datos cuando cambia el tab
+  useEffect(() => {
+    loadData(activeTab);
+  }, [activeTab]);
+
+  const loadData = async (tabType: string, offset: number = 0) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const url = tabType === 'overview' 
+        ? '/api/hubspot/sync-full'
+        : `/api/hubspot/sync-full?syncType=${tabType}&limit=10&offset=${offset}`;
+      
+      const response = await fetch(url);
+      const result = await response.json();
+
+      if (result.success) {
+        if (tabType === 'overview') {
+          setOverviewData(result.data);
+          setHealthStatus(result.healthStatus);
+          setData([]);
+        } else {
+          setData(result.data);
+          setPagination(result.pagination);
+        }
+      } else {
+        setError(result.error || 'Error al cargar datos');
+      }
+    } catch (err) {
+      console.error('Error loading data:', err);
+      setError('Error de conexión');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSync = async () => {
+    setIsSyncing(true);
+    try {
+      const response = await fetch('/api/hubspot/sync-full', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          syncTypes: ['contacts', 'companies', 'deals', 'tasks']
+        }),
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        alert(`Sincronización rápida completada: ${result.summary.totalSynced} registros sincronizados`);
+        loadData(activeTab);
+      } else {
+        setError(result.error || 'Error en sincronización');
+      }
+    } catch (err) {
+      console.error('Sync error:', err);
+      setError('Error durante la sincronización');
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  const handleFullSync = async () => {
+    if (!confirm('¿Estás seguro? La sincronización completa puede tomar varios minutos y eliminará los datos de ejemplo.')) {
+      return;
+    }
+
+    setIsSyncing(true);
+    try {
+      const response = await fetch('/api/hubspot/sync-complete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          cleanupSampleData: true
+        }),
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        const { syncResults, cleanupResults, finalStats } = result.data;
+        
+        let message = `🎉 Sincronización completa exitosa!\n\n`;
+        
+        // Mostrar estadísticas de limpieza
+        if (cleanupResults) {
+          message += `📊 Datos de ejemplo eliminados:\n`;
+          Object.entries(cleanupResults).forEach(([key, count]) => {
+            message += `• ${key}: ${count} registros\n`;
+          });
+          message += `\n`;
+        }
+        
+        // Mostrar estadísticas de sincronización
+        message += `🚀 Datos sincronizados desde HubSpot:\n`;
+        Object.entries(syncResults).forEach(([key, stats]: [string, any]) => {
+          if (stats.status === 'completed') {
+            message += `• ${key}: ${stats.processed}/${stats.total} registros\n`;
+          }
+        });
+        
+        message += `\n📈 Total final: ${finalStats.total} registros en la base de datos`;
+        
+        alert(message);
+        loadData(activeTab);
+      } else {
+        setError(result.error || 'Error en sincronización completa');
+      }
+    } catch (err) {
+      console.error('Full sync error:', err);
+      setError('Error durante la sincronización completa');
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  const handlePageChange = (direction: 'next' | 'prev') => {
+    let newOffset = pagination.offset;
+    
+    if (direction === 'next' && pagination.hasMore) {
+      newOffset = pagination.offset + pagination.limit;
+    } else if (direction === 'prev' && pagination.offset > 0) {
+      newOffset = Math.max(0, pagination.offset - pagination.limit);
+    }
+    
+    loadData(activeTab, newOffset);
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleString('es-ES');
+  };
+
+  const formatCurrency = (amount: string | null) => {
+    if (!amount) return 'N/A';
+    const num = parseFloat(amount);
+    return new Intl.NumberFormat('es-ES', {
+      style: 'currency',
+      currency: 'EUR'
+    }).format(num);
+  };
+
+  const handleContactClick = (contact: any) => {
+    setSelectedContactId(contact.id);
+    setIsContactModalOpen(true);
+  };
+
+  const handleCloseContactDetailModal = () => {
+    setIsContactModalOpen(false);
+    setSelectedContactId(null);
+  };
+
+  const tabs = [
+    { id: 'overview', name: 'Overview', icon: TrendingUp, color: 'text-orange-600' },
+    { id: 'contacts', name: 'Contactos', icon: Users, color: 'text-blue-600' },
+    { id: 'companies', name: 'Empresas', icon: Building, color: 'text-green-600' },
+    { id: 'deals', name: 'Deals', icon: DollarSign, color: 'text-yellow-600' },
+    { id: 'tasks', name: 'Tareas', icon: ClipboardList, color: 'text-purple-600' },
+    { id: 'emails', name: 'Emails', icon: Mail, color: 'text-red-600' },
+    { id: 'calls', name: 'Llamadas', icon: Phone, color: 'text-teal-600' },
+    { id: 'meetings', name: 'Reuniones', icon: Calendar, color: 'text-indigo-600' },
+    { id: 'notes', name: 'Notas', icon: FileText, color: 'text-gray-600' },
+    { id: 'tickets', name: 'Tickets', icon: Ticket, color: 'text-pink-600' }
+  ];
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header con logo de HubSpot */}
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="flex justify-between items-center py-6 pt-8">
+            <div className="flex items-center space-x-4">
+              {/* Logo de HubSpot */}
+              <div className="flex items-center space-x-3">
+                <div className="relative">
+                  <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center shadow-lg">
+                    <Globe className="w-7 h-7 text-white" />
+                  </div>
+                  {/* Badge de HubSpot */}
+                  <div className="absolute -top-1 -right-1 w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center">
+                    <span className="text-white text-xs font-bold">H</span>
+                  </div>
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-900">HubSpot Integration</h1>
+                  <p className="text-gray-600 mt-1">96,655 registros sincronizados • Webhook activo</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <button 
+                onClick={() => loadData(activeTab)}
+                disabled={isLoading}
+                className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 font-medium"
+              >
+                <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+                <span>Actualizar</span>
+              </button>
+              
+              <div className="flex items-center space-x-2 px-3 py-2 bg-green-50 border border-green-200 rounded-lg">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-green-700 font-medium text-sm">Tiempo Real</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Container principal con padding exactamente igual al header */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+        {/* Error Display */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <div className="flex items-center space-x-2">
+              <AlertCircle className="w-5 h-5 text-red-500" />
+              <span className="text-red-700 font-medium">Error:</span>
+              <span className="text-red-600">{error}</span>
+            </div>
+          </div>
+        )}
+
+        {/* Tabs mejorados - sin padding adicional interno */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div className="border-b border-gray-200">
+            <nav className="flex overflow-x-auto px-4">
+              {tabs.map((tab) => {
+                const Icon = tab.icon;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex items-center space-x-2 px-4 py-3 text-sm font-medium border-b-2 transition-all whitespace-nowrap ${
+                      activeTab === tab.id
+                        ? 'border-orange-500 text-orange-600 bg-orange-50'
+                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50'
+                    }`}
+                  >
+                    <Icon className={`w-4 h-4 ${activeTab === tab.id ? tab.color : ''}`} />
+                    <span>{tab.name}</span>
+                  </button>
+                );
+              })}
+            </nav>
+          </div>
+
+          {/* Contenido de tabs con padding consistente */}
+          <div className="px-4 py-4">
+            {/* Overview Tab */}
+            {activeTab === 'overview' && overviewData && (
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg border border-blue-200">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-blue-600">Contactos</p>
+                        <p className="text-2xl font-bold text-blue-900">{overviewData.contacts.toLocaleString()}</p>
+                        <p className="text-xs text-blue-600 mt-1">{overviewData.syncedContacts} sincronizados</p>
+                      </div>
+                      <Users className="h-8 w-8 text-blue-500" />
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg border border-green-200">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-green-600">Empresas</p>
+                        <p className="text-2xl font-bold text-green-900">{overviewData.companies.toLocaleString()}</p>
+                        <p className="text-xs text-green-600 mt-1">Con relaciones</p>
+                      </div>
+                      <Building className="h-8 w-8 text-green-500" />
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 p-4 rounded-lg border border-yellow-200">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-yellow-600">Deals</p>
+                        <p className="text-2xl font-bold text-yellow-900">{overviewData.deals.toLocaleString()}</p>
+                        <p className="text-xs text-yellow-600 mt-1">Pipeline activo</p>
+                      </div>
+                      <DollarSign className="h-8 w-8 text-yellow-500" />
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-lg border border-purple-200">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-purple-600">Total</p>
+                        <p className="text-2xl font-bold text-purple-900">{overviewData.total.toLocaleString()}</p>
+                        <p className="text-xs text-purple-600 mt-1">{overviewData.activities} actividades</p>
+                      </div>
+                      <Database className="h-8 w-8 text-purple-500" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Banner principal CON border radius forzado */}
+                <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl shadow-lg overflow-hidden">
+                  <div className="p-6">
+                    <div className="flex items-center space-x-4">
+                      <div className="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <Globe className="w-6 h-6 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-lg font-bold mb-2">🚀 Integración HubSpot Activa</h3>
+                        <p className="text-orange-100 text-sm leading-relaxed">
+                          Tu sistema está conectado y sincronizando datos en tiempo real con HubSpot. 
+                          Todas las funcionalidades de prospección están disponibles con relaciones completas 
+                          entre contactos, empresas y deals.
+                        </p>
+                        <div className="mt-3 flex flex-wrap gap-2 text-xs">
+                          <span className="bg-white bg-opacity-20 px-2 py-1 rounded-full">
+                            ✓ Contactos relacionados con empresas
+                          </span>
+                          <span className="bg-white bg-opacity-20 px-2 py-1 rounded-full">
+                            ✓ Deals con seguimiento completo
+                          </span>
+                          <span className="bg-white bg-opacity-20 px-2 py-1 rounded-full">
+                            ✓ Score promedio: {overviewData.averageScore}/100
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Contactos Tab */}
+            {activeTab === 'contacts' && (
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-semibold text-gray-900">Contactos de HubSpot</h3>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Buscar contactos..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm"
+                    />
+                    <button 
+                      onClick={() => handleSync()}
+                      className="px-3 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors flex items-center space-x-2 text-sm"
+                    >
+                      <RefreshCw className="h-4 w-4" />
+                      <span>Sync</span>
+                    </button>
+                  </div>
+                </div>
+
+                {isLoading ? (
+                  <div className="flex items-center justify-center py-12">
+                    <Loader2 className="h-6 w-6 animate-spin text-orange-500" />
+                    <span className="ml-3 text-gray-600">Cargando contactos...</span>
+                  </div>
+                ) : (
+                  <>
+                    {/* Tabla sin padding adicional */}
+                    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                      <table className="w-full">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Contacto</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Empresa</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Trabajo</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Estado</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Score</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Deals</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Email Metrics</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Sincronizado</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                          {data.map((contact) => (
+                            <tr key={contact.id} className="hover:bg-gray-50 transition-colors cursor-pointer" onClick={() => handleContactClick(contact)}>
+                              <td className="p-3">
+                                <div>
+                                  <div className="font-semibold text-gray-900 text-sm">
+                                    {contact.firstName} {contact.lastName}
+                                  </div>
+                                  <div className="text-xs text-gray-600">{contact.email}</div>
+                                  {contact.phone && (
+                                    <div className="text-xs text-gray-500">{contact.phone}</div>
+                                  )}
+                                </div>
+                              </td>
+                              <td className="p-3">
+                                <div className="font-medium text-gray-900 text-sm">{contact.company}</div>
+                                {contact.industry && (
+                                  <div className="text-xs text-gray-600">{contact.industry}</div>
+                                )}
+                                {contact.numEmployees && (
+                                  <div className="text-xs text-gray-500">{contact.numEmployees} empleados</div>
+                                )}
+                              </td>
+                              <td className="p-3">
+                                <div className="text-gray-700 text-sm">{contact.jobTitle}</div>
+                                {contact.country && (
+                                  <div className="text-xs text-gray-500">{contact.city}, {contact.country}</div>
+                                )}
+                              </td>
+                              <td className="p-3">
+                                <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                                  contact.lifecycleStage === 'customer' 
+                                    ? 'bg-green-100 text-green-800'
+                                    : contact.lifecycleStage === 'opportunity'
+                                    ? 'bg-yellow-100 text-yellow-800'
+                                    : contact.lifecycleStage === 'marketingqualifiedlead'
+                                    ? 'bg-blue-100 text-blue-800'
+                                    : 'bg-gray-100 text-gray-800'
+                                }`}>
+                                  {contact.lifecycleStage}
+                                </span>
+                              </td>
+                              <td className="p-3">
+                                <div className="flex items-center space-x-2">
+                                  <div className="text-sm font-bold text-gray-900">{contact.leadScore || 0}</div>
+                                  <div className="w-8 bg-gray-200 rounded-full h-1.5">
+                                    <div 
+                                      className="bg-gradient-to-r from-orange-500 to-red-500 h-1.5 rounded-full"
+                                      style={{ width: `${(contact.leadScore || 0)}%` }}
+                                    ></div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="p-3">
+                                {contact.dealsCount > 0 ? (
+                                  <div>
+                                    <div className="font-medium text-gray-900 text-sm">{contact.dealsCount} deals</div>
+                                    <div className="text-xs text-green-600">
+                                      {formatCurrency(contact.totalDealAmount?.toString())}
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <span className="text-gray-400 text-sm">Sin deals</span>
+                                )}
+                              </td>
+                              <td className="p-3">
+                                {contact.emailMetrics ? (
+                                  <div className="text-xs">
+                                    <div>📧 {contact.emailMetrics.emailsSent} enviados</div>
+                                    <div className="text-green-600">📖 {Math.round(contact.emailMetrics.openRate * 100)}% abiertos</div>
+                                    <div className="text-blue-600">🖱️ {Math.round(contact.emailMetrics.clickRate * 100)}% clicks</div>
+                                  </div>
+                                ) : (
+                                  <span className="text-gray-400 text-sm">Sin métricas</span>
+                                )}
+                              </td>
+                              <td className="p-3 text-xs text-gray-500">
+                                {formatDate(contact.syncedAt)}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Paginación */}
+                    {pagination.total > pagination.limit && (
+                      <div className="flex justify-between items-center">
+                        <div className="text-sm text-gray-600">
+                          Mostrando {pagination.offset + 1} a {Math.min(pagination.offset + pagination.limit, pagination.total)} de {pagination.total} contactos
+                        </div>
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => handlePageChange('prev')}
+                            disabled={pagination.offset === 0}
+                            className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                          >
+                            Anterior
+                          </button>
+                          <button
+                            onClick={() => handlePageChange('next')}
+                            disabled={!pagination.hasMore}
+                            className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                          >
+                            Siguiente
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+
+            {/* Empresas Tab */}
+            {activeTab === 'companies' && (
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-semibold text-gray-900">Empresas de HubSpot</h3>
+                  <button 
+                    onClick={() => handleSync()}
+                    className="px-3 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors flex items-center space-x-2 text-sm"
+                  >
+                    <RefreshCw className="h-4 w-4" />
+                    <span>Sync</span>
+                  </button>
+                </div>
+
+                {isLoading ? (
+                  <div className="flex items-center justify-center py-12">
+                    <Loader2 className="h-6 w-6 animate-spin text-orange-500" />
+                    <span className="ml-3 text-gray-600">Cargando empresas...</span>
+                  </div>
+                ) : (
+                  <>
+                    {/* Tabla sin padding adicional */}
+                    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                      <table className="w-full">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Empresa</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Industria</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Ubicación</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Empleados</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Revenue</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Deals</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Estado</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Actualizado</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                          {data.map((company) => (
+                            <tr key={company.id} className="hover:bg-gray-50 transition-colors">
+                              <td className="p-3">
+                                <div>
+                                  <div className="font-semibold text-gray-900 text-sm">{company.name}</div>
+                                  <div className="text-xs text-gray-600">{company.domain}</div>
+                                  {company.website && (
+                                    <div className="text-xs text-blue-600">
+                                      <a href={company.website} target="_blank" rel="noopener noreferrer">
+                                        {company.website}
+                                      </a>
+                                    </div>
+                                  )}
+                                </div>
+                              </td>
+                              <td className="p-3">
+                                <div className="text-gray-700 text-sm">{company.industry}</div>
+                              </td>
+                              <td className="p-3">
+                                <div className="text-sm text-gray-700">
+                                  {company.city && company.state 
+                                    ? `${company.city}, ${company.state}` 
+                                    : company.city || company.state}
+                                </div>
+                                <div className="text-xs text-gray-500">{company.country}</div>
+                              </td>
+                              <td className="p-3">
+                                <div className="text-sm text-gray-700">{company.numEmployees || 'N/A'}</div>
+                              </td>
+                              <td className="p-3">
+                                <div className="text-sm text-gray-700">
+                                  {company.annualRevenue 
+                                    ? formatCurrency(company.annualRevenue.toString())
+                                    : 'N/A'}
+                                </div>
+                              </td>
+                              <td className="p-3">
+                                <div className="text-sm text-gray-700">
+                                  {company.dealsCount} deals
+                                </div>
+                                <div className="text-xs text-green-600">
+                                  {formatCurrency(company.totalRevenue?.toString() || '0')}
+                                </div>
+                              </td>
+                              <td className="p-3">
+                                <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                                  company.lifecycleStage === 'customer' 
+                                    ? 'bg-green-100 text-green-800'
+                                    : company.lifecycleStage === 'opportunity'
+                                    ? 'bg-yellow-100 text-yellow-800'
+                                    : 'bg-gray-100 text-gray-800'
+                                }`}>
+                                  {company.lifecycleStage || 'lead'}
+                                </span>
+                              </td>
+                              <td className="p-3 text-xs text-gray-500">
+                                {formatDate(company.updatedAt)}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Paginación */}
+                    {pagination.total > pagination.limit && (
+                      <div className="flex justify-between items-center">
+                        <div className="text-sm text-gray-600">
+                          Mostrando {pagination.offset + 1} a {Math.min(pagination.offset + pagination.limit, pagination.total)} de {pagination.total} empresas
+                        </div>
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => handlePageChange('prev')}
+                            disabled={pagination.offset === 0}
+                            className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                          >
+                            Anterior
+                          </button>
+                          <button
+                            onClick={() => handlePageChange('next')}
+                            disabled={!pagination.hasMore}
+                            className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                          >
+                            Siguiente
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+
+            {/* Deals Tab */}
+            {activeTab === 'deals' && (
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-semibold text-gray-900">Deals de HubSpot</h3>
+                  <button 
+                    onClick={() => handleSync()}
+                    className="px-3 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors flex items-center space-x-2 text-sm"
+                  >
+                    <RefreshCw className="h-4 w-4" />
+                    <span>Sync</span>
+                  </button>
+                </div>
+
+                {isLoading ? (
+                  <div className="flex items-center justify-center py-12">
+                    <Loader2 className="h-6 w-6 animate-spin text-orange-500" />
+                    <span className="ml-3 text-gray-600">Cargando deals...</span>
+                  </div>
+                ) : (
+                  <>
+                    {/* Tabla sin padding adicional */}
+                    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                      <table className="w-full">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Deal</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Contacto</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Empresa</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Monto</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Etapa</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Cierre</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Score</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Creado</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                          {data.map((deal) => (
+                            <tr key={deal.id} className="hover:bg-gray-50 transition-colors">
+                              <td className="p-3">
+                                <div>
+                                  <div className="font-semibold text-gray-900 text-sm">{deal.dealName}</div>
+                                  <div className="text-xs text-gray-600">{deal.dealType}</div>
+                                  {deal.description && (
+                                    <div className="text-xs text-gray-500 truncate max-w-xs">{deal.description}</div>
+                                  )}
+                                </div>
+                              </td>
+                              <td className="p-3">
+                                <div className="text-sm text-gray-700">{deal.contactName}</div>
+                                <div className="text-xs text-gray-500">{deal.contactEmail}</div>
+                              </td>
+                              <td className="p-3">
+                                <div className="text-sm text-gray-700">{deal.companyName}</div>
+                                <div className="text-xs text-gray-500">{deal.industry}</div>
+                              </td>
+                              <td className="p-3">
+                                <div className="text-sm font-semibold text-gray-900">
+                                  {formatCurrency(deal.amount)}
+                                </div>
+                              </td>
+                              <td className="p-3">
+                                <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                                  deal.dealStage === 'closedwon' 
+                                    ? 'bg-green-100 text-green-800'
+                                    : deal.dealStage === 'closedlost'
+                                    ? 'bg-red-100 text-red-800'
+                                    : deal.dealStage === 'negotiation'
+                                    ? 'bg-yellow-100 text-yellow-800'
+                                    : 'bg-blue-100 text-blue-800'
+                                }`}>
+                                  {deal.dealStage}
+                                </span>
+                              </td>
+                              <td className="p-3">
+                                <div className="text-sm text-gray-700">
+                                  {deal.closeDate ? formatDate(deal.closeDate) : 'N/A'}
+                                </div>
+                              </td>
+                              <td className="p-3">
+                                <div className="text-sm text-gray-700">{deal.leadScore || 0}</div>
+                              </td>
+                              <td className="p-3 text-xs text-gray-500">
+                                {deal.createDate ? formatDate(deal.createDate) : formatDate(deal.createdAt)}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Paginación */}
+                    {pagination.total > pagination.limit && (
+                      <div className="flex justify-between items-center">
+                        <div className="text-sm text-gray-600">
+                          Mostrando {pagination.offset + 1} a {Math.min(pagination.offset + pagination.limit, pagination.total)} de {pagination.total} deals
+                        </div>
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => handlePageChange('prev')}
+                            disabled={pagination.offset === 0}
+                            className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                          >
+                            Anterior
+                          </button>
+                          <button
+                            onClick={() => handlePageChange('next')}
+                            disabled={!pagination.hasMore}
+                            className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                          >
+                            Siguiente
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+
+            {/* Tasks Tab */}
+            {activeTab === 'tasks' && (
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-semibold text-gray-900">Tareas de HubSpot</h3>
+                  <button 
+                    onClick={() => handleSync()}
+                    className="px-3 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors flex items-center space-x-2 text-sm"
+                  >
+                    <RefreshCw className="h-4 w-4" />
+                    <span>Sync</span>
+                  </button>
+                </div>
+
+                {isLoading ? (
+                  <div className="flex items-center justify-center py-12">
+                    <Loader2 className="h-6 w-6 animate-spin text-orange-500" />
+                    <span className="ml-3 text-gray-600">Cargando tareas...</span>
+                  </div>
+                ) : (
+                  <>
+                    {/* Tabla sin padding adicional */}
+                    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                      <table className="w-full">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Tarea</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Contacto</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Tipo</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Prioridad</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Estado</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Fecha</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Completada</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                          {data.map((task) => (
+                            <tr key={task.id} className="hover:bg-gray-50 transition-colors">
+                              <td className="p-3">
+                                <div>
+                                  <div className="font-semibold text-gray-900 text-sm">{task.taskSubject}</div>
+                                  {task.taskBody && (
+                                    <div className="text-xs text-gray-600 truncate max-w-xs">{task.taskBody}</div>
+                                  )}
+                                </div>
+                              </td>
+                              <td className="p-3">
+                                <div className="text-sm text-gray-700">{task.contactName}</div>
+                                <div className="text-xs text-gray-500">{task.contactEmail}</div>
+                              </td>
+                              <td className="p-3">
+                                <span className="text-sm text-gray-700">{task.taskType}</span>
+                              </td>
+                              <td className="p-3">
+                                <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                                  task.taskPriority === 'HIGH' 
+                                    ? 'bg-red-100 text-red-800'
+                                    : task.taskPriority === 'MEDIUM'
+                                    ? 'bg-yellow-100 text-yellow-800'
+                                    : 'bg-green-100 text-green-800'
+                                }`}>
+                                  {task.taskPriority}
+                                </span>
+                              </td>
+                              <td className="p-3">
+                                <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                                  task.taskStatus === 'COMPLETED' 
+                                    ? 'bg-green-100 text-green-800'
+                                    : task.taskStatus === 'IN_PROGRESS'
+                                    ? 'bg-blue-100 text-blue-800'
+                                    : 'bg-gray-100 text-gray-800'
+                                }`}>
+                                  {task.taskStatus}
+                                </span>
+                              </td>
+                              <td className="p-3 text-sm text-gray-500">
+                                {formatDate(task.timestamp)}
+                              </td>
+                              <td className="p-3">
+                                <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                                  task.taskIsCompleted 
+                                    ? 'bg-green-100 text-green-800'
+                                    : 'bg-gray-100 text-gray-800'
+                                }`}>
+                                  {task.taskIsCompleted ? 'Sí' : 'No'}
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Paginación */}
+                    {pagination.total > pagination.limit && (
+                      <div className="flex justify-between items-center">
+                        <div className="text-sm text-gray-600">
+                          Mostrando {pagination.offset + 1} a {Math.min(pagination.offset + pagination.limit, pagination.total)} de {pagination.total} tareas
+                        </div>
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => handlePageChange('prev')}
+                            disabled={pagination.offset === 0}
+                            className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                          >
+                            Anterior
+                          </button>
+                          <button
+                            onClick={() => handlePageChange('next')}
+                            disabled={!pagination.hasMore}
+                            className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                          >
+                            Siguiente
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+
+            {/* Emails Tab */}
+            {activeTab === 'emails' && (
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-semibold text-gray-900">Emails de HubSpot</h3>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Buscar emails..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm"
+                    />
+                    <button 
+                      onClick={() => handleSync()}
+                      className="px-3 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors flex items-center space-x-2 text-sm"
+                    >
+                      <RefreshCw className="h-4 w-4" />
+                      <span>Sync</span>
+                    </button>
+                  </div>
+                </div>
+
+                {isLoading ? (
+                  <div className="flex items-center justify-center py-12">
+                    <Loader2 className="h-6 w-6 animate-spin text-orange-500" />
+                    <span className="ml-3 text-gray-600">Cargando emails...</span>
+                  </div>
+                ) : (
+                  <>
+                    {/* Tabla sin padding adicional */}
+                    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                      <table className="w-full">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Asunto</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">De/Para</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Dirección</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Estado</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Métricas</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Fecha</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                          {data.map((email) => (
+                            <tr key={email.id} className="hover:bg-gray-50 transition-colors">
+                              <td className="p-3">
+                                <div>
+                                  <div className="font-semibold text-gray-900 text-sm">{email.subject || email.emailSubject || 'Sin asunto'}</div>
+                                  {email.preview && (
+                                    <div className="text-xs text-gray-600 truncate max-w-xs">{email.preview}</div>
+                                  )}
+                                </div>
+                              </td>
+                              <td className="p-3">
+                                <div className="text-sm text-gray-700">
+                                  {email.direction === 'INCOMING' ? email.from : email.to}
+                                </div>
+                                <div className="text-xs text-gray-500">
+                                  {email.direction === 'INCOMING' ? 'Recibido de' : 'Enviado a'}
+                                </div>
+                              </td>
+                              <td className="p-3">
+                                <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                                  email.direction === 'OUTGOING' 
+                                    ? 'bg-blue-100 text-blue-800'
+                                    : 'bg-green-100 text-green-800'
+                                }`}>
+                                  {email.direction === 'OUTGOING' ? '📤 Enviado' : '📥 Recibido'}
+                                </span>
+                              </td>
+                              <td className="p-3">
+                                <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                                  email.status === 'DELIVERED' || email.status === 'SENT'
+                                    ? 'bg-green-100 text-green-800'
+                                    : email.status === 'BOUNCED'
+                                    ? 'bg-red-100 text-red-800'
+                                    : 'bg-yellow-100 text-yellow-800'
+                                }`}>
+                                  {email.status || 'SENT'}
+                                </span>
+                              </td>
+                              <td className="p-3">
+                                <div className="text-xs">
+                                  {email.opens ? (
+                                    <div className="text-green-600">👁️ {email.opens} aperturas</div>
+                                  ) : null}
+                                  {email.clicks ? (
+                                    <div className="text-blue-600">🖱️ {email.clicks} clicks</div>
+                                  ) : null}
+                                  {!email.opens && !email.clicks && (
+                                    <span className="text-gray-400">Sin métricas</span>
+                                  )}
+                                </div>
+                              </td>
+                              <td className="p-3 text-xs text-gray-500">
+                                {email.timestamp ? formatDate(email.timestamp) : 'N/A'}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Paginación */}
+                    {pagination.total > pagination.limit && (
+                      <div className="flex justify-between items-center">
+                        <div className="text-sm text-gray-600">
+                          Mostrando {pagination.offset + 1} a {Math.min(pagination.offset + pagination.limit, pagination.total)} de {pagination.total} emails
+                        </div>
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => handlePageChange('prev')}
+                            disabled={pagination.offset === 0}
+                            className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                          >
+                            Anterior
+                          </button>
+                          <button
+                            onClick={() => handlePageChange('next')}
+                            disabled={!pagination.hasMore}
+                            className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                          >
+                            Siguiente
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+
+            {/* Calls Tab */}
+            {activeTab === 'calls' && (
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-semibold text-gray-900">Llamadas de HubSpot</h3>
+                  <button 
+                    onClick={() => handleSync()}
+                    className="px-3 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors flex items-center space-x-2 text-sm"
+                  >
+                    <RefreshCw className="h-4 w-4" />
+                    <span>Sync</span>
+                  </button>
+                </div>
+
+                {isLoading ? (
+                  <div className="flex items-center justify-center py-12">
+                    <Loader2 className="h-6 w-6 animate-spin text-orange-500" />
+                    <span className="ml-3 text-gray-600">Cargando llamadas...</span>
+                  </div>
+                ) : (
+                  <>
+                    {/* Tabla sin padding adicional */}
+                    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                      <table className="w-full">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Llamada</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Contacto</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Dirección</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Duración</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Estado</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Resultado</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Fecha</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                          {data.map((call) => (
+                            <tr key={call.id} className="hover:bg-gray-50 transition-colors">
+                              <td className="p-3">
+                                <div>
+                                  <div className="font-semibold text-gray-900 text-sm">{call.title || call.callTitle || 'Llamada'}</div>
+                                  {call.notes && (
+                                    <div className="text-xs text-gray-600 truncate max-w-xs">{call.notes}</div>
+                                  )}
+                                </div>
+                              </td>
+                              <td className="p-3">
+                                <div className="text-sm text-gray-700">{call.contactName || 'N/A'}</div>
+                                <div className="text-xs text-gray-500">{call.phoneNumber || call.toNumber}</div>
+                              </td>
+                              <td className="p-3">
+                                <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                                  call.direction === 'OUTGOING' 
+                                    ? 'bg-blue-100 text-blue-800'
+                                    : 'bg-green-100 text-green-800'
+                                }`}>
+                                  {call.direction === 'OUTGOING' ? '📞 Saliente' : '📱 Entrante'}
+                                </span>
+                              </td>
+                              <td className="p-3">
+                                <div className="text-sm text-gray-700">
+                                  {call.duration ? `${Math.floor(call.duration / 60)}:${(call.duration % 60).toString().padStart(2, '0')}` : 'N/A'}
+                                </div>
+                              </td>
+                              <td className="p-3">
+                                <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                                  call.status === 'COMPLETED' 
+                                    ? 'bg-green-100 text-green-800'
+                                    : call.status === 'NO_ANSWER'
+                                    ? 'bg-red-100 text-red-800'
+                                    : 'bg-yellow-100 text-yellow-800'
+                                }`}>
+                                  {call.status || 'COMPLETED'}
+                                </span>
+                              </td>
+                              <td className="p-3">
+                                <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                                  call.outcome === 'CONNECTED' 
+                                    ? 'bg-green-100 text-green-800'
+                                    : call.outcome === 'LEFT_VOICEMAIL'
+                                    ? 'bg-blue-100 text-blue-800'
+                                    : 'bg-gray-100 text-gray-800'
+                                }`}>
+                                  {call.outcome || 'CONNECTED'}
+                                </span>
+                              </td>
+                              <td className="p-3 text-xs text-gray-500">
+                                {call.timestamp ? formatDate(call.timestamp) : 'N/A'}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Paginación */}
+                    {pagination.total > pagination.limit && (
+                      <div className="flex justify-between items-center">
+                        <div className="text-sm text-gray-600">
+                          Mostrando {pagination.offset + 1} a {Math.min(pagination.offset + pagination.limit, pagination.total)} de {pagination.total} llamadas
+                        </div>
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => handlePageChange('prev')}
+                            disabled={pagination.offset === 0}
+                            className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                          >
+                            Anterior
+                          </button>
+                          <button
+                            onClick={() => handlePageChange('next')}
+                            disabled={!pagination.hasMore}
+                            className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                          >
+                            Siguiente
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+
+            {/* Meetings Tab */}
+            {activeTab === 'meetings' && (
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-semibold text-gray-900">Reuniones de HubSpot</h3>
+                  <button 
+                    onClick={() => handleSync()}
+                    className="px-3 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors flex items-center space-x-2 text-sm"
+                  >
+                    <RefreshCw className="h-4 w-4" />
+                    <span>Sync</span>
+                  </button>
+                </div>
+
+                {isLoading ? (
+                  <div className="flex items-center justify-center py-12">
+                    <Loader2 className="h-6 w-6 animate-spin text-orange-500" />
+                    <span className="ml-3 text-gray-600">Cargando reuniones...</span>
+                  </div>
+                ) : (
+                  <>
+                    {/* Tabla sin padding adicional */}
+                    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                      <table className="w-full">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Reunión</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Participantes</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Fecha/Hora</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Duración</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Ubicación</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Estado</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Resultado</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                          {data.map((meeting) => (
+                            <tr key={meeting.id} className="hover:bg-gray-50 transition-colors">
+                              <td className="p-3">
+                                <div>
+                                  <div className="font-semibold text-gray-900 text-sm">{meeting.title || meeting.meetingTitle || 'Reunión'}</div>
+                                  {meeting.description && (
+                                    <div className="text-xs text-gray-600 truncate max-w-xs">{meeting.description}</div>
+                                  )}
+                                </div>
+                              </td>
+                              <td className="p-3">
+                                <div className="text-sm text-gray-700">{meeting.attendees || meeting.participants || 'N/A'}</div>
+                                <div className="text-xs text-gray-500">{meeting.organizer && `Organizado por: ${meeting.organizer}`}</div>
+                              </td>
+                              <td className="p-3">
+                                <div className="text-sm text-gray-700">
+                                  {meeting.startTime ? formatDate(meeting.startTime) : (meeting.timestamp ? formatDate(meeting.timestamp) : 'N/A')}
+                                </div>
+                              </td>
+                              <td className="p-3">
+                                <div className="text-sm text-gray-700">
+                                  {meeting.duration ? `${meeting.duration} min` : 'N/A'}
+                                </div>
+                              </td>
+                              <td className="p-3">
+                                <div className="text-sm text-gray-700">{meeting.location || meeting.meetingLocation || 'Virtual'}</div>
+                              </td>
+                              <td className="p-3">
+                                <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                                  meeting.status === 'COMPLETED' 
+                                    ? 'bg-green-100 text-green-800'
+                                    : meeting.status === 'SCHEDULED'
+                                    ? 'bg-blue-100 text-blue-800'
+                                    : meeting.status === 'CANCELLED'
+                                    ? 'bg-red-100 text-red-800'
+                                    : 'bg-yellow-100 text-yellow-800'
+                                }`}>
+                                  {meeting.status || 'COMPLETED'}
+                                </span>
+                              </td>
+                              <td className="p-3">
+                                <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                                  meeting.outcome === 'PRODUCTIVE' 
+                                    ? 'bg-green-100 text-green-800'
+                                    : meeting.outcome === 'FOLLOW_UP_NEEDED'
+                                    ? 'bg-yellow-100 text-yellow-800'
+                                    : 'bg-gray-100 text-gray-800'
+                                }`}>
+                                  {meeting.outcome || 'PRODUCTIVE'}
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Paginación */}
+                    {pagination.total > pagination.limit && (
+                      <div className="flex justify-between items-center">
+                        <div className="text-sm text-gray-600">
+                          Mostrando {pagination.offset + 1} a {Math.min(pagination.offset + pagination.limit, pagination.total)} de {pagination.total} reuniones
+                        </div>
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => handlePageChange('prev')}
+                            disabled={pagination.offset === 0}
+                            className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                          >
+                            Anterior
+                          </button>
+                          <button
+                            onClick={() => handlePageChange('next')}
+                            disabled={!pagination.hasMore}
+                            className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                          >
+                            Siguiente
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+
+            {/* Notes Tab */}
+            {activeTab === 'notes' && (
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-semibold text-gray-900">Notas de HubSpot</h3>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Buscar notas..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm"
+                    />
+                    <button 
+                      onClick={() => handleSync()}
+                      className="px-3 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors flex items-center space-x-2 text-sm"
+                    >
+                      <RefreshCw className="h-4 w-4" />
+                      <span>Sync</span>
+                    </button>
+                  </div>
+                </div>
+
+                {isLoading ? (
+                  <div className="flex items-center justify-center py-12">
+                    <Loader2 className="h-6 w-6 animate-spin text-orange-500" />
+                    <span className="ml-3 text-gray-600">Cargando notas...</span>
+                  </div>
+                ) : (
+                  <>
+                    {/* Tabla sin padding adicional */}
+                    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                      <table className="w-full">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Nota</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Contacto</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Tipo</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Autor</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Fecha</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Acciones</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                          {data.map((note) => (
+                            <tr key={note.id} className="hover:bg-gray-50 transition-colors">
+                              <td className="p-3">
+                                <div>
+                                  <div className="font-semibold text-gray-900 text-sm">{note.title || 'Nota'}</div>
+                                  <div className="text-xs text-gray-600 max-w-xs">
+                                    {note.content && note.content.length > 100 
+                                      ? `${note.content.substring(0, 100)}...` 
+                                      : note.content || 'Sin contenido'}
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="p-3">
+                                <div className="text-sm text-gray-700">{note.contactName || 'N/A'}</div>
+                                <div className="text-xs text-gray-500">{note.companyName}</div>
+                              </td>
+                              <td className="p-3">
+                                <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                                  note.type === 'CALL_NOTE' 
+                                    ? 'bg-blue-100 text-blue-800'
+                                    : note.type === 'MEETING_NOTE'
+                                    ? 'bg-green-100 text-green-800'
+                                    : note.type === 'EMAIL_NOTE'
+                                    ? 'bg-purple-100 text-purple-800'
+                                    : 'bg-gray-100 text-gray-800'
+                                }`}>
+                                  {note.type || 'GENERAL'}
+                                </span>
+                              </td>
+                              <td className="p-3">
+                                <div className="text-sm text-gray-700">{note.author || note.createdBy || 'Sistema'}</div>
+                              </td>
+                              <td className="p-3 text-xs text-gray-500">
+                                {note.timestamp ? formatDate(note.timestamp) : (note.createdAt ? formatDate(note.createdAt) : 'N/A')}
+                              </td>
+                              <td className="p-3">
+                                <div className="flex space-x-2">
+                                  <button className="text-blue-600 hover:text-blue-800 text-xs">Ver</button>
+                                  <button className="text-gray-600 hover:text-gray-800 text-xs">Editar</button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Paginación */}
+                    {pagination.total > pagination.limit && (
+                      <div className="flex justify-between items-center">
+                        <div className="text-sm text-gray-600">
+                          Mostrando {pagination.offset + 1} a {Math.min(pagination.offset + pagination.limit, pagination.total)} de {pagination.total} notas
+                        </div>
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => handlePageChange('prev')}
+                            disabled={pagination.offset === 0}
+                            className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                          >
+                            Anterior
+                          </button>
+                          <button
+                            onClick={() => handlePageChange('next')}
+                            disabled={!pagination.hasMore}
+                            className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                          >
+                            Siguiente
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+
+            {/* Tickets Tab */}
+            {activeTab === 'tickets' && (
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-semibold text-gray-900">Tickets de HubSpot</h3>
+                  <button 
+                    onClick={() => handleSync()}
+                    className="px-3 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors flex items-center space-x-2 text-sm"
+                  >
+                    <RefreshCw className="h-4 w-4" />
+                    <span>Sync</span>
+                  </button>
+                </div>
+
+                {isLoading ? (
+                  <div className="flex items-center justify-center py-12">
+                    <Loader2 className="h-6 w-6 animate-spin text-orange-500" />
+                    <span className="ml-3 text-gray-600">Cargando tickets...</span>
+                  </div>
+                ) : (
+                  <>
+                    {/* Tabla sin padding adicional */}
+                    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                      <table className="w-full">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Ticket</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Contacto</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Prioridad</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Estado</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Categoría</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Asignado</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 text-sm">Creado</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                          {data.map((ticket) => (
+                            <tr key={ticket.id} className="hover:bg-gray-50 transition-colors">
+                              <td className="p-3">
+                                <div>
+                                  <div className="font-semibold text-gray-900 text-sm">#{ticket.ticketId || ticket.id}</div>
+                                  <div className="text-xs text-gray-600">{ticket.subject || ticket.ticketName || 'Sin asunto'}</div>
+                                  {ticket.description && (
+                                    <div className="text-xs text-gray-500 truncate max-w-xs">{ticket.description}</div>
+                                  )}
+                                </div>
+                              </td>
+                              <td className="p-3">
+                                <div className="text-sm text-gray-700">{ticket.contactName || 'N/A'}</div>
+                                <div className="text-xs text-gray-500">{ticket.contactEmail}</div>
+                              </td>
+                              <td className="p-3">
+                                <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                                  ticket.priority === 'HIGH' 
+                                    ? 'bg-red-100 text-red-800'
+                                    : ticket.priority === 'MEDIUM'
+                                    ? 'bg-yellow-100 text-yellow-800'
+                                    : 'bg-green-100 text-green-800'
+                                }`}>
+                                  {ticket.priority || 'LOW'}
+                                </span>
+                              </td>
+                              <td className="p-3">
+                                <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                                  ticket.status === 'CLOSED' 
+                                    ? 'bg-gray-100 text-gray-800'
+                                    : ticket.status === 'IN_PROGRESS'
+                                    ? 'bg-blue-100 text-blue-800'
+                                    : ticket.status === 'WAITING_ON_CONTACT'
+                                    ? 'bg-yellow-100 text-yellow-800'
+                                    : 'bg-green-100 text-green-800'
+                                }`}>
+                                  {ticket.status || 'OPEN'}
+                                </span>
+                              </td>
+                              <td className="p-3">
+                                <div className="text-sm text-gray-700">{ticket.category || ticket.source || 'General'}</div>
+                              </td>
+                              <td className="p-3">
+                                <div className="text-sm text-gray-700">{ticket.assignedTo || ticket.owner || 'Sin asignar'}</div>
+                              </td>
+                              <td className="p-3 text-xs text-gray-500">
+                                {ticket.timestamp ? formatDate(ticket.timestamp) : (ticket.createdAt ? formatDate(ticket.createdAt) : 'N/A')}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Paginación */}
+                    {pagination.total > pagination.limit && (
+                      <div className="flex justify-between items-center">
+                        <div className="text-sm text-gray-600">
+                          Mostrando {pagination.offset + 1} a {Math.min(pagination.offset + pagination.limit, pagination.total)} de {pagination.total} tickets
+                        </div>
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => handlePageChange('prev')}
+                            disabled={pagination.offset === 0}
+                            className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                          >
+                            Anterior
+                          </button>
+                          <button
+                            onClick={() => handlePageChange('next')}
+                            disabled={!pagination.hasMore}
+                            className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                          >
+                            Siguiente
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Contact Detail Modal */}
+      {selectedContactId && (
+        <ContactDetailModal
+          contactId={selectedContactId}
+          isOpen={isContactModalOpen}
+          onClose={closeContactDetail}
+        />
+      )}
+    </div>
+  );
+} 

@@ -47,8 +47,9 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - REDIS_PASSWORD=${REDIS_PASSWORD:-}
-      - PORT=3000
+      - PORT=4000
       - JWT_SECRET=${JWT_SECRET}
+      - FRONTEND_URL=http://frontend:3001
     depends_on:
       postgres:
         condition: service_healthy
@@ -70,7 +71,9 @@ services:
       dockerfile: Dockerfile
       target: production
     environment:
-      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:3000}
+      - NEXT_PUBLIC_API_URL=http://backend:4000/api
+      - NEXTAUTH_URL=http://localhost:3001
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
     depends_on:
       - backend
     networks:

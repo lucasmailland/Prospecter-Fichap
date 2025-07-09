@@ -1,55 +1,41 @@
 #!/bin/bash
 
-# 🛑 SCRIPT DE CIERRE - PROSPECTER-FICHAP
-# Cierra todo el proyecto de forma ordenada
+# 🛑 SCRIPT PARA DETENER TODOS LOS SERVICIOS
+# Detiene backend, frontend y Prisma Studio
 
-echo "🛑 Cerrando Prospecter-Fichap..."
-echo "================================"
+echo "🛑 Deteniendo todos los servicios..."
+echo "=================================="
 
-# 1. Cerrar procesos usando PIDs guardados
-if [ -f "logs/backend.pid" ]; then
-    BACKEND_PID=$(cat logs/backend.pid)
-    kill $BACKEND_PID 2>/dev/null && echo "✅ Backend cerrado (PID: $BACKEND_PID)"
-    rm logs/backend.pid
-fi
+# Función para detener proceso por PID
+stop_process() {
+    local pid_file="$1"
+    local service_name="$2"
+    
+    if [ -f "$pid_file" ]; then
+        local pid=$(cat "$pid_file")
+        if ps -p $pid > /dev/null 2>&1; then
+            echo "🛑 Deteniendo $service_name (PID: $pid)..."
+            kill $pid
+            rm "$pid_file"
+            echo "✅ $service_name detenido"
+        else
+            echo "ℹ️ $service_name ya no está corriendo"
+            rm "$pid_file"
+        fi
+    else
+        echo "ℹ️ No se encontró PID para $service_name"
+    fi
+}
 
-if [ -f "logs/frontend.pid" ]; then
-    FRONTEND_PID=$(cat logs/frontend.pid)
-    kill $FRONTEND_PID 2>/dev/null && echo "✅ Frontend cerrado (PID: $FRONTEND_PID)"
-    rm logs/frontend.pid
-fi
+# Detener servicios
+stop_process "logs/backend.pid" "Backend"
+stop_process "logs/frontend.pid" "Frontend"
+stop_process "logs/prisma.pid" "Prisma Studio"
 
-if [ -f "logs/prisma.pid" ]; then
-    PRISMA_PID=$(cat logs/prisma.pid)
-    kill $PRISMA_PID 2>/dev/null && echo "✅ Prisma Studio cerrado (PID: $PRISMA_PID)"
-    rm logs/prisma.pid
-fi
+# Detener contenedores Docker si están corriendo
+echo "🐳 Deteniendo contenedores Docker..."
+docker-compose down 2>/dev/null || echo "ℹ️ No hay contenedores corriendo"
 
-# 2. Cerrar procesos por nombre (fallback)
-echo "🧹 Limpiando procesos restantes..."
-pkill -f "nest start" 2>/dev/null && echo "✅ Procesos NestJS cerrados"
-pkill -f "next dev" 2>/dev/null && echo "✅ Procesos Next.js cerrados" 
-pkill -f "prisma studio" 2>/dev/null && echo "✅ Procesos Prisma cerrados"
-
-# 3. Cerrar Docker containers
-echo "🐳 Cerrando Docker containers..."
-docker-compose down
-if [ $? -eq 0 ]; then
-    echo "✅ Docker containers cerrados"
-else
-    echo "⚠️ Error cerrando Docker (puede estar ya cerrado)"
-fi
-
-# 4. Limpiar logs antiguos (opcional)
-echo "🧹 Limpiando logs..."
-rm -f logs/*.log
-echo "✅ Logs limpiados"
-
-# 5. Mostrar resumen
 echo ""
-echo "🛑 ¡PROYECTO CERRADO!"
-echo "==================="
-echo "💾 Tu trabajo está guardado"
-echo "🚀 Para reiniciar: ./start-dev.sh"
-echo ""
-echo "😴 PC aliviada - ¡Descansa bien!" 
+echo "🎉 Todos los servicios detenidos"
+echo "🚀 Para reiniciar: ./start-separated-dev.sh" 

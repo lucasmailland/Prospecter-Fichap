@@ -43,7 +43,7 @@ echo ""
 # 1. Verificar Hardcoded Credentials (Score: 454)
 print_status "1. Verificando Hardcoded Credentials..."
 
-if ! grep -r "test@example.com" src/ 2>/dev/null; then
+if ! grep -r "test@example.com" frontend/src/ 2>/dev/null; then
     print_success "Emails hardcodeados en tests eliminados"
     ((FIXED_COUNT++))
 else
@@ -51,7 +51,7 @@ else
     ((REMAINING_COUNT++))
 fi
 
-if ! grep -r "sarah.johnson@techcorp.com" src/ 2>/dev/null; then
+if ! grep -r "sarah.johnson@techcorp.com" frontend/src/ 2>/dev/null; then
     print_success "Credenciales hardcodeadas en prospects service eliminadas"
     ((FIXED_COUNT++))
 else
@@ -70,7 +70,7 @@ fi
 # 2. Verificar SSRF Vulnerabilities (Score: 414)
 print_status "2. Verificando protección SSRF..."
 
-if grep -q "isValidUrl\|ALLOWED_HOSTS" src/app/api/security/pentest/route.ts; then
+if grep -q "isValidUrl\|ALLOWED_HOSTS" backend/src/security/security.controller.ts; then
     print_success "Protección SSRF implementada"
     ((FIXED_COUNT++))
 else
@@ -78,7 +78,7 @@ else
     ((REMAINING_COUNT++))
 fi
 
-if grep -q "sanitizeInput\|validateTarget" src/app/api/security/pentest/route.ts; then
+if grep -q "sanitizeInput\|validateTarget" backend/src/security/security.controller.ts; then
     print_success "Sanitización de targets implementada"
     ((FIXED_COUNT++))
 else
@@ -89,7 +89,7 @@ fi
 # 3. Verificar XSS Protection (Score: 757)
 print_status "3. Verificando protección XSS..."
 
-if grep -q "X-XSS-Protection" src/lib/security.middleware.ts; then
+if grep -q "X-XSS-Protection" backend/src/common/middleware/security.middleware.ts; then
     print_success "Headers XSS protection configurados"
     ((FIXED_COUNT++))
 else
@@ -97,7 +97,7 @@ else
     ((REMAINING_COUNT++))
 fi
 
-if grep -q "Content-Security-Policy" src/lib/security.middleware.ts; then
+if grep -q "Content-Security-Policy" backend/src/common/middleware/security.middleware.ts; then
     print_success "Content Security Policy implementado"
     ((FIXED_COUNT++))
 else
@@ -105,7 +105,7 @@ else
     ((REMAINING_COUNT++))
 fi
 
-if grep -q "sanitizeInput" src/lib/security.middleware.ts; then
+if grep -q "sanitizeInput" backend/src/common/middleware/security.middleware.ts; then
     print_success "Sanitización de input implementada"
     ((FIXED_COUNT++))
 else
@@ -194,7 +194,7 @@ else
 fi
 
 # Verificar que no hay contraseñas de fallback inseguras
-if ! grep -r "|| 'password'" src/ 2>/dev/null; then
+if ! grep -r "|| 'password'" backend/src/ 2>/dev/null; then
     print_success "Fallbacks de contraseñas inseguras eliminados"
     ((FIXED_COUNT++))
 else
