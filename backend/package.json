@@ -50,7 +50,7 @@
     "cache-manager": "^5.2.3",
     "cache-manager-redis-store": "^3.0.1",
     "redis": "^4.6.7",
-    "nodemailer": "^6.10.1",
+    "nodemailer": "^7.0.5",
     "openai": "^5.8.2",
     "axios": "^1.10.0",
     "crypto-js": "^4.2.0",
