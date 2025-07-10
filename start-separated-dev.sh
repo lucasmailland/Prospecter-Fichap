@@ -150,7 +150,7 @@ else
 fi
 
 # Iniciar frontend en background
-print_info "Iniciando Frontend Next.js (puerto 3001)..."
+print_info "Iniciando Frontend Next.js (puerto 3000)..."
 npm run dev > ../logs/frontend.log 2>&1 &
 FRONTEND_PID=$!
 echo $FRONTEND_PID > ../logs/frontend.pid
@@ -180,8 +180,8 @@ sleep 15
 print_step "🔍 Verificando servicios..."
 
 # Verificar frontend
-if curl -s http://localhost:3001 > /dev/null 2>&1; then
-    print_success "Frontend disponible en http://localhost:3001"
+if curl -s http://localhost:3000 > /dev/null 2>&1; then
+    print_success "Frontend disponible en http://localhost:3000"
 else
     print_warning "Frontend aún cargando..."
 fi
@@ -209,7 +209,7 @@ echo -e "${PURPLE}🎉 ¡ARQUITECTURA SEPARADA INICIADA!${NC}"
 echo -e "${PURPLE}==========================================${NC}"
 echo ""
 echo -e "${CYAN}📱 Servicios Frontend:${NC}"
-echo -e "   🎨 Frontend Next.js:  ${GREEN}http://localhost:3001${NC}"
+echo -e "   🎨 Frontend Next.js:  ${GREEN}http://localhost:3000${NC}"
 echo ""
 echo -e "${CYAN}🔧 Servicios Backend:${NC}"
 echo -e "   🚀 API NestJS:        ${GREEN}http://localhost:4000${NC}"
@@ -276,7 +276,7 @@ fi
 
 # Cerrar cualquier proceso restante en los puertos
 print_info "Verificando puertos..."
-lsof -ti:3001 | xargs kill -9 2>/dev/null || true
+lsof -ti:3000 | xargs kill -9 2>/dev/null || true
 lsof -ti:4000 | xargs kill -9 2>/dev/null || true
 lsof -ti:5555 | xargs kill -9 2>/dev/null || true
 

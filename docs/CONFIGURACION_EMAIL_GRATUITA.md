@@ -16,7 +16,7 @@
 GMAIL_USER=tu-email@gmail.com
 GMAIL_APP_PASSWORD=abcd-efgh-ijkl-mnop
 APP_NAME="Prospecter-Fichap"
-APP_URL=http://localhost:3001
+APP_URL=http://localhost:3000
 SUPPORT_EMAIL=tu-email@gmail.com
 ```
 
@@ -71,7 +71,7 @@ cp .env.example .env.local
 GMAIL_USER=lucas.mailland@gmail.com
 GMAIL_APP_PASSWORD=abcd-efgh-ijkl-mnop
 APP_NAME="Prospecter-Fichap"
-APP_URL=http://localhost:3001
+APP_URL=http://localhost:3000
 SUPPORT_EMAIL=lucas.mailland@gmail.com
 
 # Mantener estas variables
@@ -105,7 +105,7 @@ SMTP_PORT=587
 SMTP_USER=tu-email@outlook.com
 SMTP_PASS=tu-contraseña-app
 APP_NAME="Prospecter-Fichap"
-APP_URL=http://localhost:3001
+APP_URL=http://localhost:3000
 SUPPORT_EMAIL=tu-email@outlook.com
 ```
 

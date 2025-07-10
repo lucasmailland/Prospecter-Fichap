@@ -33,7 +33,7 @@ export class UsersController {
   async create(@Body() userData: {
     email: string;
     name?: string;
-    password?: string;
+    password: string;
     role?: string;
   }) {
     return this.usersService.create(userData);

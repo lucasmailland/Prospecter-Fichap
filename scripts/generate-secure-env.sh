@@ -89,7 +89,7 @@ REDIS_URL=redis://:${REDIS_PASSWORD}@localhost:6379
 NODE_ENV=development
 PORT=3000
 BACKEND_PORT=4000
-FRONTEND_PORT=3001
+FRONTEND_PORT=3000
 
 # Seguridad
 JWT_SECRET=${JWT_SECRET}
@@ -99,14 +99,14 @@ SESSION_SECRET=${SESSION_SECRET}
 ENCRYPTION_KEY=${ENCRYPTION_KEY}
 
 # CORS
-CORS_ORIGIN=http://localhost:3001
+CORS_ORIGIN=http://localhost:3000
 API_PREFIX=api
 
 # =============================================================================
 # AUTENTICACIÓN OAUTH
 # =============================================================================
 NEXTAUTH_SECRET=${JWT_SECRET}
-NEXTAUTH_URL=http://localhost:3001
+NEXTAUTH_URL=http://localhost:3000
 
 # Google OAuth (CONFIGURA CON TUS VALORES REALES)
 GOOGLE_CLIENT_ID=your-google-client-id
@@ -261,7 +261,7 @@ REDIS_URL=redis://:your-password@localhost:6379
 NODE_ENV=development
 PORT=3000
 BACKEND_PORT=4000
-FRONTEND_PORT=3001
+FRONTEND_PORT=3000
 
 # Seguridad
 JWT_SECRET=your-super-secret-jwt-key-minimum-64-characters-long
@@ -271,14 +271,14 @@ SESSION_SECRET=your-session-secret-minimum-48-characters
 ENCRYPTION_KEY=your-encryption-key-32-characters
 
 # CORS
-CORS_ORIGIN=http://localhost:3001
+CORS_ORIGIN=http://localhost:3000
 API_PREFIX=api
 
 # =============================================================================
 # AUTENTICACIÓN OAUTH
 # =============================================================================
 NEXTAUTH_SECRET=your-nextauth-secret-same-as-jwt
-NEXTAUTH_URL=http://localhost:3001
+NEXTAUTH_URL=http://localhost:3000
 
 # Google OAuth
 GOOGLE_CLIENT_ID=your-google-client-id

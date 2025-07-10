@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/common/database/prisma.service';
-import { Lead } from '@prisma/client';
+import { Lead, LeadSource } from '@prisma/client';
 
 @Injectable()
 export class ProspectsService {
@@ -51,8 +51,17 @@ export class ProspectsService {
     source?: string;
     userId: string;
   }): Promise<Lead> {
+    const { userId, source, ...dataWithoutUserId } = leadData;
     return this.prisma.lead.create({
-      data: leadData,
+      data: {
+        ...dataWithoutUserId,
+        source: source as LeadSource || LeadSource.MANUAL,
+        user: {
+          connect: {
+            id: userId
+          }
+        }
+      },
       include: {
         hubspotContact: true,
         leadScores: true,

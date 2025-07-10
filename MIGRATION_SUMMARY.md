@@ -72,7 +72,7 @@
 - `webhooks/` - Procesamiento de webhooks
 
 ### 3. 🐳 **Configuración Docker Actualizada**
-- ✅ **Frontend**: Puerto 3001
+- ✅ **Frontend**: Puerto 3000
 - ✅ **Backend**: Puerto 4000
 - ✅ **NGINX**: Proxy reverso actualizado
 - ✅ **Variables**: Separadas por servicio

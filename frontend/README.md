@@ -45,7 +45,7 @@ Crear archivo `.env.local`:
 
 ```
 NEXT_PUBLIC_API_URL=http://localhost:4000
-NEXTAUTH_URL=http://localhost:3001
+NEXTAUTH_URL=http://localhost:3000
 NEXTAUTH_SECRET=your-secret-key
 ```
 

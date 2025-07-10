@@ -10,7 +10,7 @@ Sistema completo de gestión de prospectos y leads con **arquitectura de microse
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   Frontend      │    │    Backend      │    │   Database      │
 │   Next.js       │◄──►│    NestJS       │◄──►│   PostgreSQL    │
-│   Puerto 3001   │    │   Puerto 4000   │    │   Puerto 5432   │
+│   Puerto 3000   │    │   Puerto 4000   │    │   Puerto 5432   │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
                               │
                               ▼
@@ -71,7 +71,7 @@ npm run start:dev
 cd frontend
 npm install
 npm run dev
-# App: http://localhost:3001
+# App: http://localhost:3000
 ```
 
 ### Opción 3: Docker (Producción)
@@ -83,7 +83,7 @@ docker-compose up --build
 
 | Servicio | URL | Descripción |
 |----------|-----|-------------|
-| 🎨 **Frontend** | http://localhost:3001 | Interfaz de usuario |
+| 🎨 **Frontend** | http://localhost:3000 | Interfaz de usuario |
 | 🚀 **Backend API** | http://localhost:4000 | API RESTful |
 | 📚 **API Docs** | http://localhost:4000/api/docs | Documentación Swagger |
 | 📊 **Prisma Studio** | http://localhost:5555 | Admin de base de datos |
@@ -152,7 +152,7 @@ REDIS_URL="redis://localhost:6379"
 **Frontend (.env.local):**
 ```env
 NEXT_PUBLIC_API_URL="http://localhost:4000/api"
-NEXTAUTH_URL="http://localhost:3001"
+NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="tu-secret-nextauth"
 ```
 

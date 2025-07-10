@@ -144,7 +144,7 @@ services:
       dockerfile: Dockerfile
       target: builder
     ports:
-      - "3001:3000"
+      - "3000:3000"
     environment:
       - NEXT_PUBLIC_API_URL=http://localhost:3000
       - NODE_ENV=development
