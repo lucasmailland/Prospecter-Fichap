@@ -27,7 +27,7 @@ export default function LeadsPage() {
   const [leadToDelete, setLeadToDelete] = useState<string | null>(null);
 
   // Cargar leads
-  // const _fetchLeads = async () => {
+  const fetchLeads = async () => {
     try {
       setLoading(true);
       setError(null);
@@ -41,7 +41,7 @@ export default function LeadsPage() {
         throw new Error(data.error || 'Error al cargar leads');
       }
     } catch (err) {
-      console.warn('Error fetching leads:', err);
+        console.warn('Error fetching leads:', err);
       setError((err as Error).message);
       toast.error('Error al cargar leads');
     } finally {
@@ -54,7 +54,7 @@ export default function LeadsPage() {
   }, []);
 
   // Crear nuevo lead
-  // const _handleCreateLead = async (leadData: unknown) => {
+  const handleCreateLead = async (leadData: any) => {
     try {
       const response = await fetch('/api/prospects', {
         method: 'POST',
@@ -74,13 +74,13 @@ export default function LeadsPage() {
         throw new Error(result.error || 'Error al crear lead');
       }
     } catch (err) {
-      console.warn('Error creating lead:', err);
+        console.warn('Error creating lead:', err);
       toast.error((err as Error).message);
     }
   };
 
   // Manejar edición de lead
-  // const _handleEditLead = async (leadData: unknown) => {
+  const handleEditLead = async (leadData: any) => {
     if (!editingLead) return;
 
     try {
@@ -106,29 +106,29 @@ export default function LeadsPage() {
         throw new Error(result.error || 'Error al actualizar lead');
       }
     } catch (err) {
-      console.warn('Error updating lead:', err);
+        console.warn('Error updating lead:', err);
       toast.error((err as Error).message);
     }
   };
 
   // Funciones para la tabla
-  // const _handleLeadSelect = (lead: Lead) => {
+  const handleLeadSelect = (lead: Lead) => {
     setSelectedLeadId(lead.id);
     setShowDetailsModal(true);
   };
 
-  // const _handleLeadEdit = (lead: Lead) => {
+  const handleLeadEdit = (lead: Lead) => {
     setEditingLead(lead);
     setShowEditModal(true);
   };
 
-  // const _handleLeadDelete = (lead: Lead) => {
+  const handleLeadDelete = (lead: Lead) => {
     setLeadToDelete(lead.id);
     setShowDeleteConfirm(true);
   };
 
   // Confirmar eliminación
-  // const _confirmDelete = async () => {
+  const confirmDelete = async () => {
     if (!leadToDelete) return;
 
     try {
@@ -145,7 +145,7 @@ export default function LeadsPage() {
         throw new Error(result.error || 'Error al eliminar lead');
       }
     } catch (err) {
-      console.warn('Error deleting lead:', err);
+        console.warn('Error deleting lead:', err);
       toast.error((err as Error).message);
     } finally {
       setShowDeleteConfirm(false);
@@ -154,13 +154,13 @@ export default function LeadsPage() {
   };
 
   // Manejar acciones masivas
-  // const _handleBulkAction = async (action: string, selectedLeads: Lead[]) => {
+  const handleBulkAction = async (action: string, selectedLeads: Lead[]) => {
     const leadIds = selectedLeads.map(lead => lead.id);
     
     try {
       const endpoint = '/api/prospects/bulk';
       let method = 'POST';
-      const body: unknown = { action, leadIds };
+      const body: any = { action, leadIds };
 
       switch (action) {
         case 'mark-contacted':
@@ -213,13 +213,13 @@ export default function LeadsPage() {
         throw new Error(result.error || 'Error en acción masiva');
       }
     } catch (err) {
-      console.warn('Error in bulk action:', err);
+        console.warn('Error in bulk action:', err);
       toast.error((err as Error).message);
     }
   };
 
   // Funciones auxiliares para exportación
-  // const _generateCSV = (data: Lead[]) => {
+  const generateCSV = (data: Lead[]) => {
     const headers = ['Nombre', 'Email', 'Empresa', 'Cargo', 'Teléfono', 'País', 'Estado', 'Score', 'Prioridad', 'Fuente', 'Creado'];
     const rows = data.map(lead => [
       lead.fullName || `${lead.firstName || ''} ${lead.lastName || ''}`.trim(),
@@ -238,7 +238,7 @@ export default function LeadsPage() {
     return [headers, ...rows].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
   };
 
-  // const _downloadCSV = (content: string, filename: string) => {
+  const downloadCSV = (content: string, filename: string) => {
     const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     if (link.download !== undefined) {
@@ -342,7 +342,7 @@ export default function LeadsPage() {
             setEditingLead(null);
           }}
           onSubmit={handleEditLead}
-          initialData={editingLead}
+          initialData={editingLead as any}
           mode="edit"
         />
       )}

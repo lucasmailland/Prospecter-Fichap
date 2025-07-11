@@ -110,7 +110,7 @@ export default function ContactDetailModal({ isOpen, onClose, contactId }: Conta
     }
   }, [isOpen, contactId]);
 
-  // const _loadContactDetail = async () => {
+  const loadContactDetail = async () => {
     setIsLoading(true);
     try {
       const response = await fetch(`/api/hubspot/contacts/${contactId}`);
@@ -120,13 +120,13 @@ export default function ContactDetailModal({ isOpen, onClose, contactId }: Conta
         setContact(data.contact);
       }
     } catch (_error) {
-      console.error('Error loading contact detail:', error);
+      console.error('Error loading contact detail:', _error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // const _formatDate = (dateString: string | null) => {
+  const formatDate = (dateString: string | null) => {
     if (!dateString) return 'N/A';
     return new Date(dateString).toLocaleDateString('es-ES', {
       year: 'numeric',
@@ -137,7 +137,7 @@ export default function ContactDetailModal({ isOpen, onClose, contactId }: Conta
     });
   };
 
-  // const _formatCurrency = (amount: number | null) => {
+  const formatCurrency = (amount: number | null) => {
     if (!amount) return 'N/A';
     return new Intl.NumberFormat('es-ES', {
       style: 'currency',
@@ -145,7 +145,7 @@ export default function ContactDetailModal({ isOpen, onClose, contactId }: Conta
     }).format(amount);
   };
 
-  // const _getLifecycleColor = (stage: string) => {
+  const getLifecycleColor = (stage: string) => {
     const colors: { [key: string]: string } = {
       'subscriber': 'bg-gray-100 text-gray-800',
       'lead': 'bg-blue-100 text-blue-800',
@@ -158,7 +158,7 @@ export default function ContactDetailModal({ isOpen, onClose, contactId }: Conta
     return colors[stage] || 'bg-gray-100 text-gray-800';
   };
 
-  // const _tabs = [
+  const tabs = [
     { id: 'overview', name: 'Información General', icon: User },
     { id: 'activity', name: 'Actividad', icon: Activity },
     { id: 'notes', name: 'Notas y Tareas', icon: Star },
@@ -263,20 +263,20 @@ export default function ContactDetailModal({ isOpen, onClose, contactId }: Conta
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
-                    <p className="text-sm text-gray-900">{contact.firstName} {contact.lastName}</p>
+                    <p className="text-sm text-gray-900">{contact?.firstName} {contact?.lastName}</p>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                    <p className="text-sm text-gray-900">{contact.email}</p>
+                    <p className="text-sm text-gray-900">{contact?.email}</p>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
-                    <p className="text-sm text-gray-900">{contact.phone || 'No disponible'}</p>
+                    <p className="text-sm text-gray-900">{contact?.phone || 'No disponible'}</p>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">LinkedIn</label>
-                    {contact.linkedinUrl ? (
-                      <a href={contact.linkedinUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:text-blue-800">
+                                          {contact?.linkedinUrl ? (
+                        <a href={contact.linkedinUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:text-blue-800">
                         Ver perfil
                       </a>
                     ) : (
@@ -288,27 +288,27 @@ export default function ContactDetailModal({ isOpen, onClose, contactId }: Conta
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Empresa</label>
-                    <p className="text-sm text-gray-900">{contact.company || 'No disponible'}</p>
+                    <p className="text-sm text-gray-900">{contact?.company || 'No disponible'}</p>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Cargo</label>
-                    <p className="text-sm text-gray-900">{contact.jobTitle || 'No disponible'}</p>
+                    <p className="text-sm text-gray-900">{contact?.jobTitle || 'No disponible'}</p>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Ubicación</label>
                     <p className="text-sm text-gray-900">
-                      {contact.city && contact.country ? `${contact.city}, ${contact.country}` : 'No disponible'}
+                      {contact?.city && contact?.country ? `${contact.city}, ${contact.country}` : 'No disponible'}
                     </p>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Zona horaria</label>
-                    <p className="text-sm text-gray-900">{contact.timezone || 'No disponible'}</p>
+                    <p className="text-sm text-gray-900">{contact?.timezone || 'No disponible'}</p>
                   </div>
                 </div>
               </div>
 
               {/* Métricas de email */}
-              {contact.emailMetrics && (
+              {contact && contact.emailMetrics && (
                 <div className="bg-gray-50 rounded-lg p-4">
                   <h4 className="font-medium text-gray-900 mb-3">Métricas de Email</h4>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -333,7 +333,7 @@ export default function ContactDetailModal({ isOpen, onClose, contactId }: Conta
               )}
 
               {/* Deals */}
-              {contact.deals && contact.deals.length > 0 && (
+              {contact && contact.deals && contact.deals.length > 0 && (
                 <div className="bg-gray-50 rounded-lg p-4">
                   <h4 className="font-medium text-gray-900 mb-3">Deals ({contact.deals.length})</h4>
                   <div className="space-y-2">
@@ -363,7 +363,7 @@ export default function ContactDetailModal({ isOpen, onClose, contactId }: Conta
               )}
 
               {/* Resumen de actividad */}
-              {contact.activitySummary && (
+              {contact && contact.activitySummary && (
                 <div className="bg-gray-50 rounded-lg p-4">
                   <h4 className="font-medium text-gray-900 mb-3">Resumen de Actividad</h4>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -392,7 +392,7 @@ export default function ContactDetailModal({ isOpen, onClose, contactId }: Conta
           {activeTab === 'activity' && (
             <div className="p-6 space-y-6">
               {/* Actividades recientes */}
-              {contact.recentActivities && contact.recentActivities.length > 0 && (
+              {contact && contact.recentActivities && contact.recentActivities.length > 0 && (
                 <div>
                   <h4 className="font-medium text-gray-900 mb-3">Actividades Recientes</h4>
                   <div className="space-y-3">
@@ -414,7 +414,7 @@ export default function ContactDetailModal({ isOpen, onClose, contactId }: Conta
               )}
 
               {/* Emails recientes */}
-              {contact.recentEmails && contact.recentEmails.length > 0 && (
+              {contact && contact.recentEmails && contact.recentEmails.length > 0 && (
                 <div>
                   <h4 className="font-medium text-gray-900 mb-3">Emails Recientes</h4>
                   <div className="space-y-3">
@@ -443,7 +443,7 @@ export default function ContactDetailModal({ isOpen, onClose, contactId }: Conta
               )}
 
               {/* Llamadas recientes */}
-              {contact.recentCalls && contact.recentCalls.length > 0 && (
+              {contact && contact.recentCalls && contact.recentCalls.length > 0 && (
                 <div>
                   <h4 className="font-medium text-gray-900 mb-3">Llamadas Recientes</h4>
                   <div className="space-y-3">
@@ -467,7 +467,7 @@ export default function ContactDetailModal({ isOpen, onClose, contactId }: Conta
               )}
 
               {/* Reuniones recientes */}
-              {contact.recentMeetings && contact.recentMeetings.length > 0 && (
+              {contact && contact.recentMeetings && contact.recentMeetings.length > 0 && (
                 <div>
                   <h4 className="font-medium text-gray-900 mb-3">Reuniones Recientes</h4>
                   <div className="space-y-3">
@@ -495,7 +495,7 @@ export default function ContactDetailModal({ isOpen, onClose, contactId }: Conta
           {activeTab === 'notes' && (
             <div className="p-6 space-y-6">
               {/* Notas recientes */}
-              {contact.recentNotes && contact.recentNotes.length > 0 ? (
+              {contact && contact.recentNotes && contact.recentNotes.length > 0 ? (
                 <div>
                   <h4 className="font-medium text-gray-900 mb-3">Notas</h4>
                   <div className="space-y-3">
@@ -514,7 +514,7 @@ export default function ContactDetailModal({ isOpen, onClose, contactId }: Conta
               )}
 
               {/* Tareas */}
-              {contact.recentTasks && contact.recentTasks.length > 0 && (
+              {contact && contact.recentTasks && contact.recentTasks.length > 0 && (
                 <div>
                   <h4 className="font-medium text-gray-900 mb-3">Tareas</h4>
                   <div className="space-y-3">

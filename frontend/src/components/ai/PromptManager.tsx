@@ -1,29 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { 
-  Card, 
-  CardBody, 
-  CardHeader, 
-  Input, 
-  Button, 
-  Select, 
-  SelectItem, 
-  Textarea,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  useDisclosure,
-  Chip,
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell
-} from '@heroui/react';
+import { Card, CardHeader, CardContent } from '@/components/ui/Card';
+import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/Button';
+import Modal from '@/components/ui/Modal';
 import LoadingSystem from '@/components/ui/LoadingSystem';
 import { toast } from '@/components/ui/Toast';
 
@@ -63,7 +44,7 @@ export default function PromptManager() {
   const [isLoading, setIsLoading] = useState(true);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
   
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState<PromptTemplate | null>(null);
 
   useEffect(() => {
@@ -74,7 +55,7 @@ export default function PromptManager() {
     filterTemplates();
   }, [templates, selectedCategory, searchQuery]);
 
-  // const _loadTemplates = async () => {
+  const loadTemplates = async () => {
     setIsLoading(true);
     try {
       const response = await fetch('/api/ai/prompts');
@@ -83,15 +64,15 @@ export default function PromptManager() {
       if (data.success) {
         setTemplates(data.data);
       }
-    } catch (_error) {
-console.warn('Error loading templates:', error);
+    } catch (error) {
+        console.warn('Error loading templates:', error);
       setToast({ message: 'Error al cargar templates', type: 'error' });
     } finally {
       setIsLoading(false);
     }
   };
 
-  // const _filterTemplates = () => {
+  const filterTemplates = () => {
     let filtered = templates;
     
     if (selectedCategory) {
@@ -108,22 +89,22 @@ console.warn('Error loading templates:', error);
     setFilteredTemplates(filtered);
   };
 
-  // const _openCreateModal = () => {
+  const openCreateModal = () => {
     setEditingTemplate(null);
-    onOpen();
+    setIsModalOpen(true);
   };
 
-  // const _openEditModal = (template: PromptTemplate) => {
+  const openEditModal = (template: PromptTemplate) => {
     setEditingTemplate(template);
-    onOpen();
+    setIsModalOpen(true);
   };
 
-  // const _extractVariables = (prompt: string): string[] => {
+  const extractVariables = (prompt: string): string[] => {
     const matches = prompt.match(/\{([^}]+)\}/g);
     return matches ? matches.map(match => match.slice(1, -1)) : [];
   };
 
-  // const _getCategoryColor = (category: string) => {
+  const getCategoryColor = (category: string) => {
     const colors: Record<string, string> = {
       EMAIL: 'primary',
       LINKEDIN: 'secondary',
@@ -158,7 +139,7 @@ console.warn('Error loading templates:', error);
             </Button>
           </div>
         </CardHeader>
-        <CardBody className="space-y-4">
+        <CardContent className="space-y-4">
           {/* Filters */}
           <div className="flex flex-col md:flex-row gap-4">
             <Input
@@ -167,97 +148,90 @@ console.warn('Error loading templates:', error);
               onChange={(e) => setSearchQuery(e.target.value)}
               className="flex-1"
             />
-            <Select
-              placeholder="Filtrar por categoría"
-              selectedKeys={selectedCategory ? [selectedCategory] : []}
-              onSelectionChange={(keys) => {
-                const selected = Array.from(keys)[0] as string;
-                setSelectedCategory(selected || '');
-              }}
-              className="md:w-64"
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="md:w-64 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <SelectItem key="" value="">Todas las categorías</SelectItem>
+              <option value="">Todas las categorías</option>
               {categories.map((category) => (
-                <SelectItem key={category.value} value={category.value}>
+                <option key={category.value} value={category.value}>
                   {category.label}
-                </SelectItem>
+                </option>
               ))}
-            </Select>
+            </select>
           </div>
 
           {/* Templates Table */}
-          <Table>
-            <TableHeader>
-              <TableColumn>NOMBRE</TableColumn>
-              <TableColumn>CATEGORÍA</TableColumn>
-              <TableColumn>VARIABLES</TableColumn>
-              <TableColumn>PÚBLICO</TableColumn>
-              <TableColumn>ACCIONES</TableColumn>
-            </TableHeader>
-            <TableBody>
-              {filteredTemplates.map((template) => (
-                <TableRow key={template.id}>
-                  <TableCell>
-                    <div>
-                      <p className="font-medium">{template.name}</p>
-                      {template.description && (
-                        <p className="text-sm text-gray-600">{template.description}</p>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Chip 
-                      color={getCategoryColor(template.category) as any}
-                      variant="flat"
-                      size="sm"
-                    >
-                      {categories.find(c => c.value === template.category)?.label}
-                    </Chip>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex flex-wrap gap-1">
-                      {extractVariables(template.prompt).map((variable, _index) => (
-                        <Chip key={index} size="sm" variant="bordered">
-                          {variable}
-                        </Chip>
-                      ))}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Chip 
-                      color={template.isPublic ? 'success' : 'default'}
-                      variant="flat"
-                      size="sm"
-                    >
-                      {template.isPublic ? 'Público' : 'Privado'}
-                    </Chip>
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      size="sm"
-                      variant="light"
-                      onClick={() => openEditModal(template)}
-                    >
-                      Editar
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse border border-gray-200">
+              <thead>
+                <tr className="bg-gray-50">
+                  <th className="border border-gray-200 px-4 py-2 text-left">NOMBRE</th>
+                  <th className="border border-gray-200 px-4 py-2 text-left">CATEGORÍA</th>
+                  <th className="border border-gray-200 px-4 py-2 text-left">VARIABLES</th>
+                  <th className="border border-gray-200 px-4 py-2 text-left">PÚBLICO</th>
+                  <th className="border border-gray-200 px-4 py-2 text-left">ACCIONES</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredTemplates.map((template) => (
+                  <tr key={template.id}>
+                    <td className="border border-gray-200 px-4 py-2">
+                      <div>
+                        <p className="font-medium">{template.name}</p>
+                        {template.description && (
+                          <p className="text-sm text-gray-600">{template.description}</p>
+                        )}
+                      </div>
+                    </td>
+                    <td className="border border-gray-200 px-4 py-2">
+                      <span className="inline-block bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm">
+                        {categories.find(c => c.value === template.category)?.label}
+                      </span>
+                    </td>
+                    <td className="border border-gray-200 px-4 py-2">
+                      <div className="flex flex-wrap gap-1">
+                        {extractVariables(template.prompt).map((variable, index) => (
+                          <span key={index} className="inline-block bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs border">
+                            {variable}
+                          </span>
+                        ))}
+                      </div>
+                    </td>
+                    <td className="border border-gray-200 px-4 py-2">
+                      <span className={`inline-block px-2 py-1 rounded text-sm ${
+                        template.isPublic ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                      }`}>
+                        {template.isPublic ? 'Público' : 'Privado'}
+                      </span>
+                    </td>
+                    <td className="border border-gray-200 px-4 py-2">
+                      <Button
+                        onClick={() => openEditModal(template)}
+                        className="text-sm"
+                      >
+                        Editar
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
           {filteredTemplates.length === 0 && (
             <div className="text-center py-8">
               <p className="text-gray-500">No se encontraron prompts</p>
             </div>
           )}
-        </CardBody>
+        </CardContent>
       </Card>
 
       {/* Create/Edit Modal */}
       <PromptModal
-        isOpen={isOpen}
-        onClose={onClose}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
         template={editingTemplate}
         onSave={loadTemplates}
         onToast={setToast}
@@ -310,7 +284,7 @@ function PromptModal({ isOpen, onClose, template, onSave, onToast }: PromptModal
     }
   }, [template]);
 
-  // const _handleSave = async () => {
+  const handleSave = async () => {
     if (!formData.name || !formData.prompt) {
       onToast({ message: 'Nombre y prompt son requeridos', type: 'error' });
       return;
@@ -342,27 +316,31 @@ function PromptModal({ isOpen, onClose, template, onSave, onToast }: PromptModal
         onToast({ message: data.error || 'Error al guardar prompt', type: 'error' });
       }
     } catch (_error) {
-console.warn('Error saving prompt:', error);
+      console.warn('Error saving prompt:', _error);
       onToast({ message: 'Error al guardar prompt', type: 'error' });
     } finally {
       setIsSaving(false);
     }
   };
 
-  // const _extractVariables = (prompt: string): string[] => {
+  const extractVariables = (prompt: string): string[] => {
     const matches = prompt.match(/\{([^}]+)\}/g);
     return matches ? matches.map(match => match.slice(1, -1)) : [];
   };
 
-  // const _variables = extractVariables(formData.prompt);
+  const variables = extractVariables(formData.prompt);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="2xl">
-      <ModalContent>
-        <ModalHeader>
+    <Modal 
+      isOpen={isOpen} 
+      onClose={onClose}
+      title={template ? 'Editar Prompt' : 'Crear Nuevo Prompt'}
+    >
+      <div className="bg-white rounded-lg p-6 w-full max-w-2xl mx-auto">
+        <h2 className="text-xl font-semibold mb-4">
           {template ? 'Editar Prompt' : 'Crear Nuevo Prompt'}
-        </ModalHeader>
-        <ModalBody className="space-y-4">
+        </h2>
+        <div className="space-y-4">
           <Input
             label="Nombre"
             value={formData.name}
@@ -370,45 +348,51 @@ console.warn('Error saving prompt:', error);
             placeholder="Ej: Email de seguimiento comercial"
           />
 
-          <Textarea
-            label="Descripción"
-            value={formData.description}
-            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-            placeholder="Describe el propósito de este prompt"
-            rows={2}
-          />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+            <textarea
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              placeholder="Describe el propósito de este prompt"
+              rows={2}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
 
-          <Select
-            label="Categoría"
-            selectedKeys={[formData.category]}
-            onSelectionChange={(keys) => {
-              const selected = Array.from(keys)[0] as string;
-              setFormData({ ...formData, category: selected });
-            }}
-          >
-            {categories.map((category) => (
-              <SelectItem key={category.value} value={category.value}>
-                {category.label}
-              </SelectItem>
-            ))}
-          </Select>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Categoría</label>
+            <select
+              value={formData.category}
+              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              {categories.map((category) => (
+                <option key={category.value} value={category.value}>
+                  {category.label}
+                </option>
+              ))}
+            </select>
+          </div>
 
-          <Textarea
-            label="Prompt"
-            value={formData.prompt}
-            onChange={(e) => setFormData({ ...formData, prompt: e.target.value })}
-            placeholder="Escribe tu prompt aquí. Usa {variable} para variables dinámicas"
-            rows={8}
-          />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Prompt</label>
+            <textarea
+              value={formData.prompt}
+              onChange={(e) => setFormData({ ...formData, prompt: e.target.value })}
+              placeholder="Escribe tu prompt aquí. Usa {variable} para variables dinámicas"
+              rows={8}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
 
           {variables.length > 0 && (
             <div>
               <p className="text-sm font-medium mb-2">Variables detectadas:</p>
               <div className="flex flex-wrap gap-2">
-                {variables.map((variable, _index) => (
-                  <Chip key={index} size="sm" variant="bordered">
+                {variables.map((variable, index) => (
+                  <span key={index} className="inline-block bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs border">
                     {variable}
-                  </Chip>
+                  </span>
                 ))}
               </div>
             </div>
@@ -425,20 +409,20 @@ console.warn('Error saving prompt:', error);
               Hacer público (otros usuarios podrán usar este prompt)
             </label>
           </div>
-        </ModalBody>
-        <ModalFooter>
-          <Button variant="light" onClick={onClose}>
+        </div>
+        <div className="flex justify-end gap-2 mt-6">
+          <Button onClick={onClose}>
             Cancelar
           </Button>
           <Button 
-            color="primary" 
             onClick={handleSave}
-            isLoading={isSaving}
+            loading={isSaving}
+            className="bg-blue-600 text-white"
           >
             {template ? 'Actualizar' : 'Crear'}
           </Button>
-        </ModalFooter>
-      </ModalContent>
+        </div>
+      </div>
     </Modal>
   );
 } 

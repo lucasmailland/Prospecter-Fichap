@@ -1,0 +1,18 @@
+{
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/analytics/page": "app/analytics/page.js",
+  "/ai/page": "app/ai/page.js",
+  "/auth/reset-password/page": "app/auth/reset-password/page.js",
+  "/auth/error/page": "app/auth/error/page.js",
+  "/auth/signup/page": "app/auth/signup/page.js",
+  "/auth/signin/page": "app/auth/signin/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/hubspot/contacts/[id]/page": "app/hubspot/contacts/[id]/page.js",
+  "/leads/page": "app/leads/page.js",
+  "/auth/forgot-password/page": "app/auth/forgot-password/page.js",
+  "/page": "app/page.js",
+  "/settings/page": "app/settings/page.js",
+  "/tasks/page": "app/tasks/page.js",
+  "/settings/security/page": "app/settings/security/page.js",
+  "/hubspot/page": "app/hubspot/page.js"
+}

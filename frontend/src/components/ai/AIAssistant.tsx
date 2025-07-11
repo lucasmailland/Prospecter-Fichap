@@ -39,7 +39,7 @@ export default function AIAssistant() {
   const [isLoading, setIsLoading] = useState(true);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
   
-  // const _messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     loadConversations();
@@ -49,11 +49,11 @@ export default function AIAssistant() {
     scrollToBottom();
   }, [currentConversation?.messages]);
 
-  // const _scrollToBottom = () => {
+  const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // const _loadConversations = async () => {
+  const loadConversations = async () => {
     setIsLoading(true);
     try {
       const response = await fetch('/api/ai/conversations');
@@ -65,15 +65,15 @@ export default function AIAssistant() {
           setCurrentConversation(data.data[0]);
         }
       }
-    } catch (_error) {
-console.warn('Error loading conversations:', error);
+    } catch (error) {
+  console.warn('Error loading conversations:', error);
       setToast({ message: 'Error al cargar conversaciones', type: 'error' });
     } finally {
       setIsLoading(false);
     }
   };
 
-  // const _createNewConversation = async () => {
+  const createNewConversation = async () => {
     const title = `Nueva conversación ${new Date().toLocaleDateString()}`;
     const context = `Asistente de ventas para análisis de leads, estrategias comerciales y generación de contenido. Fecha: ${new Date().toLocaleDateString()}`;
     
@@ -102,13 +102,13 @@ console.warn('Error loading conversations:', error);
       } else {
         setToast({ message: data.error || 'Error al crear conversación', type: 'error' });
       }
-    } catch (_error) {
-console.warn('Error creating conversation:', error);
+    } catch (error) {
+        console.warn('Error creating conversation:', error);
       setToast({ message: 'Error al crear conversación', type: 'error' });
     }
   };
 
-  // const _sendMessage = async () => {
+  const sendMessage = async () => {
     if (!message.trim()) return;
 
     if (!currentConversation) {
@@ -158,8 +158,8 @@ console.warn('Error creating conversation:', error);
           messages: prev.messages.filter(m => m.id !== 'temp-user')
         } : null);
       }
-    } catch (_error) {
-console.warn('Error sending message:', error);
+    } catch (error) {
+        console.warn('Error sending message:', error);
       setToast({ message: 'Error al enviar mensaje', type: 'error' });
       // Remove the optimistic message on error
       setCurrentConversation(prev => prev ? {
@@ -171,7 +171,7 @@ console.warn('Error sending message:', error);
     }
   };
 
-  // const _loadConversationMessages = async (conversationId: string) => {
+  const loadConversationMessages = async (conversationId: string) => {
     try {
       const response = await fetch(`/api/ai/conversations/${conversationId}`);
       const data = await response.json();
@@ -179,26 +179,26 @@ console.warn('Error sending message:', error);
       if (data.success) {
         setCurrentConversation(data.data);
       }
-    } catch (_error) {
-console.warn('Error loading conversation messages:', error);
+    } catch (error) {
+        console.warn('Error loading conversation messages:', error);
     }
   };
 
-  // const _handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
     }
   };
 
-  // const _formatTime = (dateString: string) => {
+  const formatTime = (dateString: string) => {
     return new Date(dateString).toLocaleTimeString('es-ES', {
       hour: '2-digit',
       minute: '2-digit'
     });
   };
 
-  // const _quickPrompts = [
+  const quickPrompts = [
     "Analiza los leads más prometedores",
     "Crea un email de seguimiento",
     "Estrategia para cerrar más ventas",
@@ -295,7 +295,7 @@ console.warn('Error loading conversation messages:', error);
                     <div className="flex flex-wrap gap-2 justify-center">
                       {quickPrompts.map((prompt, _index) => (
                         <Chip
-                          key={index}
+                          key={_index}
                           variant="bordered"
                           className="cursor-pointer hover:bg-blue-50"
                           onClick={() => setMessage(prompt)}
@@ -371,7 +371,7 @@ console.warn('Error loading conversation messages:', error);
                   <div className="flex flex-wrap gap-1">
                     {quickPrompts.slice(0, 3).map((prompt, _index) => (
                       <Chip
-                        key={index}
+                        key={_index}
                         size="sm"
                         variant="bordered"
                         className="cursor-pointer hover:bg-blue-50"

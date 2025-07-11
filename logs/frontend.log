@@ -1,0 +1,562 @@
+
+> frontend@0.1.0 dev
+> next dev -p 3000
+
+   ▲ Next.js 15.3.5
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.1.197:3000
+   - Environments: .env.local
+
+ ✓ Starting...
+ ⚠ The config property `experimental.turbo` is deprecated. Move this setting to `config.turbopack` as Turbopack is now stable.
+ ✓ Ready in 1494ms
+ ○ Compiling / ...
+ ✓ Compiled / in 7.6s (4213 modules)
+ GET / 200 in 8105ms
+ GET / 200 in 141ms
+ ○ Compiling /auth/signin ...
+ ✓ Compiled /auth/signin in 776ms (2176 modules)
+ ✓ Compiled in 1289ms (2067 modules)
+ GET /favicon.ico 200 in 2450ms
+ GET /auth/signin 200 in 2156ms
+ GET /auth/signin 200 in 22ms
+ GET / 200 in 32ms
+ ⚠ Found a change in next.config.ts. Restarting the server to apply the changes...
+   ▲ Next.js 15.3.5
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.1.197:3000
+   - Environments: .env.local
+
+ ✓ Starting...
+ ⚠ The config property `experimental.turbo` is deprecated. Move this setting to `config.turbopack` as Turbopack is now stable.
+ ✓ Ready in 2.1s
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 6.9s (4202 modules)
+ GET /api/auth/error 404 in 7431ms
+ ○ Compiling /favicon.ico ...
+ ✓ Compiled /favicon.ico in 2.2s (4218 modules)
+ GET /favicon.ico 200 in 2274ms
+ GET /api/auth/error 404 in 288ms
+ GET /api/auth/session 404 in 2437ms
+ GET /api/auth/session 404 in 53ms
+ ○ Compiling /auth/signin ...
+ ✓ Compiled /auth/signin in 801ms (4237 modules)
+ GET /auth/signin 200 in 906ms
+ GET /auth/signin 200 in 148ms
+ GET /api/auth/session 404 in 65ms
+ GET /api/auth/session 404 in 187ms
+ ✓ Compiled in 1198ms (4251 modules)
+ GET /auth/signin 200 in 41ms
+ GET /_next/static/css/app/layout.css?v=1752207998876 404 in 90ms
+ ✓ Compiled in 658ms (2063 modules)
+ GET /auth/signin 200 in 14ms
+ GET /_next/static/css/app/layout.css?v=1752208034620 404 in 36ms
+ ✓ Compiled in 640ms (2063 modules)
+ GET /auth/signin 200 in 13ms
+ GET /_next/static/css/app/layout.css?v=1752208076622 404 in 37ms
+ ✓ Compiled in 712ms (2063 modules)
+ GET /auth/signin 200 in 12ms
+ GET /_next/static/css/app/layout.css?v=1752208110211 404 in 43ms
+ ✓ Compiled in 717ms (2063 modules)
+ GET /auth/signin 200 in 12ms
+ GET /_next/static/css/app/layout.css?v=1752208168996 404 in 33ms
+ ✓ Compiled in 827ms (2063 modules)
+ GET /auth/signin 200 in 16ms
+ GET /_next/static/css/app/layout.css?v=1752208218928 404 in 37ms
+ ✓ Compiled in 826ms (2063 modules)
+ GET /auth/signin 200 in 13ms
+ GET /_next/static/css/app/layout.css?v=1752208303305 404 in 35ms
+ ✓ Compiled in 828ms (2063 modules)
+ GET /auth/signin 200 in 12ms
+ GET /_next/static/css/app/layout.css?v=1752208416360 404 in 36ms
+ ✓ Compiled in 734ms (2063 modules)
+ GET /auth/signin 200 in 13ms
+ GET /_next/static/css/app/layout.css?v=1752208470330 404 in 36ms
+ ✓ Compiled in 733ms (2063 modules)
+ GET /auth/signin 200 in 14ms
+ GET /_next/static/css/app/layout.css?v=1752208512471 404 in 41ms
+ GET /auth/signin 200 in 78ms
+ GET /_next/static/css/app/layout.css?v=1752208541400 404 in 78ms
+ GET /_next/static/chunks/webpack.js?v=1752208541400 404 in 75ms
+ GET /_next/static/chunks/app/not-found.js 404 in 121ms
+ GET /_next/static/chunks/app/layout.js 404 in 122ms
+ GET /_next/static/chunks/main-app.js?v=1752208541400 404 in 124ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 125ms
+ GET /_next/static/chunks/app/auth/signin/page.js 404 in 34ms
+ ⨯ Error: Cannot find module './447.js'
+Require stack:
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/server/webpack-runtime.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/server/app/auth/signin/page.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/require.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/load-components.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/utils.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/swc/options.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/swc/index.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/next-config-ts/transpile-config.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/config.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/next.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/lib/start-server.js
+    at __webpack_require__.f.require (.next/server/webpack-runtime.js:203:28)
+    at <unknown> (.next/server/webpack-runtime.js:116:40)
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (.next/server/webpack-runtime.js:115:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (.next/server/webpack-runtime.js:167:22)
+    at <unknown> (.next/server/app/favicon.ico/route.js:1:62786)
+    at Object.<anonymous> (.next/server/app/favicon.ico/route.js:1:62828) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/favicon.ico'
+}
+ GET /favicon.ico 500 in 57ms
+ GET /auth/signin 200 in 154ms
+ GET /_next/static/css/app/layout.css?v=1752208557500 404 in 297ms
+ GET /_next/static/chunks/webpack.js?v=1752208557500 404 in 557ms
+ GET /_next/static/chunks/main-app.js?v=1752208557500 404 in 511ms
+ GET /_next/static/chunks/app/layout.js 404 in 597ms
+ GET /_next/static/chunks/app/not-found.js 404 in 601ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 605ms
+ GET /_next/static/chunks/app/auth/signin/page.js 404 in 151ms
+ ⨯ Error: Cannot find module './447.js'
+Require stack:
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/server/webpack-runtime.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/server/app/auth/signin/page.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/require.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/load-components.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/utils.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/swc/options.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/swc/index.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/next-config-ts/transpile-config.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/config.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/next.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/lib/start-server.js
+    at __webpack_require__.f.require (.next/server/webpack-runtime.js:203:28)
+    at <unknown> (.next/server/webpack-runtime.js:116:40)
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (.next/server/webpack-runtime.js:115:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (.next/server/webpack-runtime.js:167:22)
+    at <unknown> (.next/server/app/favicon.ico/route.js:1:62786)
+    at Object.<anonymous> (.next/server/app/favicon.ico/route.js:1:62828) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/favicon.ico'
+}
+ GET /favicon.ico 500 in 93ms
+ GET /auth/signin 200 in 83ms
+ GET /_next/static/css/app/layout.css?v=1752208560872 404 in 589ms
+ GET /_next/static/chunks/main-app.js?v=1752208560872 404 in 680ms
+ GET /_next/static/chunks/webpack.js?v=1752208560872 404 in 682ms
+ GET /_next/static/chunks/app/not-found.js 404 in 677ms
+ GET /_next/static/chunks/app/layout.js 404 in 683ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 685ms
+ GET /_next/static/chunks/app/auth/signin/page.js 404 in 210ms
+ ⨯ Error: Cannot find module './447.js'
+Require stack:
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/server/webpack-runtime.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/server/app/auth/signin/page.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/require.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/load-components.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/utils.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/swc/options.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/swc/index.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/next-config-ts/transpile-config.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/config.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/next.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/lib/start-server.js
+    at __webpack_require__.f.require (.next/server/webpack-runtime.js:203:28)
+    at <unknown> (.next/server/webpack-runtime.js:116:40)
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (.next/server/webpack-runtime.js:115:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (.next/server/webpack-runtime.js:167:22)
+    at <unknown> (.next/server/app/favicon.ico/route.js:1:62786)
+    at Object.<anonymous> (.next/server/app/favicon.ico/route.js:1:62828) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/favicon.ico'
+}
+ GET /favicon.ico 500 in 117ms
+ GET /auth/signin 200 in 107ms
+ GET /_next/static/css/app/layout.css?v=1752208562108 404 in 264ms
+ GET /_next/static/chunks/webpack.js?v=1752208562108 404 in 318ms
+ GET /_next/static/chunks/app/auth/signin/page.js 404 in 498ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 508ms
+ GET /_next/static/chunks/main-app.js?v=1752208562108 404 in 515ms
+ GET /_next/static/chunks/app/not-found.js 404 in 503ms
+ GET /_next/static/chunks/app/layout.js 404 in 509ms
+ ⨯ Error: Cannot find module './447.js'
+Require stack:
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/server/webpack-runtime.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/server/app/auth/signin/page.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/require.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/load-components.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/utils.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/swc/options.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/swc/index.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/next-config-ts/transpile-config.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/config.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/next.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/lib/start-server.js
+    at __webpack_require__.f.require (.next/server/webpack-runtime.js:203:28)
+    at <unknown> (.next/server/webpack-runtime.js:116:40)
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (.next/server/webpack-runtime.js:115:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (.next/server/webpack-runtime.js:167:22)
+    at <unknown> (.next/server/app/favicon.ico/route.js:1:62786)
+    at Object.<anonymous> (.next/server/app/favicon.ico/route.js:1:62828) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/favicon.ico'
+}
+ GET /favicon.ico 500 in 54ms
+ ○ Compiling / ...
+ ✓ Compiled / in 7.9s (4264 modules)
+ GET / 200 in 5910ms
+ ⨯ Error: Cannot find module './447.js'
+Require stack:
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/server/webpack-runtime.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/server/app/page.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/require.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/load-components.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/utils.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/swc/options.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/swc/index.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/next-config-ts/transpile-config.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/config.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/next.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/lib/start-server.js
+    at __webpack_require__.f.require (.next/server/webpack-runtime.js:203:28)
+    at <unknown> (.next/server/webpack-runtime.js:116:40)
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (.next/server/webpack-runtime.js:115:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (.next/server/webpack-runtime.js:167:22)
+    at <unknown> (.next/server/app/_not-found/page.js:1:2161)
+    at Object.<anonymous> (.next/server/app/_not-found/page.js:1:2211) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+ ⨯ Error: Cannot find module './447.js'
+Require stack:
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/server/webpack-runtime.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/server/app/page.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/require.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/load-components.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/utils.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/swc/options.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/swc/index.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/next-config-ts/transpile-config.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/config.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/next.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/lib/start-server.js
+    at __webpack_require__.f.require (.next/server/webpack-runtime.js:203:28)
+    at <unknown> (.next/server/webpack-runtime.js:116:40)
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (.next/server/webpack-runtime.js:115:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (.next/server/webpack-runtime.js:167:22)
+    at <unknown> (.next/server/app/_not-found/page.js:1:2161)
+    at Object.<anonymous> (.next/server/app/_not-found/page.js:1:2211) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+ ⨯ Error: Cannot find module './447.js'
+Require stack:
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/server/webpack-runtime.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/server/app/page.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/require.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/load-components.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/utils.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/swc/options.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/swc/index.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/next-config-ts/transpile-config.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/config.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/next.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/lib/start-server.js
+    at __webpack_require__.f.require (.next/server/webpack-runtime.js:203:28)
+    at <unknown> (.next/server/webpack-runtime.js:116:40)
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (.next/server/webpack-runtime.js:115:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (.next/server/webpack-runtime.js:167:22)
+    at <unknown> (.next/server/app/_not-found/page.js:1:2161)
+    at Object.<anonymous> (.next/server/app/_not-found/page.js:1:2211) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 8.1s (4590 modules)
+ GET /_next/static/css/app/layout.css?v=1752208574505 500 in 16789ms
+ GET /_next/static/chunks/main-app.js?v=1752208574505 500 in 16606ms
+ GET /_next/static/chunks/app-pages-internals.js 500 in 12072ms
+ ⨯ Error: Cannot find module './447.js'
+Require stack:
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/server/webpack-runtime.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/server/app/_not-found/page.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/require.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/load-components.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/utils.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/swc/options.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/swc/index.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/next-config-ts/transpile-config.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/config.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/next.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/lib/start-server.js
+    at __webpack_require__.f.require (.next/server/webpack-runtime.js:203:28)
+    at <unknown> (.next/server/webpack-runtime.js:116:40)
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (.next/server/webpack-runtime.js:115:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (.next/server/webpack-runtime.js:167:22)
+    at <unknown> (.next/server/app/_not-found/page.js:1:2161)
+    at Object.<anonymous> (.next/server/app/_not-found/page.js:1:2211) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+ GET /_next/static/chunks/app/not-found.js 500 in 143ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/cache/webpack/client-development-fallback/0.pack.gz_' -> '/Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/cache/webpack/client-development-fallback/0.pack.gz'
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/cache/webpack/client-development-fallback/0.pack.gz_' -> '/Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/cache/webpack/client-development-fallback/0.pack.gz'
+ ⨯ Error: Cannot find module './447.js'
+Require stack:
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/server/webpack-runtime.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/server/app/_not-found/page.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/require.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/load-components.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/utils.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/swc/options.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/swc/index.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/next-config-ts/transpile-config.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/config.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/next.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/lib/start-server.js
+    at __webpack_require__.f.require (.next/server/webpack-runtime.js:203:28)
+    at <unknown> (.next/server/webpack-runtime.js:116:40)
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (.next/server/webpack-runtime.js:115:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (.next/server/webpack-runtime.js:167:22)
+    at <unknown> (.next/server/app/favicon.ico/route.js:1:62786)
+    at Object.<anonymous> (.next/server/app/favicon.ico/route.js:1:62828) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/favicon.ico'
+}
+ GET /favicon.ico 500 in 111ms
+ ✓ Compiled in 984ms (2320 modules)
+ ✓ Compiled in 1092ms (2320 modules)
+ ✓ Compiled in 1032ms (2320 modules)
+ ✓ Compiled in 656ms (2320 modules)
+ ✓ Compiled in 767ms (2320 modules)
+ ✓ Compiled in 726ms (2320 modules)
+ ✓ Compiled in 919ms (2320 modules)
+ ⨯ Error: Cannot find module './447.js'
+Require stack:
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/server/webpack-runtime.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/server/app/_not-found/page.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/require.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/load-components.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/utils.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/swc/options.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/swc/index.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/next-config-ts/transpile-config.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/config.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/next.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/lib/start-server.js
+    at __webpack_require__.f.require (.next/server/webpack-runtime.js:203:28)
+    at <unknown> (.next/server/webpack-runtime.js:116:40)
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (.next/server/webpack-runtime.js:115:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (.next/server/webpack-runtime.js:167:22)
+    at <unknown> (.next/server/app/page.js:1:14591)
+    at Object.<anonymous> (.next/server/app/page.js:1:14641) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/'
+}
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 921ms (4571 modules)
+ ⨯ Error: Cannot find module './548.js'
+Require stack:
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/server/webpack-runtime.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/server/pages/_document.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/require.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/load-components.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/utils.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/swc/options.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/swc/index.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/next-config-ts/transpile-config.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/config.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/next.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/lib/start-server.js
+    at __webpack_require__.f.require (.next/server/webpack-runtime.js:198:28)
+    at <unknown> (.next/server/webpack-runtime.js:111:40)
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (.next/server/webpack-runtime.js:110:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (.next/server/webpack-runtime.js:162:22)
+    at <unknown> (.next/server/pages/_document.js:1:339)
+    at Object.<anonymous> (.next/server/pages/_document.js:1:381) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+ GET / 500 in 1045ms
+ ✓ Compiled /_not-found in 325ms (2267 modules)
+ ⨯ Error: Cannot find module './447.js'
+Require stack:
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/server/webpack-runtime.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/server/app/_not-found/page.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/require.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/load-components.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/utils.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/swc/options.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/swc/index.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/next-config-ts/transpile-config.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/config.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/next.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/lib/start-server.js
+    at __webpack_require__.f.require (.next/server/webpack-runtime.js:198:28)
+    at <unknown> (.next/server/webpack-runtime.js:111:40)
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (.next/server/webpack-runtime.js:110:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (.next/server/webpack-runtime.js:162:22)
+    at <unknown> (.next/server/app/_not-found/page.js:1:2161)
+    at Object.<anonymous> (.next/server/app/_not-found/page.js:1:2211) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+ ⨯ Error: Cannot find module './447.js'
+Require stack:
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/server/webpack-runtime.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/server/app/_not-found/page.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/require.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/load-components.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/utils.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/swc/options.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/swc/index.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/next-config-ts/transpile-config.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/config.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/next.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/lib/start-server.js
+    at __webpack_require__.f.require (.next/server/webpack-runtime.js:198:28)
+    at <unknown> (.next/server/webpack-runtime.js:111:40)
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (.next/server/webpack-runtime.js:110:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (.next/server/webpack-runtime.js:162:22)
+    at <unknown> (.next/server/app/_not-found/page.js:1:2161)
+    at Object.<anonymous> (.next/server/app/_not-found/page.js:1:2211) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+ ⨯ Error: Cannot find module './447.js'
+Require stack:
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/server/webpack-runtime.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/server/app/_not-found/page.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/require.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/load-components.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/utils.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/swc/options.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/swc/index.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/next-config-ts/transpile-config.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/config.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/next.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/lib/start-server.js
+    at __webpack_require__.f.require (.next/server/webpack-runtime.js:198:28)
+    at <unknown> (.next/server/webpack-runtime.js:111:40)
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (.next/server/webpack-runtime.js:110:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (.next/server/webpack-runtime.js:162:22)
+    at <unknown> (.next/server/app/_not-found/page.js:1:2161)
+    at Object.<anonymous> (.next/server/app/_not-found/page.js:1:2211) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+ ⨯ Error: Cannot find module './447.js'
+Require stack:
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/server/webpack-runtime.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/server/app/_not-found/page.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/require.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/load-components.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/utils.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/swc/options.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/swc/index.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/next-config-ts/transpile-config.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/config.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/next.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/lib/start-server.js
+    at __webpack_require__.f.require (.next/server/webpack-runtime.js:198:28)
+    at <unknown> (.next/server/webpack-runtime.js:111:40)
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (.next/server/webpack-runtime.js:110:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (.next/server/webpack-runtime.js:162:22)
+    at <unknown> (.next/server/app/_not-found/page.js:1:2161)
+    at Object.<anonymous> (.next/server/app/_not-found/page.js:1:2211) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+ ⨯ Error: Cannot find module './447.js'
+Require stack:
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/server/webpack-runtime.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/server/app/_not-found/page.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/require.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/load-components.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/utils.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/swc/options.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/swc/index.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/next-config-ts/transpile-config.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/config.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/next.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/lib/start-server.js
+    at __webpack_require__.f.require (.next/server/webpack-runtime.js:198:28)
+    at <unknown> (.next/server/webpack-runtime.js:111:40)
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (.next/server/webpack-runtime.js:110:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (.next/server/webpack-runtime.js:162:22)
+    at <unknown> (.next/server/app/_not-found/page.js:1:2161)
+    at Object.<anonymous> (.next/server/app/_not-found/page.js:1:2211) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+ GET /_next/static/chunks/fallback/webpack.js 500 in 674ms
+ GET /_next/static/chunks/fallback/react-refresh.js 500 in 671ms
+ GET /_next/static/chunks/fallback/main.js 500 in 668ms
+ GET /_next/static/chunks/fallback/pages/_app.js 500 in 648ms
+ GET /_next/static/chunks/fallback/pages/_error.js 500 in 648ms
+ ○ Compiling /favicon.ico ...
+ ✓ Compiled /favicon.ico in 617ms (2283 modules)
+ ⨯ Error: Cannot find module './447.js'
+Require stack:
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/server/webpack-runtime.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/.next/server/app/favicon.ico/route.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/require.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/load-components.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/utils.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/swc/options.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/swc/index.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/build/next-config-ts/transpile-config.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/config.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/next.js
+- /Users/lucasmailland/Desktop/Prospecter-Fichap/frontend/node_modules/next/dist/server/lib/start-server.js
+    at __webpack_require__.f.require (.next/server/webpack-runtime.js:203:28)
+    at <unknown> (.next/server/webpack-runtime.js:116:40)
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (.next/server/webpack-runtime.js:115:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (.next/server/webpack-runtime.js:167:22)
+    at <unknown> (.next/server/app/favicon.ico/route.js:1:62786)
+    at Object.<anonymous> (.next/server/app/favicon.ico/route.js:1:62828) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/favicon.ico'
+}
+ GET /favicon.ico 500 in 678ms
+ ✓ Compiled in 695ms (2321 modules)
+ ✓ Compiled in 1939ms (2320 modules)
+ ✓ Compiled in 1571ms (2320 modules)

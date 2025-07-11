@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import TeamManagement from '@/components/settings/TeamManagement';
 import ApiSettingsTabs from '@/components/settings/ApiSettingsTabs';
+import { UserRole } from '@/types/common.types';
 import {
   UserIcon,
   BellIcon,
@@ -36,7 +37,7 @@ export default function SettingsPage() {
     );
   }
 
-  // const _renderTabContent = () => {
+  const renderTabContent = () => {
     switch (activeTab) {
       case 'profile':
         return (
@@ -82,7 +83,7 @@ export default function SettingsPage() {
                   </label>
                   <input
                     type="text"
-                    defaultValue={user.role === 'ADMIN' as UserRole ? 'Administrador' : 'Usuario'}
+                    defaultValue={user.role === 'ADMIN' ? 'Administrador' : 'Usuario'}
                     className="w-full px-4 py-2 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   />
                 </div>

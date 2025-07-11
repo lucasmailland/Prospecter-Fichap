@@ -99,7 +99,7 @@ export default function CompanyDetailModal({ companyId, isOpen, onClose }: Compa
     }
   }, [isOpen, companyId]);
 
-  // const _fetchCompanyData = async () => {
+  const fetchCompanyData = async () => {
     try {
       setLoading(true);
       
@@ -126,13 +126,13 @@ export default function CompanyDetailModal({ companyId, isOpen, onClose }: Compa
       setEmails(emailsData);
       
     } catch (_error) {
-      console.error('Error fetching company data:', error);
+      console.error('Error fetching company data:', _error);
     } finally {
       setLoading(false);
     }
   };
 
-  // const _formatDate = (dateString: string) => {
+  const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('es-ES', {
       day: '2-digit',
       month: '2-digit',
@@ -140,14 +140,14 @@ export default function CompanyDetailModal({ companyId, isOpen, onClose }: Compa
     });
   };
 
-  // const _formatCurrency = (amount: string | number) => {
+  const formatCurrency = (amount: string | number) => {
     return new Intl.NumberFormat('es-ES', {
       style: 'currency',
       currency: 'EUR'
     }).format(typeof amount === 'string' ? parseFloat(amount) : amount);
   };
 
-  // const _getStatusColor = (status: string) => {
+  const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case 'customer': return 'bg-green-100 text-green-800';
       case 'opportunity': return 'bg-yellow-100 text-yellow-800';
@@ -156,7 +156,7 @@ export default function CompanyDetailModal({ companyId, isOpen, onClose }: Compa
     }
   };
 
-  // const _tabs = [
+  const tabs = [
     { id: 'overview', label: 'Resumen', icon: BuildingOfficeIcon },
     { id: 'contacts', label: `Contactos (${contacts.length})`, icon: UserGroupIcon },
     { id: 'deals', label: `Deals (${deals.length})`, icon: CurrencyDollarIcon },

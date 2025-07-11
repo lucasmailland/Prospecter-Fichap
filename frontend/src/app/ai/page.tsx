@@ -20,8 +20,8 @@ export default function AIPage() {
       const response = await fetch('/api/ai/config');
       await response.json();
       // Config check completed
-    } catch (_error) {
-      console.warn('Error checking OpenAI config:', error);
+    } catch (error) {
+        console.warn('Error checking OpenAI config:', error);
       // Config check failed
     } finally {
       setIsLoading(false);

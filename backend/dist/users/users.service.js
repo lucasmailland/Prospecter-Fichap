@@ -22,10 +22,14 @@ let UsersService = class UsersService {
                 id: true,
                 email: true,
                 name: true,
+                firstName: true,
+                lastName: true,
                 role: true,
                 createdAt: true,
                 updatedAt: true,
                 emailVerified: true,
+                twoFactorEnabled: true,
+                lastLogin: true,
             },
         });
     }
@@ -36,10 +40,14 @@ let UsersService = class UsersService {
                 id: true,
                 email: true,
                 name: true,
+                firstName: true,
+                lastName: true,
                 role: true,
                 createdAt: true,
                 updatedAt: true,
                 emailVerified: true,
+                twoFactorEnabled: true,
+                lastLogin: true,
             },
         });
     }
@@ -50,15 +58,26 @@ let UsersService = class UsersService {
     }
     async create(userData) {
         return this.prisma.user.create({
-            data: userData,
+            data: {
+                email: userData.email,
+                password: userData.password,
+                name: userData.name,
+                firstName: userData.firstName,
+                lastName: userData.lastName,
+                role: userData.role || 'USER',
+            },
             select: {
                 id: true,
                 email: true,
                 name: true,
+                firstName: true,
+                lastName: true,
                 role: true,
                 createdAt: true,
                 updatedAt: true,
                 emailVerified: true,
+                twoFactorEnabled: true,
+                lastLogin: true,
             },
         });
     }
@@ -70,10 +89,14 @@ let UsersService = class UsersService {
                 id: true,
                 email: true,
                 name: true,
+                firstName: true,
+                lastName: true,
                 role: true,
                 createdAt: true,
                 updatedAt: true,
                 emailVerified: true,
+                twoFactorEnabled: true,
+                lastLogin: true,
             },
         });
     }

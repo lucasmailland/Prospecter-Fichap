@@ -24,7 +24,7 @@ export default function Dropdown({
   placement = 'bottom-right' 
 }: DropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
-  // const _dropdownRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -39,14 +39,14 @@ export default function Dropdown({
     };
   }, []);
 
-  // const _placementClasses = {
+  const placementClasses = {
     'bottom-left': 'top-full left-0 mt-1',
     'bottom-right': 'top-full right-0 mt-1',
     'top-left': 'bottom-full left-0 mb-1',
     'top-right': 'bottom-full right-0 mb-1',
   };
 
-  // const _defaultTrigger = (
+  const defaultTrigger = (
     <button
       onClick={() => setIsOpen(!isOpen)}
       className="p-1 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"

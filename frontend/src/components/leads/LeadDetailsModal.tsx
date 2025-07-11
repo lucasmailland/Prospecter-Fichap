@@ -48,12 +48,12 @@ interface Lead {
 
 interface EnrichedLeadData {
   lead: Lead;
-  hubspot: unknown;
-  conversations: unknown[];
-  activities: unknown[];
-  scoring: unknown;
-  aiAnalysis: unknown;
-  timeline: unknown[];
+  hubspot: any;
+  conversations: any[];
+  activities: any[];
+  scoring: any;
+  aiAnalysis: any;
+  timeline: any[];
 }
 
 interface LeadDetailsModalProps {
@@ -87,7 +87,7 @@ export default function LeadDetailsModal({ isOpen, onClose, leadId, onEdit }: Le
     }
   }, [isOpen, leadId]);
 
-  // const _fetchEnrichedLeadData = async () => {
+  const fetchEnrichedLeadData = async () => {
     if (!leadId) return;
 
     setLoading(true);
@@ -115,14 +115,14 @@ export default function LeadDetailsModal({ isOpen, onClose, leadId, onEdit }: Le
         generateRecommendations(data);
       }
     } catch (_error) {
-console.warn('Error fetching enriched data:', error);
+  console.warn('Error fetching enriched data:', _error);
       toast.error('Error al cargar datos del lead');
     } finally {
       setLoading(false);
     }
   };
 
-  // const _generateRecommendations = (data: EnrichedLeadData) => {
+  const generateRecommendations = (data: EnrichedLeadData) => {
     const score = data.lead.score;
     const recs: AIRecommendation[] = [];
 
@@ -232,7 +232,7 @@ Saludos,
     setRecommendations(recs);
   };
 
-  // const _acceptRecommendation = async (recommendation: AIRecommendation, index: number) => {
+  const acceptRecommendation = async (recommendation: AIRecommendation, index: number) => {
     setProcessingRecommendation(`${recommendation.type}-${index}`);
     
     try {
@@ -267,21 +267,21 @@ Saludos,
     }
   };
 
-  // const _getScoreColor = (score: number) => {
+  const getScoreColor = (score: number) => {
     if (score >= 80) return 'text-red-600 bg-red-50';
     if (score >= 60) return 'text-orange-600 bg-orange-50';
     if (score >= 40) return 'text-blue-600 bg-blue-50';
     return 'text-gray-600 bg-gray-50';
   };
 
-  // const _getScoreLabel = (score: number) => {
+  const getScoreLabel = (score: number) => {
     if (score >= 80) return 'HOT';
     if (score >= 60) return 'WARM';
     if (score >= 40) return 'QUALIFIED';
     return 'NURTURE';
   };
 
-  // const _getPriorityColor = (priority: string) => {
+  const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'high': return 'bg-red-100 text-red-700 border-red-200';
       case 'medium': return 'bg-yellow-100 text-yellow-700 border-yellow-200';
@@ -464,10 +464,10 @@ Saludos,
                     <div className="space-y-4">
                       {recommendations.map((rec, _index) => (
                         <motion.div
-                          key={index}
+                          key={_index}
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: index * 0.1 }}
+                          transition={{ delay: _index * 0.1 }}
                           className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow"
                         >
                           <div className="flex items-start justify-between">
@@ -511,12 +511,12 @@ Saludos,
 
                             <div className="flex space-x-2">
                               <button
-                                onClick={() => acceptRecommendation(_rec, _index)}
-                                disabled={processingRecommendation === `${rec.type}-${index}`}
+                                onClick={() => acceptRecommendation(rec, _index)}
+                                disabled={processingRecommendation === `${rec.type}-${_index}`}
                                 className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
                               >
-                                {processingRecommendation === `${rec.type}-${index}` ? (
-                                  <LoadingSystem variant="minimal" size="xs" color="white" />
+                                {processingRecommendation === `${rec.type}-${_index}` ? (
+                                  <LoadingSystem variant="minimal" size="xs" color="primary" />
                                 ) : (
                                   <CheckIcon className="w-4 h-4" />
                                 )}

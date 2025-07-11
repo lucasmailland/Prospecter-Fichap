@@ -4,6 +4,10 @@ import { useEffect, useState } from 'react';
 
 import LoadingSystem from '@/components/ui/LoadingSystem';
 import { toast } from '@/components/ui/Toast';
+import { Card, CardHeader, CardContent } from '@/components/ui/Card';
+import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/Button';
+
 
 const OPENAI_KEYS = [
   'OPENAI_API_KEY',
@@ -29,14 +33,14 @@ export default function OpenAIConfig({ onConfigComplete }: { onConfigComplete?: 
     fetchConfig();
   }, []);
 
-  // const _fetchConfig = async () => {
+  const fetchConfig = async () => {
     setIsLoading(true);
     try {
       const res = await fetch('/api/settings/apis');
       const data = await res.json();
       if (data.success) {
-        const configMap: unknown = {};
-        data.configs.forEach((c: unknown) => { 
+        const configMap: any = {};
+        data.configs.forEach((c: any) => { 
           configMap[c.key] = c.value; 
           // Guardar información adicional para campos encriptados
           if (c.isEncrypted) {
@@ -47,22 +51,22 @@ export default function OpenAIConfig({ onConfigComplete }: { onConfigComplete?: 
         setIsConfigured(true);
       }
     } catch (_error) {
-console.warn('Error fetching config:', error);
+      console.warn('Error fetching config:', _error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // const _handleSave = async () => {
+  const handleSave = async () => {
     setIsSaving(true);
     try {
       const updates = OPENAI_KEYS.map(key => ({ 
         key, 
-        value: config[key] || '',
+        value: (config as any)[key] || '',
         isEncrypted: key === 'OPENAI_API_KEY'
       })).filter(update => {
         // Para campos encriptados, solo actualizar si el usuario escribió algo
-        if (update.isEncrypted && !update.value && config[`${update.key}_hasValue`]) {
+        if (update.isEncrypted && !update.value && (config as any)[`${update.key}_hasValue`]) {
           return false; // No sobreescribir clave existente si el input está vacío
         }
         return true;
@@ -82,7 +86,7 @@ console.warn('Error fetching config:', error);
         toast.error('Error al guardar la configuración');
       }
     } catch (_error) {
-console.warn('Error saving config:', error);
+      console.warn('Error saving config:', _error);
       toast.error('Error de conexión');
     } finally {
       setIsSaving(false);
@@ -114,25 +118,25 @@ console.warn('Error saving config:', error);
             </div>
           </div>
         </CardHeader>
-        <CardBody className="space-y-4">
+        <CardContent className="space-y-4">
           <Input
             label="API Key de OpenAI"
             placeholder={
-              config.OPENAI_API_KEY_hasValue 
+              (config as any).OPENAI_API_KEY_hasValue 
                 ? "API Key configurada (oculta por seguridad)" 
                 : "sk-..."
             }
             value={config.OPENAI_API_KEY}
             onChange={(e) => setConfig({ ...config, OPENAI_API_KEY: e.target.value })}
             type="password"
-            description={
-              config.OPENAI_API_KEY_hasValue 
+            helpText={
+              (config as any).OPENAI_API_KEY_hasValue 
                 ? "Deja vacío para mantener la clave actual" 
                 : "Tu API Key será encriptada y almacenada de forma segura"
             }
           />
 
-          <Divider />
+          <div className="border-t border-gray-200 my-4" />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
@@ -145,10 +149,10 @@ console.warn('Error saving config:', error);
               label="Máximo de Tokens"
               type="number"
               value={config.OPENAI_MAX_TOKENS}
-              onChange={(e) => setConfig({ ...config, OPENAI_MAX_TOKENS: e.target.value })}
+              onChange={(e) => setConfig({ ...config, OPENAI_MAX_TOKENS: parseInt(e.target.value) || 1000 })}
               min={100}
               max={4000}
-              description="Límite de tokens por respuesta"
+                              helpText="Límite de tokens por respuesta"
             />
           </div>
 
@@ -163,7 +167,7 @@ console.warn('Error saving config:', error);
               <Input
                 type="number"
                 value={config.OPENAI_TEMPERATURE}
-                onChange={(e) => setConfig({ ...config, OPENAI_TEMPERATURE: e.target.value })}
+                onChange={(e) => setConfig({ ...config, OPENAI_TEMPERATURE: parseFloat(e.target.value) || 0.7 })}
                 min={0}
                 max={1}
                 step={0.1}
@@ -174,8 +178,8 @@ console.warn('Error saving config:', error);
           <div className="flex items-center space-x-2">
             <input
               type="checkbox"
-              checked={!!config.OPENAI_IS_ACTIVE && config.OPENAI_IS_ACTIVE !== 'false'}
-              onChange={e => setConfig({ ...config, OPENAI_IS_ACTIVE: e.target.checked ? 'true' : 'false' })}
+              checked={!!(config as any).OPENAI_IS_ACTIVE && (config as any).OPENAI_IS_ACTIVE !== 'false'}
+              onChange={e => setConfig({ ...config, OPENAI_IS_ACTIVE: e.target.checked })}
               className="w-5 h-5 text-blue-600 rounded"
             />
             <label className="text-sm">Activo</label>
@@ -185,12 +189,12 @@ console.warn('Error saving config:', error);
             <Button
               color="primary"
               onClick={handleSave}
-              isLoading={isSaving}
+              loading={isSaving}
             >
               Guardar Configuración
             </Button>
           </div>
-        </CardBody>
+        </CardContent>
       </Card>
     </div>
   );

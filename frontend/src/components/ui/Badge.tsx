@@ -16,9 +16,9 @@ export const Badge: React.FC<BadgeProps> = ({
   dot = false,
   ...props
 }) => {
-  // const _baseClasses = 'inline-flex items-center font-medium rounded-full';
+  const baseClasses = 'inline-flex items-center font-medium rounded-full';
   
-  // const _variants = {
+  const variants = {
     default: 'bg-gray-100 text-gray-800',
     primary: 'bg-blue-100 text-blue-800',
     secondary: 'bg-gray-100 text-gray-800',
@@ -28,13 +28,13 @@ export const Badge: React.FC<BadgeProps> = ({
     info: 'bg-blue-100 text-blue-800'
   };
 
-  // const _sizes = {
+  const sizes = {
     sm: 'px-2 py-0.5 text-xs',
     md: 'px-2.5 py-1 text-xs',
     lg: 'px-3 py-1.5 text-sm'
   };
 
-  // const _dotVariants = {
+  const dotVariants = {
     default: 'bg-gray-400',
     primary: 'bg-blue-400',
     secondary: 'bg-gray-400',

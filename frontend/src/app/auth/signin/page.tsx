@@ -23,34 +23,32 @@ export default function SignInPage() {
   const [pending2FAEmail, setPending2FAEmail] = useState('')
   
   const { login, socialLogin, loading } = useAuth()
-  // const _router = useRouter()
-  // const _searchParams = useSearchParams()
-  // const _callbackUrl = searchParams.get('callbackUrl') || '/'
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const callbackUrl = searchParams?.get('callbackUrl') || '/'
 
-  // const _handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-
-    const result = await login(email, password)
-    
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    const result = await login(email, password);
     if (result.success) {
-      router.push('/')
+      router.push('/');
     } else if (result.requires2FA) {
-      setShowTwoFA(true)
-      setPending2FAEmail(email)
+      setShowTwoFA(true);
+      setPending2FAEmail(email);
     } else {
-      setError(result.error || 'Error al iniciar sesión')
+      setError(result.error || 'Error al iniciar sesión');
     }
-  }
+  };
 
-  // const _handleSocialLogin = async (provider: string) => {
-    const result = await socialLogin(provider)
+  const handleSocialLogin = async (provider: string) => {
+    const result = await socialLogin(provider);
     if (result.success) {
-      router.push(callbackUrl)
+      router.push(callbackUrl);
     } else {
-      setError(result.error || `Error al iniciar sesión con ${provider}`)
+      setError(result.error || `Error al iniciar sesión con ${provider}`);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">

@@ -29,16 +29,13 @@ export function TwoFAModal({ isOpen, email, onSuccess, onCancel }: TwoFAModalPro
   const [error, setError] = useState('');
   const [isBackupCode, setIsBackupCode] = useState(false);
 
-  // const _handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!code.trim()) return;
-
     setLoading(true);
     setError('');
-
     try {
       const result = await verify2FA(email, code.trim());
-      
       if (result.success) {
         onSuccess();
         setCode('');
@@ -53,7 +50,7 @@ export function TwoFAModal({ isOpen, email, onSuccess, onCancel }: TwoFAModalPro
     }
   };
 
-  // const _handleCodeChange = (value: string) => {
+  const handleCodeChange = (value: string) => {
     // Solo permitir números para códigos TOTP, alfanuméricos para backup codes
     const sanitized = isBackupCode 
       ? value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 8)
@@ -62,7 +59,7 @@ export function TwoFAModal({ isOpen, email, onSuccess, onCancel }: TwoFAModalPro
     setCode(sanitized);
   };
 
-  // const _toggleBackupCode = () => {
+  const toggleBackupCode = () => {
     setIsBackupCode(!isBackupCode);
     setCode('');
     setError('');

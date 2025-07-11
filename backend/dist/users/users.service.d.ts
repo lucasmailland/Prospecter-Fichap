@@ -1,17 +1,90 @@
 import { PrismaService } from '@/common/database/prisma.service';
-import { User } from '@prisma/client';
 export declare class UsersService {
     private prisma;
     constructor(prisma: PrismaService);
-    findAll(): Promise<User[]>;
-    findById(id: string): Promise<User | null>;
-    findByEmail(email: string): Promise<User | null>;
+    findAll(): Promise<{
+        id: string;
+        firstName: string;
+        lastName: string;
+        name: string;
+        email: string;
+        emailVerified: Date;
+        role: import(".prisma/client").$Enums.UserRole;
+        twoFactorEnabled: boolean;
+        lastLogin: Date;
+        createdAt: Date;
+        updatedAt: Date;
+    }[]>;
+    findById(id: string): Promise<{
+        id: string;
+        firstName: string;
+        lastName: string;
+        name: string;
+        email: string;
+        emailVerified: Date;
+        role: import(".prisma/client").$Enums.UserRole;
+        twoFactorEnabled: boolean;
+        lastLogin: Date;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+    findByEmail(email: string): Promise<{
+        id: string;
+        firstName: string | null;
+        lastName: string | null;
+        name: string | null;
+        email: string;
+        emailVerified: Date | null;
+        image: string | null;
+        password: string;
+        role: import(".prisma/client").$Enums.UserRole;
+        linkedin: string | null;
+        twoFactorEnabled: boolean;
+        twoFactorSecret: string | null;
+        twoFactorBackupCodes: string | null;
+        resetToken: string | null;
+        resetTokenExpires: Date | null;
+        emailVerificationToken: string | null;
+        emailVerificationExpires: Date | null;
+        lastLogin: Date | null;
+        loginFailures: number;
+        accountLocked: boolean;
+        accountLockedUntil: Date | null;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
     create(userData: {
         email: string;
         name?: string;
-        password?: string;
+        firstName?: string;
+        lastName?: string;
+        password: string;
         role?: string;
-    }): Promise<User>;
-    update(id: string, userData: Partial<User>): Promise<User>;
+    }): Promise<{
+        id: string;
+        firstName: string;
+        lastName: string;
+        name: string;
+        email: string;
+        emailVerified: Date;
+        role: import(".prisma/client").$Enums.UserRole;
+        twoFactorEnabled: boolean;
+        lastLogin: Date;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+    update(id: string, userData: any): Promise<{
+        id: string;
+        firstName: string;
+        lastName: string;
+        name: string;
+        email: string;
+        emailVerified: Date;
+        role: import(".prisma/client").$Enums.UserRole;
+        twoFactorEnabled: boolean;
+        lastLogin: Date;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
     delete(id: string): Promise<void>;
 }

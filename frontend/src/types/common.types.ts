@@ -44,7 +44,7 @@ export interface User {
   id: string;
   name?: string;
   email: string;
-  emailVerified?: Date;
+  emailVerified?: string;
   image?: string;
   role: UserRole;
   company?: string;
@@ -57,13 +57,13 @@ export interface User {
   twoFactorBackupCodes?: string;
   
   // Security
-  lastLogin?: Date;
+  lastLogin?: string;
   loginFailures: number;
   accountLocked: boolean;
-  accountLockedUntil?: Date;
+  accountLockedUntil?: string;
   
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface UserProfile {
@@ -413,3 +413,105 @@ export const APP_CONFIG = {
     position: 'top-right' as const,
   },
 } as const; 
+
+// Task enums and types centralizados
+export enum TaskStatus {
+  DRAFT = 'DRAFT',
+  PENDING_APPROVAL = 'PENDING_APPROVAL',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED',
+  SCHEDULED = 'SCHEDULED',
+  PENDING = 'PENDING',
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
+  CANCELLED = 'CANCELLED'
+}
+export enum TaskCategory {
+  PROSPECTING = 'PROSPECTING',
+  EMAIL = 'EMAIL',
+  CALL = 'CALL',
+  MEETING = 'MEETING',
+  FOLLOW_UP = 'FOLLOW_UP',
+  RESEARCH = 'RESEARCH',
+  PROPOSAL = 'PROPOSAL',
+  NEGOTIATION = 'NEGOTIATION',
+  CLOSING = 'CLOSING',
+  CUSTOM = 'CUSTOM'
+}
+export enum TaskType {
+  MANUAL = 'MANUAL',
+  AUTOMATED = 'AUTOMATED',
+  TEMPLATE = 'TEMPLATE',
+  AI_GENERATED = 'AI_GENERATED',
+  EMAIL = 'EMAIL',
+  CALL = 'CALL',
+  MEETING = 'MEETING',
+  LINKEDIN_MESSAGE = 'LINKEDIN_MESSAGE',
+  WHATSAPP = 'WHATSAPP',
+  PROPOSAL = 'PROPOSAL',
+  DEMO = 'DEMO',
+  FOLLOW_UP = 'FOLLOW_UP',
+  REMINDER = 'REMINDER',
+  NOTE = 'NOTE',
+  RESEARCH = 'RESEARCH'
+}
+export enum TaskPriority {
+  LOW = 'LOW',
+  MEDIUM = 'MEDIUM',
+  HIGH = 'HIGH',
+  URGENT = 'URGENT',
+  CRITICAL = 'CRITICAL'
+}
+
+export interface Task {
+  id: string;
+  subject: string;
+  description?: string;
+  category: TaskCategory;
+  type: TaskType;
+  priority: TaskPriority;
+  status: TaskStatus;
+  scheduledDate?: Date;
+  scheduledTime?: string;
+  contactEmail: string;
+  contactName?: string;
+  companyName?: string;
+  leadId?: string;
+  templateId?: string;
+  customMessage?: string;
+  estimatedDuration?: number;
+  createdAt: Date;
+  updatedAt: Date;
+  userId: string;
+  // IA: probabilidad de éxito sugerida
+  successProbability?: number;
+}
+
+export interface TaskFilters {
+  status?: TaskStatus[];
+  category?: TaskCategory[];
+  type?: TaskType[];
+  priority?: TaskPriority[];
+  assignedTo?: string;
+  dateFrom?: Date;
+  dateTo?: Date;
+  syncStatus?: 'synced' | 'pending' | 'error';
+  searchTerm?: string;
+}
+
+export interface TaskCreateInput {
+  subject: string;
+  description?: string;
+  category: TaskCategory;
+  type: TaskType;
+  priority?: TaskPriority;
+  scheduledDate?: Date;
+  scheduledTime?: string;
+  contactEmail: string;
+  contactName?: string;
+  companyName?: string;
+  leadId?: string;
+  templateId?: string;
+  customMessage?: string;
+  estimatedDuration?: number;
+} 

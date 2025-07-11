@@ -38,10 +38,10 @@ function AuthProviderInner({ children }: { children: ReactNode }) {
     lastLogin: (session.user as any).lastLogin ? new Date((session.user as any).lastLogin) : undefined,
   } : null;
 
-  // const _loading = status === 'loading';
+  const loading = status === 'loading';
 
   // Login con credenciales (email/password)
-  // const _login = async (email: string, password: string): Promise<{ success: boolean; requires2FA?: boolean; error?: string }> => {
+  const login = async (email: string, password: string): Promise<{ success: boolean; requires2FA?: boolean; error?: string }> => {
     try {
       // Primero verificar si el usuario tiene 2FA activado
       const checkResponse = await fetch('/api/auth/check-2fa', {
@@ -148,7 +148,7 @@ function AuthProviderInner({ children }: { children: ReactNode }) {
   };
 
   // Registro de nuevos usuarios
-  // const _register = async (name: string, email: string, password: string): Promise<{ success: boolean; error?: string }> => {
+  const register = async (name: string, email: string, password: string): Promise<{ success: boolean; error?: string }> => {
     try {
       // Crear usuario en la base de datos
       const response = await fetch('/api/auth/register', {
@@ -173,7 +173,7 @@ function AuthProviderInner({ children }: { children: ReactNode }) {
   };
 
   // Login social (Google, LinkedIn, etc.)
-  // const _socialLogin = async (provider: string): Promise<{ success: boolean; error?: string }> => {
+  const socialLogin = async (provider: string): Promise<{ success: boolean; error?: string }> => {
     try {
       const result = await signIn(provider, { redirect: false });
       
@@ -194,7 +194,7 @@ function AuthProviderInner({ children }: { children: ReactNode }) {
   };
 
   // Logout
-  // const _logout = async () => {
+  const logout = async () => {
     // Limpiar estado 2FA
     setRequires2FA(false);
     setPending2FAEmail(null);
@@ -202,7 +202,7 @@ function AuthProviderInner({ children }: { children: ReactNode }) {
   };
 
   // Reset password 
-  // const _resetPassword = async (email: string): Promise<{ success: boolean; error?: string }> => {
+  const resetPassword = async (email: string): Promise<{ success: boolean; error?: string }> => {
     try {
       const response = await fetch('/api/auth/reset-password', {
         method: 'POST',
@@ -223,7 +223,7 @@ function AuthProviderInner({ children }: { children: ReactNode }) {
     }
   };
 
-  // const _value = {
+  const value: AuthContextType = {
     user,
     loading,
     isLoading: loading,
@@ -257,7 +257,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 }
 
 export function useAuth() {
-  // const _context = useContext(AuthContext);
+  const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }

@@ -4,11 +4,11 @@ import { useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/navigation'
 
 export default function AuthError() {
-  // const _searchParams = useSearchParams()
-  // const _router = useRouter()
-  // const _error = searchParams.get('error')
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const error = searchParams?.get('error') || null
 
-  // const _getErrorMessage = (error: string | null) => {
+  const getErrorMessage = (error: string | null) => {
     switch (error) {
       case 'Configuration':
         return {

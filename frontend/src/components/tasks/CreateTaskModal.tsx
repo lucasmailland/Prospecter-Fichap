@@ -1,14 +1,14 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { TaskCategory, TaskType, TaskPriority } from '@prisma/client';
 import { X, Brain, Calendar, Clock, User, Building, Mail, Phone, MessageSquare, Zap, Sparkles } from 'lucide-react';
+import { TaskCategory, TaskType, TaskPriority } from '@/types/common.types';
 
 interface CreateTaskModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCreate: (data: unknown) => Promise<any>;
-  onGenerateAI: (data: unknown) => Promise<any>;
+  onCreate: (data: any) => Promise<any>;
+  onGenerateAI: (data: any) => Promise<any>;
 }
 
 interface FormData {
@@ -58,8 +58,8 @@ export default function CreateTaskModal({ isOpen, onClose, onCreate, onGenerateA
     }
   }, [isOpen]);
 
-  // const _validateForm = () => {
-    const newErrors: unknown = {};
+  const validateForm = () => {
+    const newErrors: any = {};
     
     if (!formData.subject.trim()) newErrors.subject = 'El asunto es requerido';
     if (!formData.contactEmail.trim()) newErrors.contactEmail = 'El email es requerido';
@@ -76,7 +76,7 @@ export default function CreateTaskModal({ isOpen, onClose, onCreate, onGenerateA
     return Object.keys(newErrors).length === 0;
   };
 
-  // const _handleGenerateAI = async () => {
+  const handleGenerateAI = async () => {
     if (!validateForm()) return;
 
     setLoadingAI(true);
@@ -85,13 +85,13 @@ export default function CreateTaskModal({ isOpen, onClose, onCreate, onGenerateA
       setAiSuggestions(suggestions);
       setStep(2);
     } catch (_error) {
-      console.error('Error generating AI suggestions:', error);
+      console.error('Error generating AI suggestions:', _error);
     } finally {
       setLoadingAI(false);
     }
   };
 
-  // const _handleSubmit = async () => {
+  const handleSubmit = async () => {
     if (!validateForm()) return;
 
     setLoadingSubmit(true);
@@ -109,20 +109,20 @@ export default function CreateTaskModal({ isOpen, onClose, onCreate, onGenerateA
       await onCreate(taskData);
       onClose();
     } catch (_error) {
-      console.error('Error creating task:', error);
+      console.error('Error creating task:', _error);
     } finally {
       setLoadingSubmit(false);
     }
   };
 
-  // const _updateFormData = (field: keyof FormData, value: unknown) => {
+  const updateFormData = (field: keyof FormData, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     if (errors[field]) {
-      setErrors((prev: unknown) => ({ ...prev, [field]: null }));
+      setErrors((prev: any) => ({ ...prev, [field]: null }));
     }
   };
 
-  // const _getTypeIcon = (type: TaskType) => {
+  const getTypeIcon = (type: TaskType) => {
     switch (type) {
       case TaskType.EMAIL: return <Mail className="w-4 h-4" />;
       case TaskType.CALL: return <Phone className="w-4 h-4" />;
@@ -132,7 +132,7 @@ export default function CreateTaskModal({ isOpen, onClose, onCreate, onGenerateA
     }
   };
 
-  // const _getPriorityColor = (priority: TaskPriority) => {
+  const getPriorityColor = (priority: TaskPriority) => {
     switch (priority) {
       case TaskPriority.LOW: return 'bg-blue-100 text-blue-800 border-blue-200';
       case TaskPriority.MEDIUM: return 'bg-yellow-100 text-yellow-800 border-yellow-200';

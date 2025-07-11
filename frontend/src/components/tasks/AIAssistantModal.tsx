@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Task } from '@prisma/client';
 import { X, Brain, Sparkles, RefreshCw, Target, MessageSquare, Mail, Phone, Calendar, Zap, TrendingUp, Clock, User } from 'lucide-react';
+import { Task, TaskType } from '@/types/common.types';
 
 interface AIAssistantModalProps {
   isOpen: boolean;
@@ -44,7 +44,7 @@ export default function AIAssistantModal({
 
   if (!isOpen) return null;
 
-  // const _handleOptimize = async () => {
+  const handleOptimize = async () => {
     if (selectedTasks.length === 0) return;
 
     setLoading(true);
@@ -52,32 +52,32 @@ export default function AIAssistantModal({
       const response = await onOptimize(selectedTasks);
       setAiResponse(response);
     } catch (_error) {
-      console.error('Error optimizing tasks:', error);
+      console.error('Error optimizing tasks:', _error);
     } finally {
       setLoading(false);
     }
   };
 
-  // const _handleGenerateContent = async (task: Task, type: string) => {
+  const handleGenerateContent = async (task: Task, type: string) => {
     setLoading(true);
     try {
       const content = await onGenerateContent(task, type);
       setGeneratedContent(content);
     } catch (_error) {
-      console.error('Error generating content:', error);
+      console.error('Error generating content:', _error);
     } finally {
       setLoading(false);
     }
   };
 
-  // const _getScoreColor = (score: number) => {
+  const getScoreColor = (score: number) => {
     if (score >= 0.8) return 'text-green-600';
     if (score >= 0.6) return 'text-yellow-600';
     if (score >= 0.4) return 'text-orange-600';
     return 'text-red-600';
   };
 
-  // const _getScoreBackground = (score: number) => {
+  const getScoreBackground = (score: number) => {
     if (score >= 0.8) return 'bg-green-100 border-green-200';
     if (score >= 0.6) return 'bg-yellow-100 border-yellow-200';
     if (score >= 0.4) return 'bg-orange-100 border-orange-200';
@@ -418,7 +418,7 @@ export default function AIAssistantModal({
                       <div className="flex items-center justify-between p-3 bg-white rounded-lg border">
                         <span className="text-sm text-gray-600">Mejor Tipo de Contacto</span>
                         <span className="font-medium text-blue-600">
-                          {selectedTasks.filter(t => t.type === 'EMAIL').length > selectedTasks.filter(t => t.type === 'CALL').length ? 'Email' : 'Llamada'}
+                          {selectedTasks.filter(t => t.type === TaskType.EMAIL).length > selectedTasks.filter(t => t.type === TaskType.CALL).length ? 'Email' : 'Llamada'}
                         </span>
                       </div>
                       <div className="flex items-center justify-between p-3 bg-white rounded-lg border">

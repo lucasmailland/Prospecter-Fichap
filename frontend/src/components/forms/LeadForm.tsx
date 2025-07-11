@@ -59,7 +59,7 @@ interface LeadFormData {
 interface LeadFormProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (leadData: unknown) => Promise<void>;
+  onSubmit: (leadData: any) => Promise<void>;
   initialData?: Partial<LeadFormData>;
   mode?: 'create' | 'edit';
 }
@@ -115,7 +115,7 @@ export default function LeadForm({ isOpen, onClose, onSubmit, initialData, mode 
     nextFollowUpDate: initialData?.nextFollowUpDate || '',
   });
 
-  // const _validateForm = () => {
+  const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
     if (!formData.firstName.trim()) {
@@ -136,7 +136,7 @@ export default function LeadForm({ isOpen, onClose, onSubmit, initialData, mode 
     return Object.keys(newErrors).length === 0;
   };
 
-  // const _handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!validateForm()) {
@@ -187,31 +187,31 @@ export default function LeadForm({ isOpen, onClose, onSubmit, initialData, mode 
       
 // console.log('📤 Enviando datos del formulario:', submitData);
       await onSubmit(submitData);
-    } catch (_error) {
-console.warn('Error submitting form:', error);
+        } catch (_error) {
+      console.warn('Error submitting form:', _error);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // const _handleChange = (field: keyof LeadFormData, value: string | number | string[]) => {
+  const handleChange = (field: keyof LeadFormData, value: string | number | string[]) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
   };
 
-  // const _addTag = (tag: string) => {
+  const addTag = (tag: string) => {
     if (tag && !formData.tags.includes(tag)) {
       handleChange('tags', [...formData.tags, tag]);
     }
   };
 
-  // const _removeTag = (tagToRemove: string) => {
+  const removeTag = (tagToRemove: string) => {
     handleChange('tags', formData.tags.filter(tag => tag !== tagToRemove));
   };
 
-  // const _renderTabContent = () => {
+  const renderTabContent = () => {
     switch (activeTab) {
       case 'basic':
         return (
@@ -672,7 +672,7 @@ console.warn('Error submitting form:', error);
                 Tags
               </label>
               <div className="flex flex-wrap gap-2 mb-3">
-                {formData.tags.map((tag, _index) => (
+                {formData.tags.map((tag, index) => (
                   <span
                     key={index}
                     className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200"

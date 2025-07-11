@@ -17,7 +17,7 @@ let HubspotService = class HubspotService {
         this.prisma = prisma;
     }
     async getContacts() {
-        return this.prisma.hubspotContact.findMany({
+        return this.prisma.hubSpotContact.findMany({
             include: {
                 lead: true,
             },

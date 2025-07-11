@@ -133,7 +133,7 @@ const validatePassword = (password: string): {
   strength: number; 
   checks: { [key: string]: boolean } 
 } => {
-  // const _checks = {
+  const checks = {
     length: password.length >= 8,
     uppercase: /[A-Z]/.test(password),
     lowercase: /[a-z]/.test(password),
@@ -141,8 +141,8 @@ const validatePassword = (password: string): {
     special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
   };
   
-  // const _passedChecks = Object.values(checks).filter(Boolean).length;
-  // const _strength = (passedChecks / 5) * 100;
+  const passedChecks = Object.values(checks).filter(Boolean).length;
+  const strength = (passedChecks / 5) * 100;
   
   const errors: string[] = [];
   if (!checks.length) errors.push('Mínimo 8 caracteres');
@@ -167,12 +167,12 @@ const InviteUserModal = ({ isOpen, onClose, onInvite, loading }: InviteUserModal
     role: 'USER',
   });
 
-  // const _handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onInvite(formData);
   };
 
-  // const _resetForm = () => {
+  const resetForm = () => {
     setFormData({
       firstName: '',
       lastName: '',
@@ -229,9 +229,9 @@ const InviteUserModal = ({ isOpen, onClose, onInvite, loading }: InviteUserModal
                 variant="bordered"
                 className="md:col-span-2"
               >
-                <SelectItem key="USER" value="USER">Usuario</SelectItem>
-                <SelectItem key="MANAGER" value="MANAGER">Manager</SelectItem>
-                <SelectItem key="ADMIN" value="ADMIN">Administrador</SelectItem>
+                <SelectItem key="USER">Usuario</SelectItem>
+                <SelectItem key="MANAGER">Manager</SelectItem>
+                <SelectItem key="ADMIN">Administrador</SelectItem>
               </Select>
             </div>
           </ModalBody>
@@ -302,7 +302,7 @@ const EditUserModal = ({ isOpen, onClose, onUpdate, loading, user, currentUserRo
     }
   }, [user]);
 
-  // const _handlePasswordChange = (password: string) => {
+  const handlePasswordChange = (password: string) => {
     setFormData({ ...formData, newPassword: password });
     if (password) {
       const validation = validatePassword(password);
@@ -319,7 +319,7 @@ const EditUserModal = ({ isOpen, onClose, onUpdate, loading, user, currentUserRo
     }
   };
 
-  // const _handleConfirmPasswordChange = (confirmPassword: string) => {
+  const handleConfirmPasswordChange = (confirmPassword: string) => {
     setFormData({ ...formData, confirmPassword });
     if (confirmPassword && formData.newPassword !== confirmPassword) {
       setConfirmPasswordError('Las contraseñas no coinciden');
@@ -328,19 +328,19 @@ const EditUserModal = ({ isOpen, onClose, onUpdate, loading, user, currentUserRo
     }
   };
 
-  // const _getStrengthColor = (strength: number) => {
+  const getStrengthColor = (strength: number) => {
     if (strength < 40) return 'bg-red-500';
     if (strength < 70) return 'bg-yellow-500';
     return 'bg-green-500';
   };
 
-  // const _getStrengthText = (strength: number) => {
+  const getStrengthText = (strength: number) => {
     if (strength < 40) return 'Débil';
     if (strength < 70) return 'Media';
     return 'Fuerte';
   };
 
-  // const _handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (user) {
       // Validar contraseña si se está cambiando
@@ -354,7 +354,7 @@ const EditUserModal = ({ isOpen, onClose, onUpdate, loading, user, currentUserRo
         }
       }
 
-      const updateData: unknown = {
+      const updateData: any = {
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,
@@ -370,7 +370,7 @@ const EditUserModal = ({ isOpen, onClose, onUpdate, loading, user, currentUserRo
     }
   };
 
-  // const _resetForm = () => {
+  const resetForm = () => {
     if (user) {
       setFormData({
         firstName: user.firstName || '',
@@ -392,12 +392,12 @@ const EditUserModal = ({ isOpen, onClose, onUpdate, loading, user, currentUserRo
 
   if (!user) return null;
 
-  // const _isAdmin = currentUserRole === 'ADMIN';
-  // const _isManager = currentUserRole === 'MANAGER';
-  // const _targetIsAdmin = user.role === 'ADMIN';
-  // const _canEditRole = isAdmin; // Solo admins pueden cambiar roles
-  // const _canEditStatus = (isAdmin || isManager) && user.id !== currentUser?.id; // No pueden cambiar su propio estado
-  // const _canEdit = isAdmin || isManager || user.id === currentUser?.id; // Todos pueden editar su perfil
+  const isAdmin = currentUserRole === 'ADMIN';
+  const isManager = currentUserRole === 'MANAGER';
+  const targetIsAdmin = user.role === 'ADMIN';
+  const canEditRole = isAdmin; // Solo admins pueden cambiar roles
+  const canEditStatus = (isAdmin || isManager) && user.id !== currentUser?.id; // No pueden cambiar su propio estado
+  const canEdit = isAdmin || isManager || user.id === currentUser?.id; // Todos pueden editar su perfil
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="xl">
@@ -445,9 +445,9 @@ const EditUserModal = ({ isOpen, onClose, onUpdate, loading, user, currentUserRo
                 isDisabled={!canEditRole}
                 description={!canEditRole ? "Solo administradores pueden cambiar roles" : ""}
               >
-                <SelectItem key="USER" value="USER">Usuario</SelectItem>
-                <SelectItem key="MANAGER" value="MANAGER">Manager</SelectItem>
-                {isAdmin && <SelectItem key="ADMIN" value="ADMIN">Administrador</SelectItem>}
+                <SelectItem key="USER">Usuario</SelectItem>
+                <SelectItem key="MANAGER">Manager</SelectItem>
+                {isAdmin ? <SelectItem key="ADMIN">Administrador</SelectItem> : null}
               </Select>
               
               {canEditStatus && (
@@ -686,7 +686,7 @@ const EditUserModal = ({ isOpen, onClose, onUpdate, loading, user, currentUserRo
               color="primary" 
               type="submit" 
               isLoading={loading}
-              isDisabled={!canEdit || (formData.newPassword && (!passwordValidation?.isValid || !!confirmPasswordError))}
+              isDisabled={Boolean(!canEdit || (formData.newPassword && (!passwordValidation?.isValid || !!confirmPasswordError)))}
               startContent={!loading && <CheckIcon className="w-4 h-4" />}
             >
               {loading ? 'Guardando...' : 'Guardar Cambios'}
@@ -741,7 +741,7 @@ export default function TeamManagement() {
   // FUNCIONES DE DATOS
   // ========================================================================================
 
-  // const _loadUsers = useCallback(async () => {
+  const loadUsers = useCallback(async () => {
     try {
       setLoading(true);
       setError('');
@@ -754,14 +754,14 @@ export default function TeamManagement() {
         setError(data.message || 'Error cargando usuarios');
       }
     } catch (_error) {
-console.warn('Error loading users:', error);
+  console.warn('Error loading users:', error);
       setError('Error de conexión');
     } finally {
       setLoading(false);
     }
   }, []);
 
-  // const _handleInviteUser = async (userData: InviteUserData) => {
+  const handleInviteUser = async (userData: InviteUserData) => {
     setInviteLoading(true);
     setError('');
     
@@ -787,7 +787,7 @@ console.warn('Error loading users:', error);
         toast.error(data.message || 'Error invitando usuario');
       }
     } catch (_error) {
-console.warn('Error inviting user:', error);
+  console.warn('Error inviting user:', error);
       setError('Error de conexión');
       toast.error('Error de conexión');
     } finally {
@@ -795,7 +795,7 @@ console.warn('Error inviting user:', error);
     }
   };
 
-  // const _handleDeleteUser = async (userId: string) => {
+  const handleDeleteUser = async (userId: string) => {
     try {
       const response = await fetch(`/api/users/${userId}`, {
         method: 'DELETE',
@@ -811,12 +811,12 @@ console.warn('Error inviting user:', error);
         setError(data.message || 'Error eliminando usuario');
       }
     } catch (_error) {
-console.warn('Error deleting user:', error);
+  console.warn('Error deleting user:', error);
       setError('Error de conexión');
     }
   };
 
-  // const _handleUpdateUser = async (userId: string, userData: Partial<User & { newPassword?: string; confirmPassword?: string }>) => {
+  const handleUpdateUser = async (userId: string, userData: Partial<User & { newPassword?: string; confirmPassword?: string }>) => {
     setEditLoading(true);
     setError('');
     
@@ -838,7 +838,7 @@ console.warn('Error deleting user:', error);
         toast.error(data.message || 'Error actualizando usuario');
       }
     } catch (_error) {
-console.warn('Error updating user:', error);
+  console.warn('Error updating user:', error);
       setError('Error de conexión');
       toast.error('Error de conexión');
     } finally {
@@ -846,7 +846,7 @@ console.warn('Error updating user:', error);
     }
   };
 
-  // const _handleBulkAction = async (action: string, selectedUsers: User[]) => {
+  const handleBulkAction = async (action: string, selectedUsers: User[]) => {
     if (selectedUsers.length === 0) return;
 
     try {
@@ -869,7 +869,7 @@ console.warn('Error updating user:', error);
         setError(data.message || 'Error en acción masiva');
       }
     } catch (_error) {
-console.warn('Error in bulk action:', error);
+  console.warn('Error in bulk action:', error);
       setError('Error de conexión');
     }
   };
@@ -878,7 +878,7 @@ console.warn('Error in bulk action:', error);
   // UTILIDADES
   // ========================================================================================
 
-  // const _getRoleIcon = (role: string) => {
+  const getRoleIcon = (role: string) => {
     switch (role) {
       case 'ADMIN': return <ShieldCheckIcon className="w-4 h-4" />;
       case 'MANAGER': return <EyeIcon className="w-4 h-4" />;
@@ -886,7 +886,7 @@ console.warn('Error in bulk action:', error);
     }
   };
 
-  // const _getRoleColor = (role: string): ChipProps['color'] => {
+  const getRoleColor = (role: string): ChipProps['color'] => {
     switch (role) {
       case 'ADMIN': return 'danger';
       case 'MANAGER': return 'primary';
@@ -894,7 +894,7 @@ console.warn('Error in bulk action:', error);
     }
   };
 
-  // const _getRoleLabel = (role: string) => {
+  const getRoleLabel = (role: string) => {
     switch (role) {
       case 'ADMIN': return 'Administrador';
       case 'MANAGER': return 'Manager';
@@ -902,7 +902,7 @@ console.warn('Error in bulk action:', error);
     }
   };
 
-  // const _getInitials = useCallback((user: User) => {
+  const getInitials = useCallback((user: User) => {
     if (user.firstName && user.lastName) {
       return `${user.firstName[0]}${user.lastName[0]}`.toUpperCase();
     }
@@ -912,7 +912,7 @@ console.warn('Error in bulk action:', error);
     return user.email[0].toUpperCase();
   }, []);
 
-  // const _getDisplayName = useCallback((user: User) => {
+  const getDisplayName = useCallback((user: User) => {
     if (user.firstName && user.lastName) {
       return `${user.firstName} ${user.lastName}`;
     }
@@ -922,15 +922,15 @@ console.warn('Error in bulk action:', error);
     return user.email;
   }, []);
 
-  // const _isAdmin = currentUser?.role === 'ADMIN';
-  // const _isManager = currentUser?.role === 'MANAGER';
-  // const _canManageUsers = isAdmin || isManager;
+  const isAdmin = currentUser?.role === 'ADMIN';
+  const isManager = currentUser?.role === 'MANAGER';
+  const canManageUsers = isAdmin || isManager;
 
   // ========================================================================================
   // FILTROS Y ORDENAMIENTO
   // ========================================================================================
 
-  // const _filteredUsers = useMemo(() => {
+  const filteredUsers = useMemo(() => {
     let filtered = [...users];
 
     // Filtro global
@@ -992,15 +992,15 @@ console.warn('Error in bulk action:', error);
   }, [users, config.filters, config.sortConfig]);
 
   // Paginación
-  // const _paginatedUsers = useMemo(() => {
+  const paginatedUsers = useMemo(() => {
     const start = (config.pagination.page - 1) * config.pagination.itemsPerPage;
     const end = start + config.pagination.itemsPerPage;
     return filteredUsers.slice(start, end);
   }, [filteredUsers, config.pagination]);
 
-  // const _totalPages = Math.ceil(filteredUsers.length / config.pagination.itemsPerPage);
+  const totalPages = Math.ceil(filteredUsers.length / config.pagination.itemsPerPage);
 
-  // const _selectedUsers = useMemo(() => {
+  const selectedUsers = useMemo(() => {
     if (selectedKeys === 'all') return paginatedUsers;
     return paginatedUsers.filter(user => selectedKeys.has(user.id));
   }, [selectedKeys, paginatedUsers]);
@@ -1009,7 +1009,7 @@ console.warn('Error in bulk action:', error);
   // RENDERIZADO DE CELDAS
   // ========================================================================================
 
-  // const _renderCell = useCallback((user: User, columnKey: React.Key) => {
+  const renderCell = useCallback((user: User, columnKey: React.Key) => {
     switch (columnKey) {
       case 'user':
         return (
@@ -1131,7 +1131,7 @@ console.warn('Error in bulk action:', error);
   // COLUMNAS DE LA TABLA
   // ========================================================================================
 
-  // const _columns = [
+  const columns = [
     { key: 'user', label: 'Usuario', sortable: true },
     { key: 'role', label: 'Rol', sortable: true },
     { key: 'status', label: 'Estado', sortable: false },
@@ -1139,7 +1139,7 @@ console.warn('Error in bulk action:', error);
     ...(canManageUsers ? [{ key: 'actions', label: 'Acciones', sortable: false }] : [])
   ];
 
-  // const _headerColumns = useMemo(() => {
+  const headerColumns = useMemo(() => {
     return columns.filter(column => config.visibleColumns.has(column.key));
   }, [columns, config.visibleColumns]);
 
@@ -1223,7 +1223,7 @@ console.warn('Error in bulk action:', error);
             variant="bordered"
           >
             {ROLE_OPTIONS.map(option => (
-              <SelectItem key={option.value} value={option.value}>
+              <SelectItem key={option.value}>
                 {option.label}
               </SelectItem>
             ))}
@@ -1239,7 +1239,7 @@ console.warn('Error in bulk action:', error);
             variant="bordered"
           >
             {STATUS_OPTIONS.map(option => (
-              <SelectItem key={option.value} value={option.value}>
+              <SelectItem key={option.value}>
                 {option.label}
               </SelectItem>
             ))}
@@ -1416,7 +1416,7 @@ console.warn('Error in bulk action:', error);
                 aria-label="Elementos por página"
               >
                 {ITEMS_PER_PAGE_OPTIONS.map(option => (
-                  <SelectItem key={option.value.toString()} value={option.value.toString()}>
+                  <SelectItem key={option.value.toString()}>
                     {option.label}
                   </SelectItem>
                 ))}

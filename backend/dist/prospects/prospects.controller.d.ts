@@ -85,6 +85,7 @@ export declare class ProspectsController {
         jobTitle?: string;
         phone?: string;
         source?: string;
+        userId: string;
     }): Promise<{
         id: string;
         firstName: string | null;

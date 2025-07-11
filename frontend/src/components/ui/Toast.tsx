@@ -28,7 +28,7 @@ let toastState: ToastState[] = [];
 let listeners: ((toasts: ToastState[]) => void)[] = [];
 
 const notify = (message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info', duration = 5000) => {
-  // const _id = (++toastId).toString();
+  const id = (++toastId).toString();
   const toast: ToastState = { id, message, type, duration };
   
   toastState = [...toastState, toast];
@@ -70,7 +70,7 @@ export function useToast() {
 }
 
 function Toast({ message, type, onClose }: ToastProps) {
-  // const _getIcon = () => {
+  const getIcon = () => {
     switch (type) {
       case 'success':
         return <CheckCircleIcon className="w-5 h-5 text-green-600" />;
@@ -83,7 +83,7 @@ function Toast({ message, type, onClose }: ToastProps) {
     }
   };
 
-  // const _getStyles = () => {
+  const getStyles = () => {
     switch (type) {
       case 'success':
         return 'bg-green-50 border-green-200 text-green-800';
@@ -116,7 +116,7 @@ function Toast({ message, type, onClose }: ToastProps) {
 }
 
 export default function ToastContainer() {
-  // const _toasts = useToast();
+  const toasts = useToast();
 
   return (
     <div className="fixed top-4 right-4 z-50 space-y-2 pointer-events-none">

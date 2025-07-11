@@ -2,7 +2,20 @@ import { TasksService } from './tasks.service';
 export declare class TasksController {
     private readonly tasksService;
     constructor(tasksService: TasksService);
-    findAll(): Promise<{
+    findAll(): Promise<({
+        lead: {
+            id: string;
+            firstName: string;
+            lastName: string;
+            email: string;
+            company: string;
+        };
+        assignedTo: {
+            id: string;
+            name: string;
+            email: string;
+        };
+    } & {
         description: string | null;
         type: import(".prisma/client").$Enums.TaskType;
         id: string;
@@ -11,6 +24,8 @@ export declare class TasksController {
         timezone: string;
         priority: import(".prisma/client").$Enums.TaskPriority;
         status: import(".prisma/client").$Enums.TaskStatus;
+        leadId: string | null;
+        syncedAt: Date | null;
         subject: string;
         category: import(".prisma/client").$Enums.TaskCategory;
         scheduledDate: Date | null;
@@ -22,7 +37,6 @@ export declare class TasksController {
         aiConfidenceScore: number;
         customMessage: string | null;
         customNotes: string | null;
-        leadId: string | null;
         contactEmail: string;
         contactName: string | null;
         companyName: string | null;
@@ -31,7 +45,6 @@ export declare class TasksController {
         rejectedReason: string | null;
         hubspotTaskId: string | null;
         syncedToHubspot: boolean;
-        syncedAt: Date | null;
         syncError: string | null;
         completed: boolean;
         completedAt: Date | null;
@@ -49,8 +62,21 @@ export declare class TasksController {
         parentTaskId: string | null;
         abTestGroup: string | null;
         abTestId: string | null;
-    }[]>;
+    })[]>;
     create(taskData: any): Promise<{
+        lead: {
+            id: string;
+            firstName: string;
+            lastName: string;
+            email: string;
+            company: string;
+        };
+        assignedTo: {
+            id: string;
+            name: string;
+            email: string;
+        };
+    } & {
         description: string | null;
         type: import(".prisma/client").$Enums.TaskType;
         id: string;
@@ -59,6 +85,8 @@ export declare class TasksController {
         timezone: string;
         priority: import(".prisma/client").$Enums.TaskPriority;
         status: import(".prisma/client").$Enums.TaskStatus;
+        leadId: string | null;
+        syncedAt: Date | null;
         subject: string;
         category: import(".prisma/client").$Enums.TaskCategory;
         scheduledDate: Date | null;
@@ -70,7 +98,6 @@ export declare class TasksController {
         aiConfidenceScore: number;
         customMessage: string | null;
         customNotes: string | null;
-        leadId: string | null;
         contactEmail: string;
         contactName: string | null;
         companyName: string | null;
@@ -79,7 +106,6 @@ export declare class TasksController {
         rejectedReason: string | null;
         hubspotTaskId: string | null;
         syncedToHubspot: boolean;
-        syncedAt: Date | null;
         syncError: string | null;
         completed: boolean;
         completedAt: Date | null;

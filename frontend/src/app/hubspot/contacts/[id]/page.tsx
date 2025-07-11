@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
-import { LoadingSystem } from '@/components/ui/LoadingSystem';
+import LoadingSystem from '@/components/ui/LoadingSystem';
 import { 
   UserIcon, 
   BuildingOfficeIcon, 
@@ -95,8 +95,8 @@ interface Task {
 }
 
 export default function ContactDetailPage() {
-  // const _params = useParams();
-  // const _contactId = params.id as string;
+  const params = useParams();
+  const contactId = params?.id as string;
   
   const [contact, setContact] = useState<ContactDetail | null>(null);
   const [emails, setEmails] = useState<Email[]>([]);
@@ -111,7 +111,7 @@ export default function ContactDetailPage() {
     fetchContactData();
   }, [contactId]);
 
-  // const _fetchContactData = async () => {
+  const fetchContactData = async () => {
     try {
       setLoading(true);
       
@@ -143,7 +143,7 @@ export default function ContactDetailPage() {
       setDeals(dealsData);
       setTasks(tasksData);
       
-    } catch (_error) {
+    } catch (error) {
       console.error('Error fetching contact data:', error);
     } finally {
       setLoading(false);
@@ -162,7 +162,7 @@ export default function ContactDetailPage() {
     );
   }
 
-  // const _getStatusColor = (status: string) => {
+  const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case 'new': return 'bg-blue-100 text-blue-800';
       case 'qualified': return 'bg-green-100 text-green-800';
@@ -172,7 +172,7 @@ export default function ContactDetailPage() {
     }
   };
 
-  // const _getPriorityColor = (priority: string) => {
+  const getPriorityColor = (priority: string) => {
     switch (priority.toLowerCase()) {
       case 'high': return 'bg-red-100 text-red-800';
       case 'medium': return 'bg-yellow-100 text-yellow-800';
@@ -181,7 +181,7 @@ export default function ContactDetailPage() {
     }
   };
 
-  // const _formatDate = (dateString: string) => {
+  const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('es-ES', {
       day: '2-digit',
       month: '2-digit',
@@ -191,14 +191,14 @@ export default function ContactDetailPage() {
     });
   };
 
-  // const _formatAmount = (amount: string) => {
+  const formatAmount = (amount: string) => {
     return new Intl.NumberFormat('es-ES', {
       style: 'currency',
       currency: 'EUR'
     }).format(parseFloat(amount));
   };
 
-  // const _tabs = [
+  const tabs = [
     { id: 'overview', label: 'Resumen', icon: UserIcon },
     { id: 'emails', label: `Emails (${emails.length})`, icon: EnvelopeIcon },
     { id: 'calls', label: `Llamadas (${calls.length})`, icon: PhoneIcon },

@@ -28,7 +28,7 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-console.warn('ErrorBoundary caught an error:', error, errorInfo);
+  console.warn('ErrorBoundary caught an error:', error, errorInfo);
     
     // Log del error (en producción enviarías a servicio de logging)
     if (this.props.onError) {
@@ -38,8 +38,8 @@ console.warn('ErrorBoundary caught an error:', error, errorInfo);
     // En desarrollo, mostrar más información
     if (process.env.NODE_ENV === 'development') {
       console.group('🚨 Error Boundary Details');
-console.warn('Error:', error);
-console.warn('Component Stack:', errorInfo.componentStack);
+  console.warn('Error:', error);
+  console.warn('Component Stack:', errorInfo.componentStack);
       console.groupEnd();
     }
   }

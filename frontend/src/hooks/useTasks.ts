@@ -1,17 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Task, TaskStatus, TaskCategory, TaskType, TaskPriority } from '@prisma/client';
-
-export interface TaskFilters {
-  status?: TaskStatus[];
-  category?: TaskCategory[];
-  type?: TaskType[];
-  priority?: TaskPriority[];
-  assignedTo?: string;
-  dateFrom?: Date;
-  dateTo?: Date;
-  syncStatus?: 'synced' | 'pending' | 'error';
-  searchTerm?: string;
-}
+import { Task, TaskStatus, TaskCategory, TaskType, TaskPriority, TaskFilters, TaskCreateInput } from '../types/common.types';
 
 export interface TaskCreateInput {
   subject: string;
@@ -83,7 +71,7 @@ export const useTasks = (): UseTasksReturn => {
   const [selectedTasks, setSelectedTasks] = useState<string[]>([]);
 
   // Build query string from filters
-  // const _buildQueryString = useCallback((currentFilters: TaskFilters, page: number) => {
+  const buildQueryString = useCallback((currentFilters: TaskFilters, page: number) => {
     const params = new URLSearchParams();
     
     if (currentFilters.status) params.append('status', currentFilters.status.join(','));
@@ -103,7 +91,7 @@ export const useTasks = (): UseTasksReturn => {
   }, []);
 
   // Fetch tasks
-  // const _fetchTasks = useCallback(async (currentFilters: TaskFilters, page: number) => {
+  const fetchTasks = useCallback(async (currentFilters: TaskFilters, page: number) => {
     try {
       setLoading(true);
       setError(null);
@@ -136,7 +124,7 @@ export const useTasks = (): UseTasksReturn => {
   }, [filters, pagination.currentPage]);
 
   // CRUD operations
-  // const _createTask = async (data: TaskCreateInput): Promise<Task> => {
+  const createTask = async (data: TaskCreateInput): Promise<Task> => {
     try {
       const response = await fetch('/api/tasks', {
         method: 'POST',
@@ -174,7 +162,7 @@ export const useTasks = (): UseTasksReturn => {
     }
   };
 
-  // const _updateTask = async (id: string, data: Partial<TaskCreateInput>): Promise<Task> => {
+  const updateTask = async (id: string, data: Partial<TaskCreateInput>): Promise<Task> => {
     try {
       const response = await fetch(`/api/tasks/${id}`, {
         method: 'PUT',
@@ -204,7 +192,7 @@ export const useTasks = (): UseTasksReturn => {
     }
   };
 
-  // const _deleteTask = async (id: string): Promise<void> => {
+  const deleteTask = async (id: string): Promise<void> => {
     try {
       const response = await fetch(`/api/tasks/${id}`, {
         method: 'DELETE',
@@ -231,7 +219,7 @@ export const useTasks = (): UseTasksReturn => {
   };
 
   // Actions
-  // const _approveTask = async (id: string): Promise<void> => {
+  const approveTask = async (id: string): Promise<void> => {
     try {
       const response = await fetch('/api/tasks/actions', {
         method: 'POST',
@@ -262,7 +250,7 @@ export const useTasks = (): UseTasksReturn => {
     }
   };
 
-  // const _rejectTask = async (id: string, reason: string): Promise<void> => {
+  const rejectTask = async (id: string, reason: string): Promise<void> => {
     try {
       const response = await fetch('/api/tasks/actions', {
         method: 'POST',
@@ -293,7 +281,7 @@ export const useTasks = (): UseTasksReturn => {
     }
   };
 
-  // const _syncToHubSpot = async (id: string): Promise<void> => {
+  const syncToHubSpot = async (id: string): Promise<void> => {
     try {
       const response = await fetch('/api/tasks/actions', {
         method: 'POST',
@@ -324,7 +312,7 @@ export const useTasks = (): UseTasksReturn => {
     }
   };
 
-  // const _bulkAction = async (action: string, params?: unknown): Promise<void> => {
+  const bulkAction = async (action: string, params?: unknown): Promise<void> => {
     try {
       const response = await fetch('/api/tasks/actions', {
         method: 'POST',
@@ -368,7 +356,7 @@ export const useTasks = (): UseTasksReturn => {
     }
   };
 
-  // const _generateAISuggestions = async (data: TaskCreateInput): Promise<any> => {
+  const generateAISuggestions = async (data: TaskCreateInput): Promise<any> => {
     try {
       const response = await fetch('/api/tasks/ai-suggestions', {
         method: 'POST',
@@ -397,16 +385,16 @@ export const useTasks = (): UseTasksReturn => {
   };
 
   // Filtering and pagination
-  // const _handleSetFilters = (newFilters: TaskFilters) => {
+  const handleSetFilters = (newFilters: TaskFilters) => {
     setFilters(newFilters);
     setPagination(prev => ({ ...prev, currentPage: 1 }));
   };
 
-  // const _setPage = (page: number) => {
+  const setPage = (page: number) => {
     setPagination(prev => ({ ...prev, currentPage: page }));
   };
 
-  // const _refreshTasks = useCallback(async () => {
+  const refreshTasks = useCallback(async () => {
     const queryString = buildQueryString(filters, pagination.currentPage);
     try {
       setLoading(true);
@@ -434,19 +422,19 @@ export const useTasks = (): UseTasksReturn => {
   }, [buildQueryString, filters, pagination.currentPage]);
 
   // Task selection
-  // const _selectTask = (id: string) => {
+  const selectTask = (id: string) => {
     setSelectedTasks(prev => [...prev, id]);
   };
 
-  // const _deselectTask = (id: string) => {
+  const deselectTask = (id: string) => {
     setSelectedTasks(prev => prev.filter(taskId => taskId !== id));
   };
 
-  // const _selectAllTasks = () => {
+  const selectAllTasks = () => {
     setSelectedTasks(tasks.map(task => task.id));
   };
 
-  // const _deselectAllTasks = () => {
+  const deselectAllTasks = () => {
     setSelectedTasks([]);
   };
 

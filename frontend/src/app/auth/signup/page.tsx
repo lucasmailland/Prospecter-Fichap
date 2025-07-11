@@ -30,7 +30,7 @@ export default function SignUpPage() {
   const [submitError, setSubmitError] = useState('');
   
   const { register: registerUser, loading } = useAuth();
-  // const _router = useRouter();
+  const router = useRouter();
 
   const {
     values,
@@ -108,7 +108,7 @@ export default function SignUpPage() {
     },
   });
 
-  // const _getPasswordStrength = (password: string) => {
+  const getPasswordStrength = (password: string) => {
     let strength = 0;
     if (password.length >= 8) strength++;
     if (/[a-z]/.test(password)) strength++;
@@ -118,10 +118,10 @@ export default function SignUpPage() {
     return strength;
   };
 
-  // const _passwordStrength = getPasswordStrength(values.password);
+  const passwordStrength = getPasswordStrength(values.password);
   
-  // const _strengthLabels = ['Muy débil', 'Débil', 'Regular', 'Buena', 'Excelente'];
-  // const _strengthColors = ['bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-blue-500', 'bg-green-500'];
+  const strengthLabels = ['Muy débil', 'Débil', 'Regular', 'Buena', 'Excelente'];
+  const strengthColors = ['bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-blue-500', 'bg-green-500'];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">

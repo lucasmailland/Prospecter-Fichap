@@ -25,28 +25,28 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
   className = '',
   ...props
 }, ref) => {
-  // const _baseClasses = 'block border rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500';
+  const baseClasses = 'block border rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500';
   
-  // const _variants = {
+  const variants = {
     default: 'border-gray-300 focus:border-blue-500',
     filled: 'border-gray-300 bg-gray-50 focus:bg-white focus:border-blue-500',
     outlined: 'border-2 border-gray-300 focus:border-blue-500'
   };
 
-  // const _sizes = {
+  const sizes = {
     sm: 'px-3 py-1.5 text-sm',
     md: 'px-4 py-2 text-sm',
     lg: 'px-6 py-3 text-base'
   };
 
-  // const _errorClasses = error ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : '';
-  // const _disabledClasses = props.disabled ? 'opacity-50 cursor-not-allowed bg-gray-100' : '';
-  // const _widthClasses = fullWidth ? 'w-full' : '';
+  const errorClasses = error ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : '';
+  const disabledClasses = props.disabled ? 'opacity-50 cursor-not-allowed bg-gray-100' : '';
+  const widthClasses = fullWidth ? 'w-full' : '';
   
   // Use icon prop as alias for leftIcon
-  // const _actualLeftIcon = leftIcon || icon;
+  const actualLeftIcon = leftIcon || icon;
 
-  // const _inputClasses = `
+  const inputClasses = `
     ${baseClasses}
     ${variants[variant]}
     ${sizes[size]}

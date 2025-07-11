@@ -36,7 +36,15 @@ const performanceMetrics = [
 ];
 
 // Componente StatCard simplificado
-function StatCard({ title, value, change, trend, iconName }: unknown) {
+interface StatCardProps {
+  title: string;
+  value: string;
+  change: string;
+  trend: 'up' | 'down' | 'neutral';
+  iconName: string;
+}
+
+function StatCard({ title, value, change, trend, iconName }: StatCardProps) {
   return (
     <div className="bg-white rounded-lg shadow border p-6">
       <div className="flex items-center justify-between mb-3">

@@ -9,7 +9,7 @@ interface StatCardProps {
   change: string;
   trend?: 'up' | 'down' | 'neutral';
   changeType?: 'positive' | 'negative' | 'neutral';
-  icon: unknown; // Accept icon component
+  icon: any; // Accept icon component
 }
 
 export default function StatCard({ 
@@ -21,7 +21,7 @@ export default function StatCard({
   icon: IconComponent
 }: StatCardProps) {
   // Convert trend to changeType if needed
-  // const _finalChangeType = changeType || (trend === 'up' ? 'positive' : trend === 'down' ? 'negative' : 'neutral');
+  const finalChangeType = changeType || (trend === 'up' ? 'positive' : trend === 'down' ? 'negative' : 'neutral');
   
   return (
     <div className={`${designSystem.card.base} ${designSystem.card.hover} ${designSystem.spacing.card}`}>

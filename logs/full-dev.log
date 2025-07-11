@@ -1,0 +1,8 @@
+[0;34m🔍 Verificando dependencias del sistema...[0m
+[0;32m✅ Dependencias verificadas[0m
+[0;34m📁 Creando directorios necesarios...[0m
+[0;34m🐳 Iniciando servicios de base de datos...[0m
+Cannot connect to the Docker daemon at unix:///Users/lucasmailland/.docker/run/docker.sock. Is the docker daemon running?
+[0;36mℹ️ Iniciando PostgreSQL...[0m
+time="2025-07-10T21:11:19-07:00" level=warning msg="/Users/lucasmailland/Desktop/Prospecter-Fichap/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+unable to get image 'postgres:15-alpine': Cannot connect to the Docker daemon at unix:///Users/lucasmailland/.docker/run/docker.sock. Is the docker daemon running?

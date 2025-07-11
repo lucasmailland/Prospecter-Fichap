@@ -1,5 +1,6 @@
-import Image from "next/image";
 'use client';
+
+import Image from "next/image";
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
@@ -28,7 +29,7 @@ interface TwoFASetup {
 
 export default function SecuritySettingsPage() {
   const { user } = useAuth();
-  // const _showToast = (message: string, type: string) => {
+  const showToast = (message: string, type: string) => {
     // Implementar toast o usar otra librería
     console.log(`${type}: ${message}`);
   };
@@ -45,13 +46,13 @@ export default function SecuritySettingsPage() {
     checkTwoFAStatus();
   }, []);
 
-  // const _checkTwoFAStatus = async () => {
+  const checkTwoFAStatus = async () => {
     try {
       // Aquí puedes agregar una llamada API para verificar el estado del 2FA
       // Por ahora, asumimos que no está activado
       setIs2FAEnabled(false);
-    } catch (_error) {
-      console.warn('Error checking 2FA status:', error);
+    } catch (error) {
+        console.warn('Error checking 2FA status:', error);
     }
   };
 
@@ -66,8 +67,8 @@ export default function SecuritySettingsPage() {
       const data = await response.json();
       setSetupData(data);
       setShowSetupModal(true);
-    } catch (_error) {
-      console.warn('Error:', error);
+    } catch (error) {
+        console.warn('Error:', error);
       showToast('Error iniciando configuración 2FA', 'error');
     } finally {
       setLoading(false);
@@ -106,8 +107,8 @@ export default function SecuritySettingsPage() {
       if (result.backupCodes) {
         showBackupCodes(result.backupCodes);
       }
-    } catch (_error) {
-      console.warn('Error:', error);
+    } catch (error) {
+        console.warn('Error:', error);
       showToast('Error activando 2FA', 'error');
     } finally {
       setLoading(false);
@@ -140,22 +141,22 @@ export default function SecuritySettingsPage() {
       setCurrentPassword('');
       setDisableCode('');
       showToast('2FA desactivado exitosamente', 'info');
-    } catch (_error) {
-      console.warn('Error:', error);
+    } catch (error) {
+        console.warn('Error:', error);
       showToast('Error desactivando 2FA', 'error');
     } finally {
       setLoading(false);
     }
   };
 
-  // const _showBackupCodes = (codes: string[]) => {
+  const showBackupCodes = (codes: string[]) => {
     // Crear modal con códigos de respaldo
     const codesText = codes.join('\n');
     navigator.clipboard.writeText(codesText);
     showToast('Códigos de respaldo copiados al portapapeles', 'success');
   };
 
-  // const _copyToClipboard = (text: string, message: string) => {
+  const copyToClipboard = (text: string, message: string) => {
     navigator.clipboard.writeText(text);
     showToast(message, 'success');
   };

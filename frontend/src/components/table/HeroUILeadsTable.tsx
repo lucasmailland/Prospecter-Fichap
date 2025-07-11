@@ -123,7 +123,7 @@ const getAvatarInitials = (firstName?: string, lastName?: string, fullName?: str
 
 // Función para generar color de avatar basado en el nombre
 const getAvatarColor = (name: string) => {
-  // const _colors = [
+  const colors = [
     "bg-blue-500",
     "bg-green-500", 
     "bg-purple-500",
@@ -133,7 +133,7 @@ const getAvatarColor = (name: string) => {
     "bg-red-500",
     "bg-teal-500"
   ];
-  // const _index = name.charCodeAt(0) % colors.length;
+  const index = name.charCodeAt(0) % colors.length;
   return colors[index];
 };
 
@@ -202,14 +202,14 @@ export const HeroUILeadsTable: React.FC<HeroUILeadsTableProps> = ({
   });
   const [page, setPage] = useState(1);
 
-  // const _hasSearchFilter = Boolean(filterValue);
+  const hasSearchFilter = Boolean(filterValue);
 
-  // const _headerColumns = useMemo(() => {
+  const headerColumns = useMemo(() => {
     if (visibleColumns === "all") return columns;
     return columns.filter((column) => Array.from(visibleColumns).includes(column.uid));
   }, [visibleColumns]);
 
-  // const _filteredItems = useMemo(() => {
+  const filteredItems = useMemo(() => {
     let filteredLeads = [...leads];
 
     if (hasSearchFilter) {
@@ -234,29 +234,29 @@ export const HeroUILeadsTable: React.FC<HeroUILeadsTableProps> = ({
     return filteredLeads;
   }, [leads, filterValue, statusFilter, hasSearchFilter]);
 
-  // const _pages = Math.ceil(filteredItems.length / rowsPerPage);
+  const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
-  // const _items = useMemo(() => {
+  const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
     return filteredItems.slice(start, end);
   }, [page, filteredItems, rowsPerPage]);
 
-  // const _sortedItems = useMemo(() => {
+  const sortedItems = useMemo(() => {
     return [...items].sort((a: Lead, b: Lead) => {
-      const first = a[sortDescriptor.column as keyof Lead] as unknown;
-      const second = b[sortDescriptor.column as keyof Lead] as unknown;
+      const first = a[sortDescriptor.column as keyof Lead] as any;
+      const second = b[sortDescriptor.column as keyof Lead] as any;
       const cmp = first < second ? -1 : first > second ? 1 : 0;
       return sortDescriptor.direction === "descending" ? -cmp : cmp;
     });
   }, [sortDescriptor, items]);
 
-  // const _selectedLeads = useMemo(() => {
+  const selectedLeads = useMemo(() => {
     if (selectedKeys === "all") return filteredItems;
     return filteredItems.filter((lead) => (selectedKeys as Set<string>).has(lead.id));
   }, [selectedKeys, filteredItems]);
 
-  // const _renderCell = useCallback((lead: Lead, columnKey: React.Key) => {
+  const renderCell = useCallback((lead: Lead, columnKey: React.Key) => {
     const fullName = lead.fullName || `${lead.firstName || ''} ${lead.lastName || ''}`.trim() || 'Sin nombre';
     const initials = getAvatarInitials(lead.firstName, lead.lastName, lead.fullName, lead.email);
     const avatarColor = getAvatarColor(fullName);
@@ -449,7 +449,7 @@ export const HeroUILeadsTable: React.FC<HeroUILeadsTableProps> = ({
     }
   }, [userRole, onLeadSelect, onLeadEdit, onLeadDelete]);
 
-  // const _onSearchChange = useCallback((value?: string) => {
+  const onSearchChange = useCallback((value?: string) => {
     if (value) {
       setFilterValue(value);
       setPage(1);
@@ -458,12 +458,12 @@ export const HeroUILeadsTable: React.FC<HeroUILeadsTableProps> = ({
     }
   }, []);
 
-  // const _onClear = useCallback(() => {
+  const onClear = useCallback(() => {
     setFilterValue("");
     setPage(1);
   }, []);
 
-  // const _topContent = useMemo(() => {
+  const topContent = useMemo(() => {
     return (
       <div className="flex flex-col gap-4">
         <div className="flex justify-between gap-3 items-end">
@@ -631,7 +631,7 @@ export const HeroUILeadsTable: React.FC<HeroUILeadsTableProps> = ({
     onBulkAction,
   ]);
 
-  // const _bottomContent = useMemo(() => {
+  const bottomContent = useMemo(() => {
     return (
       <div className="py-2 px-2 flex justify-between items-center">
         <span className="w-[30%] text-small text-default-400">

@@ -5,10 +5,10 @@ interface WebhookInfo {
   webhook: {
     status: string;
     endpoint: string;
-    lastEvent: unknown;
+    lastEvent: any;
     lastEventTime: string;
   };
-  syncStats: unknown;
+  syncStats: any;
 }
 
 export default function WebhookStatus() {
@@ -22,7 +22,7 @@ export default function WebhookStatus() {
     return () => clearInterval(interval);
   }, []);
 
-  // const _loadWebhookInfo = async () => {
+  const loadWebhookInfo = async () => {
     try {
       const response = await fetch('/api/webhooks/hubspot/contact');
       const data = await response.json();
@@ -31,13 +31,13 @@ export default function WebhookStatus() {
         setWebhookInfo(data);
       }
     } catch (_error) {
-      console.error('Error loading webhook info:', error);
+      console.error('Error loading webhook info:', _error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // const _formatDate = (dateString: string) => {
+  const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString('es-ES');
   };
 

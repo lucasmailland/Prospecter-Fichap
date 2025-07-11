@@ -16,7 +16,7 @@ export default function Dashboard() {
   const [selectedPeriod, setSelectedPeriod] = useState('30d');
 
   // Stats reales para prospectación
-  // const _stats = [
+  const stats = [
     {
       title: 'Total Leads',
       value: '2,847',
@@ -48,7 +48,8 @@ export default function Dashboard() {
   ];
 
   // Leads recientes enriquecidos
-  // const _recentLeads = [
+  /*
+  const recentLeads = [
     {
       name: 'Sarah Johnson',
       company: 'TechCorp Inc.',
@@ -82,39 +83,45 @@ export default function Dashboard() {
       addedAt: '2 hours ago',
     },
   ];
+  */
 
-  // const _scoreDistribution = [
+  /*
+  const scoreDistribution = [
     { range: '90-100', count: 456, percentage: 68, status: 'excellent' },
     { range: '80-89', count: 234, percentage: 35, status: 'good' },
     { range: '70-79', count: 123, percentage: 18, status: 'fair' },
     { range: '60-69', count: 89, percentage: 13, status: 'fair' },
     { range: '<60', count: 45, percentage: 7, status: 'poor' },
-  ];
+  // ];
+  */
 
-  // const _performanceMetrics = {
+  const performanceMetrics = {
     successRate: 96.2,
     avgProcessingTime: '2.3s',
     totalProcessed: '12,847',
     errors: 23,
   };
 
-  // const _getScoreColor = (score: number) => {
-    if (score >= 80) return designSystem.score.excellent;
-    if (score >= 60) return designSystem.score.good;
-    if (score >= 40) return designSystem.score.fair;
-    return designSystem.score.poor;
-  };
+  // Función real para el render
+  function getChangeColor(changeType: string) {
+    if (changeType === 'positive') return 'text-emerald-700 font-bold';
+    if (changeType === 'negative') return 'text-red-700 font-bold';
+    return 'text-gray-600 font-semibold';
+  }
 
-  // const _getStatusStyles = (status: string) => {
+  /*
+  const getStatusStyles = (status: string) => {
     const statusMap = {
       'QUALIFIED': designSystem.leadStatus.qualified,
       'POTENTIAL': designSystem.leadStatus.potential,
       'cold': designSystem.leadStatus.cold,
     };
     return statusMap[status as keyof typeof statusMap] || designSystem.leadStatus.cold;
-  };
+  // };
+  */
 
-  // const _getDistributionColor = (status: string) => {
+  /*
+  const getDistributionColor = (status: string) => {
     const colorMap = {
       'excellent': designSystem.progressBar.excellent,
       'good': designSystem.progressBar.good, 
@@ -122,13 +129,8 @@ export default function Dashboard() {
       'poor': designSystem.progressBar.poor,
     };
     return colorMap[status as keyof typeof colorMap] || designSystem.progressBar.neutral;
-  };
-
-  // const _getChangeColor = (changeType: string) => {
-    if (changeType === 'positive') return 'text-emerald-700 font-bold';
-    if (changeType === 'negative') return 'text-red-700 font-bold';
-    return 'text-gray-600 font-semibold';
-  };
+  // };
+  */
 
   return (
     <div className="space-y-8">
@@ -173,7 +175,7 @@ export default function Dashboard() {
         transition={{ duration: 0.5, delay: 0.1 }}
         className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6"
       >
-        {stats.map((stat, _index) => (
+        {stats.map((stat, index) => (
           <motion.div
             key={stat.title}
             initial={{ opacity: 0, y: 20 }}
@@ -214,6 +216,7 @@ export default function Dashboard() {
           </div>
           <div className={designSystem.spacing.cardContent}>
             <div className="space-y-4">
+              {/*
               {scoreDistribution.map((item, _index) => (
                 <motion.div
                   key={item.range}
@@ -237,6 +240,7 @@ export default function Dashboard() {
                   </div>
                 </motion.div>
               ))}
+              */}
             </div>
           </div>
         </motion.div>
@@ -254,6 +258,7 @@ export default function Dashboard() {
           </div>
           <div className={designSystem.spacing.cardContent}>
             <div className="space-y-0">
+              {/*
               {recentLeads.map((lead, _index) => (
                 <motion.div
                   key={lead.email}
@@ -288,6 +293,7 @@ export default function Dashboard() {
                   </div>
                 </motion.div>
               ))}
+              */}
             </div>
           </div>
         </motion.div>
@@ -308,25 +314,25 @@ export default function Dashboard() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <div className="text-center">
               <div className={`${designSystem.typography.metric} ${designSystem.score.excellent} mb-1`}>
-                {performanceMetrics.successRate}%
+                {/* {performanceMetrics.successRate}% */}
               </div>
               <div className={designSystem.typography.body}>Tasa de éxito</div>
             </div>
             <div className="text-center">
               <div className={`${designSystem.typography.metric} mb-1`}>
-                {performanceMetrics.avgProcessingTime}
+                {/* {performanceMetrics.avgProcessingTime} */}
               </div>
               <div className={designSystem.typography.body}>Tiempo promedio</div>
             </div>
             <div className="text-center">
               <div className={`${designSystem.typography.metric} mb-1`}>
-                {performanceMetrics.totalProcessed}
+                {/* {performanceMetrics.totalProcessed} */}
               </div>
               <div className={designSystem.typography.body}>Total procesados</div>
             </div>
             <div className="text-center">
               <div className={`${designSystem.typography.metric} ${performanceMetrics.errors > 20 ? designSystem.score.fair : designSystem.score.good} mb-1`}>
-                {performanceMetrics.errors}
+                {/* {performanceMetrics.errors} */}
               </div>
               <div className={designSystem.typography.body}>Errores</div>
             </div>

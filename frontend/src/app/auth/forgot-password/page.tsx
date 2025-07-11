@@ -20,7 +20,7 @@ export default function ForgotPasswordPage() {
   
   const { resetPassword, loading } = useAuth();
 
-  // const _handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setSuccess(false);

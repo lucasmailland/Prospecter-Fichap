@@ -1,14 +1,14 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Task, TaskStatus, TaskPriority } from '@prisma/client';
 import { X, Edit, CheckCircle, XCircle, Send, Clock, Calendar, User, Building, Mail, Phone, MessageSquare, Brain, Zap, History, AlertCircle } from 'lucide-react';
+import { Task, TaskStatus, TaskCategory, TaskType, TaskPriority } from '../../types/common.types';
 
 interface TaskDetailModalProps {
   task: Task | null;
   isOpen: boolean;
   onClose: () => void;
-  onUpdate: (id: string, data: unknown) => Promise<void>;
+  onUpdate: (id: string, data: any) => Promise<void>;
   onApprove: (id: string) => Promise<void>;
   onReject: (id: string, reason: string) => Promise<void>;
   onSync: (id: string) => Promise<void>;
@@ -47,7 +47,7 @@ export default function TaskDetailModal({
 
   if (!isOpen || !task) return null;
 
-  // const _getStatusColor = (status: TaskStatus) => {
+  const getStatusColor = (status: TaskStatus) => {
     switch (status) {
       case TaskStatus.DRAFT: return 'bg-gray-100 text-gray-800 border-gray-200';
       case TaskStatus.PENDING_APPROVAL: return 'bg-yellow-100 text-yellow-800 border-yellow-200';
@@ -59,7 +59,7 @@ export default function TaskDetailModal({
     }
   };
 
-  // const _getPriorityColor = (priority: TaskPriority) => {
+  const getPriorityColor = (priority: TaskPriority) => {
     switch (priority) {
       case TaskPriority.LOW: return 'text-blue-600';
       case TaskPriority.MEDIUM: return 'text-yellow-600';
@@ -70,7 +70,7 @@ export default function TaskDetailModal({
     }
   };
 
-  // const _getTypeIcon = (type: string) => {
+  const getTypeIcon = (type: string) => {
     switch (type) {
       case 'EMAIL': return <Mail className="w-4 h-4" />;
       case 'CALL': return <Phone className="w-4 h-4" />;
@@ -80,7 +80,7 @@ export default function TaskDetailModal({
     }
   };
 
-  // const _handleSave = async () => {
+  const handleSave = async () => {
     setLoading(true);
     try {
       await onUpdate(task.id, editData);
@@ -92,7 +92,7 @@ export default function TaskDetailModal({
     }
   };
 
-  // const _handleApprove = async () => {
+  const handleApprove = async () => {
     setLoading(true);
     try {
       await onApprove(task.id);
@@ -103,7 +103,7 @@ export default function TaskDetailModal({
     }
   };
 
-  // const _handleReject = async () => {
+  const handleReject = async () => {
     if (!rejectReason.trim()) return;
     
     setLoading(true);
@@ -118,7 +118,7 @@ export default function TaskDetailModal({
     }
   };
 
-  // const _handleSync = async () => {
+  const handleSync = async () => {
     setLoading(true);
     try {
       await onSync(task.id);
@@ -129,7 +129,7 @@ export default function TaskDetailModal({
     }
   };
 
-  // const _formatDate = (date: unknown) => {
+  const formatDate = (date: any) => {
     if (!date) return 'No programada';
     return new Date(date).toLocaleDateString('es-ES', {
       weekday: 'long',

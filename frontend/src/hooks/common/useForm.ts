@@ -93,7 +93,7 @@ export function useForm<T extends Record<string, any>>({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Validar un campo específico
-  // const _validateField = useCallback((name: keyof T, value: unknown): string | null => {
+  const validateField = useCallback((name: keyof T, value: unknown): string | null => {
     const rules = validationSchema[name];
     if (!rules) return null;
 
@@ -152,7 +152,7 @@ export function useForm<T extends Record<string, any>>({
   }, [validationSchema]);
 
   // Validar todos los campos
-  // const _validateForm = useCallback((): boolean => {
+  const validateForm = useCallback((): boolean => {
     const newErrors: Partial<Record<keyof T, string>> = {};
     let isValid = true;
 
@@ -170,7 +170,7 @@ export function useForm<T extends Record<string, any>>({
   }, [values, validateField]);
 
   // Cambiar valor de un campo
-  // const _setValue = useCallback((name: keyof T, value: unknown) => {
+  const setValue = useCallback((name: keyof T, value: unknown) => {
     setValues(prev => ({ ...prev, [name]: value }));
 
     if (validateOnChange) {
@@ -180,12 +180,12 @@ export function useForm<T extends Record<string, any>>({
   }, [validateField, validateOnChange]);
 
   // Cambiar múltiples valores
-  // const _setMultipleValues = useCallback((newValues: Partial<T>) => {
+  const setMultipleValues = useCallback((newValues: Partial<T>) => {
     setValues(prev => ({ ...prev, ...newValues }));
   }, []);
 
   // Manejar cambio de input
-  // const _handleChange = useCallback((name: keyof T) => {
+  const handleChange = useCallback((name: keyof T) => {
     return (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
       const { value, type } = event.target;
       const finalValue = type === 'checkbox' 
@@ -199,7 +199,7 @@ export function useForm<T extends Record<string, any>>({
   }, [setValue]);
 
   // Manejar blur
-  // const _handleBlur = useCallback((name: keyof T) => {
+  const handleBlur = useCallback((name: keyof T) => {
     return () => {
       setTouched(prev => ({ ...prev, [name]: true }));
       
@@ -211,7 +211,7 @@ export function useForm<T extends Record<string, any>>({
   }, [validateField, validateOnBlur, values]);
 
   // Manejar submit
-  // const _handleSubmit = useCallback((event?: React.FormEvent) => {
+  const handleSubmit = useCallback((event?: React.FormEvent) => {
     if (event) {
       event.preventDefault();
     }
@@ -227,7 +227,7 @@ export function useForm<T extends Record<string, any>>({
   }, [validateForm, onSubmit, values]);
 
   // Reset del formulario
-  // const _reset = useCallback(() => {
+  const reset = useCallback(() => {
     setValues(initialValues);
     setErrors({});
     setTouched({});
@@ -235,7 +235,7 @@ export function useForm<T extends Record<string, any>>({
   }, [initialValues]);
 
   // Validez del formulario - SOLO considerar errores de campos tocados
-  // const _isValid = useMemo(() => {
+  const isValid = useMemo(() => {
     // Si no se ha tocado ningún campo, considerar válido para permitir envío
     const touchedFields = Object.keys(touched).filter(key => touched[key as keyof T]);
     if (touchedFields.length === 0) {
@@ -248,7 +248,7 @@ export function useForm<T extends Record<string, any>>({
   }, [errors, touched]);
 
   // ✅ NUEVO: Validez para envío (más permisiva)
-  // const _canSubmit = useMemo(() => {
+  const canSubmit = useMemo(() => {
     // Verificar que todos los campos requeridos estén completos
     const allRequiredFieldsValid = Object.keys(validationSchema).every(key => {
       const fieldKey = key as keyof T;
@@ -272,7 +272,7 @@ export function useForm<T extends Record<string, any>>({
   }, [values, errors, validationSchema]);
 
   // Campos tocados con errores
-  // const _hasErrors = useMemo(() => {
+  const hasErrors = useMemo(() => {
     return Object.keys(errors).some(key => touched[key as keyof T] && errors[key as keyof T]);
   }, [errors, touched]);
 

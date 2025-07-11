@@ -78,7 +78,7 @@ export default function ContentGenerator() {
     }
   }, [selectedTemplate, selectedLead]);
 
-  // const _loadData = async () => {
+  const loadData = async () => {
     setIsLoading(true);
     try {
       // Load leads
@@ -90,15 +90,15 @@ export default function ContentGenerator() {
 
       // Load templates
       await loadTemplates();
-    } catch (_error) {
-console.warn('Error loading data:', error);
+    } catch (error) {
+        console.warn('Error loading data:', error);
       setToast({ message: 'Error al cargar datos', type: 'error' });
     } finally {
       setIsLoading(false);
     }
   };
 
-  // const _loadTemplates = async () => {
+  const loadTemplates = async () => {
     try {
       const response = await fetch(`/api/ai/prompts?category=${generationType}`);
       const data = await response.json();
@@ -106,12 +106,12 @@ console.warn('Error loading data:', error);
       if (data.success) {
         setTemplates(data.data);
       }
-    } catch (_error) {
-console.warn('Error loading templates:', error);
+    } catch (error) {
+        console.warn('Error loading templates:', error);
     }
   };
 
-  // const _updateVariablesFromTemplate = (template: PromptTemplate) => {
+  const updateVariablesFromTemplate = (template: PromptTemplate) => {
     const templateVariables = extractVariables(template.prompt);
     const newVariables: Record<string, string> = {};
     
@@ -160,12 +160,12 @@ console.warn('Error loading templates:', error);
     setVariables(newVariables);
   };
 
-  // const _extractVariables = (prompt: string): string[] => {
+  const extractVariables = (prompt: string): string[] => {
     const matches = prompt.match(/\{([^}]+)\}/g);
     return matches ? matches.map(match => match.slice(1, -1)) : [];
   };
 
-  // const _generateContent = async () => {
+  const generateContent = async () => {
     const isUsingTemplate = activeTab === 'template' && selectedTemplate;
     const prompt = activeTab === 'custom' ? customPrompt : '';
     
@@ -202,15 +202,15 @@ console.warn('Error loading templates:', error);
       } else {
         setToast({ message: data.error || 'Error al generar contenido', type: 'error' });
       }
-    } catch (_error) {
-console.warn('Error generating content:', error);
+    } catch (error) {
+        console.warn('Error generating content:', error);
       setToast({ message: 'Error al generar contenido', type: 'error' });
     } finally {
       setIsGenerating(false);
     }
   };
 
-  // const _copyToClipboard = () => {
+  const copyToClipboard = () => {
     navigator.clipboard.writeText(generatedContent);
     setToast({ message: 'Contenido copiado al portapapeles', type: 'success' });
   };
@@ -219,8 +219,8 @@ console.warn('Error generating content:', error);
     return <LoadingSystem variant="page" />;
   }
 
-  // const _selectedTemplateData = templates.find(t => t.id === selectedTemplate);
-  // const _templateVariables = selectedTemplateData ? extractVariables(selectedTemplateData.prompt) : [];
+  const selectedTemplateData = templates.find(t => t.id === selectedTemplate);
+  const templateVariables = selectedTemplateData ? extractVariables(selectedTemplateData.prompt) : [];
 
   return (
     <div className="space-y-6">
@@ -246,7 +246,7 @@ console.warn('Error generating content:', error);
               }}
             >
               {generationTypes.map((type) => (
-                <SelectItem key={type.value} value={type.value}>
+                <SelectItem key={type.value}>
                   {type.label}
                 </SelectItem>
               ))}
@@ -262,7 +262,7 @@ console.warn('Error generating content:', error);
               }}
             >
               {leads.map((lead) => (
-                <SelectItem key={lead.id} value={lead.id}>
+                <SelectItem key={lead.id}>
                   {lead.fullName} - {lead.company}
                 </SelectItem>
               ))}
@@ -299,7 +299,7 @@ console.warn('Error generating content:', error);
                   }}
                 >
                   {templates.map((template) => (
-                    <SelectItem key={template.id} value={template.id}>
+                    <SelectItem key={template.id}>
                       {template.name}
                     </SelectItem>
                   ))}

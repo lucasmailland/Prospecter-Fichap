@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProspectsService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../common/database/prisma.service");
+const client_1 = require("@prisma/client");
 let ProspectsService = class ProspectsService {
     constructor(prisma) {
         this.prisma = prisma;
@@ -22,6 +23,13 @@ let ProspectsService = class ProspectsService {
                 hubspotContact: true,
                 leadScores: true,
                 conversationAnalyses: true,
+                user: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                    },
+                },
             },
         });
     }
@@ -32,16 +40,39 @@ let ProspectsService = class ProspectsService {
                 hubspotContact: true,
                 leadScores: true,
                 conversationAnalyses: true,
+                user: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                    },
+                },
             },
         });
     }
     async create(leadData) {
+        const { userId, source, ...dataWithoutUserId } = leadData;
         return this.prisma.lead.create({
-            data: leadData,
+            data: {
+                ...dataWithoutUserId,
+                source: source || client_1.LeadSource.MANUAL,
+                user: {
+                    connect: {
+                        id: userId
+                    }
+                }
+            },
             include: {
                 hubspotContact: true,
                 leadScores: true,
                 conversationAnalyses: true,
+                user: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                    },
+                },
             },
         });
     }
@@ -53,6 +84,13 @@ let ProspectsService = class ProspectsService {
                 hubspotContact: true,
                 leadScores: true,
                 conversationAnalyses: true,
+                user: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                    },
+                },
             },
         });
     }

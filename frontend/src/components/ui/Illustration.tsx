@@ -7,16 +7,16 @@ interface IllustrationProps {
 }
 
 export default function Illustration({ name, size = 'md', className = '' }: IllustrationProps) {
-  // const _sizeClasses = {
+  const _sizeClasses = {
     sm: 'w-24 h-24',
     md: 'w-32 h-32',
     lg: 'w-48 h-48',
     xl: 'w-64 h-64',
   };
 
-  // const _illustrations = {
+  const illustrations = {
     'empty-search': (
-      <svg viewBox="0 0 701 559.91" className={`${sizeClasses[size]} ${className}`}>
+      <svg viewBox="0 0 701 559.91" className={`${_sizeClasses[size]} ${className}`}>
         <path
           d="M273.36863,445.90847a5.51778,5.51778,0,0,0-7.1998,2.91l-1.08008,2.14a5.51781,5.51781,0,0,0,2.91016,7.2,5.45716,5.45716,0,0,0,2.145.44,5.52975,5.52975,0,0,0,5.05468-3.35l1.08008-2.14A5.5178,5.5178,0,0,0,273.36863,445.90847Z"
           className="fill-gray-400 dark:fill-gray-500"
@@ -38,7 +38,7 @@ export default function Illustration({ name, size = 'md', className = '' }: Illu
       </svg>
     ),
     'no-data': (
-      <svg viewBox="0 0 647.8 632.7" className={`${sizeClasses[size]} ${className}`}>
+      <svg viewBox="0 0 647.8 632.7" className={`${_sizeClasses[size]} ${className}`}>
         <path
           d="M411.9,364.2c0,19.7-16,35.7-35.7,35.7s-35.7-16-35.7-35.7,16-35.7,35.7-35.7S411.9,344.5,411.9,364.2Z"
           className="fill-gray-300 dark:fill-gray-600"
@@ -53,7 +53,7 @@ export default function Illustration({ name, size = 'md', className = '' }: Illu
       </svg>
     ),
     'analytics': (
-      <svg viewBox="0 0 820 713" className={`${sizeClasses[size]} ${className}`}>
+      <svg viewBox="0 0 820 713" className={`${_sizeClasses[size]} ${className}`}>
         <path
           d="M200,400L300,350L400,380L500,300L600,350"
           stroke="currentColor"
@@ -75,7 +75,7 @@ export default function Illustration({ name, size = 'md', className = '' }: Illu
       </svg>
     ),
     'settings': (
-      <svg viewBox="0 0 512 512" className={`${sizeClasses[size]} ${className}`}>
+      <svg viewBox="0 0 512 512" className={`${_sizeClasses[size]} ${className}`}>
         <path
           d="M256,150c-58.9,0-106,47.1-106,106s47.1,106,106,106s106-47.1,106-106S314.9,150,256,150z M256,320c-35.3,0-64-28.7-64-64s28.7-64,64-64s64,28.7,64,64S291.3,320,256,320z"
           className="fill-gray-600 dark:fill-gray-300"
@@ -88,7 +88,7 @@ export default function Illustration({ name, size = 'md', className = '' }: Illu
       </svg>
     ),
     'success': (
-      <svg viewBox="0 0 596 512" className={`${sizeClasses[size]} ${className}`}>
+      <svg viewBox="0 0 596 512" className={`${_sizeClasses[size]} ${className}`}>
         <circle cx="300" cy="256" r="150" className="fill-green-100 dark:fill-green-900" opacity="0.3" />
         <path
           d="M380,200L280,300L220,240"
@@ -103,7 +103,7 @@ export default function Illustration({ name, size = 'md', className = '' }: Illu
       </svg>
     ),
     'loading': (
-      <svg viewBox="0 0 200 200" className={`${sizeClasses[size]} ${className} animate-pulse`}>
+      <svg viewBox="0 0 200 200" className={`${_sizeClasses[size]} ${className} animate-pulse`}>
         <circle cx="100" cy="100" r="60" className="fill-gray-200 dark:fill-gray-700" opacity="0.3" />
         <path
           d="M100,40a60,60 0 0,1 52,30"
@@ -118,7 +118,7 @@ export default function Illustration({ name, size = 'md', className = '' }: Illu
       </svg>
     ),
     'team': (
-      <svg viewBox="0 0 512 512" className={`${sizeClasses[size]} ${className}`}>
+      <svg viewBox="0 0 512 512" className={`${_sizeClasses[size]} ${className}`}>
         <circle cx="200" cy="150" r="50" className="fill-gray-400 dark:fill-gray-500" />
         <circle cx="312" cy="150" r="50" className="fill-gray-400 dark:fill-gray-500" />
         <circle cx="256" cy="200" r="35" className="fill-gray-300 dark:fill-gray-600" />

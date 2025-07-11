@@ -79,8 +79,8 @@ export function LoadingDots({
   color = 'primary',
   className = ''
 }: Pick<LoadingProps, 'size' | 'color' | 'className'>) {
-  // const _dotSize = size === 'xs' ? 'w-1 h-1' : size === 'sm' ? 'w-1.5 h-1.5' : 'w-2 h-2';
-  // const _colorClass = colorConfig[color];
+  const dotSize = size === 'xs' ? 'w-1 h-1' : size === 'sm' ? 'w-1.5 h-1.5' : 'w-2 h-2';
+  const colorClass = colorConfig[color];
 
   return (
     <div className={`flex justify-center space-x-1 ${className}`}>
@@ -139,7 +139,7 @@ export default function LoadingSystem({
   showMessage = true,
   fullScreen = false
 }: LoadingProps) {
-  // const _config = sizeConfig[size];
+  const config = sizeConfig[size];
 
   // ========================================================================================
   // VARIANTE: PANTALLA COMPLETA
@@ -321,9 +321,9 @@ export default function LoadingSystem({
 export function useLoading(initialState = false) {
   const [loading, setLoading] = React.useState(initialState);
   
-  // const _startLoading = () => setLoading(true);
-  // const _stopLoading = () => setLoading(false);
-  // const _toggleLoading = () => setLoading(prev => !prev);
+  const startLoading = () => setLoading(true);
+  const stopLoading = () => setLoading(false);
+  const toggleLoading = () => setLoading(prev => !prev);
   
   return {
     loading,
@@ -342,8 +342,8 @@ export function useAsyncLoading<T extends any[], R>(
 ) {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<Error | null>(null);
-  
-  // const _execute = async (...args: T): Promise<R | null> => {
+
+  const execute = async (...args: T): Promise<R | null> => {
     try {
       setLoading(true);
       setError(null);
@@ -356,6 +356,6 @@ export function useAsyncLoading<T extends any[], R>(
       setLoading(false);
     }
   };
-  
+
   return { loading, error, execute };
 } 

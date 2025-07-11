@@ -49,7 +49,7 @@ export default function ApiSettingsTabs({ isAdmin }: { isAdmin: boolean }) {
     fetchConfigs();
   }, []);
 
-  // const _fetchConfigs = async () => {
+  const fetchConfigs = async () => {
     setLoading(true);
     setError(null);
     try {
@@ -71,8 +71,8 @@ export default function ApiSettingsTabs({ isAdmin }: { isAdmin: boolean }) {
       
       const data = await res.json();
       if (data.success) {
-        const map: unknown = {};
-        data.configs.forEach((c: unknown) => { 
+        const map: any = {};
+        data.configs.forEach((c: any) => { 
           map[c.key] = c.value; 
           // Guardar información adicional para campos encriptados
           if (c.isEncrypted) {
@@ -84,18 +84,18 @@ export default function ApiSettingsTabs({ isAdmin }: { isAdmin: boolean }) {
         setError(data.error || 'Error al cargar configuración');
       }
     } catch (e) {
-console.warn('Error fetching configs:', e);
+  console.warn('Error fetching configs:', e);
       setError('Error de conexión. Verifica que el servidor esté funcionando.');
     } finally {
       setLoading(false);
     }
   };
 
-  // const _handleChange = (key: string, value: unknown) => {
-    setConfigs((prev: unknown) => ({ ...prev, [key]: value }));
+  const handleChange = (key: string, value: any) => {
+    setConfigs((prev: any) => ({ ...prev, [key]: value }));
   };
 
-  // const _handleSave = async () => {
+  const handleSave = async () => {
     setSaving(true);
     setError(null);
     setSuccess(null);

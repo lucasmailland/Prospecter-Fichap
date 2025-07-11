@@ -122,7 +122,7 @@ export default function HubSpotUnifiedDashboard() {
     }
   }, [activeTab, filters, pagination.page]);
 
-  // const _loadInitialData = async () => {
+  const loadInitialData = async () => {
     try {
       setLoading(true);
       
@@ -158,14 +158,14 @@ export default function HubSpotUnifiedDashboard() {
         }
       });
 
-    } catch (_error) {
+    } catch (error) {
       console.error('Error loading HubSpot data:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  // const _loadTabData = async (tab: string) => {
+  const loadTabData = async (tab: string) => {
     try {
       const params = new URLSearchParams({
         page: pagination.page.toString(),
@@ -191,25 +191,25 @@ export default function HubSpotUnifiedDashboard() {
           hasMore: data.pagination.hasMore
         }));
       }
-    } catch (_error) {
+    } catch (error) {
       console.error(`Error loading ${tab} data:`, error);
     }
   };
 
-  // const _handleRefresh = () => {
+  const handleRefresh = () => {
     loadInitialData();
     if (activeTab !== 'overview') {
       loadTabData(activeTab);
     }
   };
 
-  // const _handleFilterChange = (key: string, value: string) => {
+  const handleFilterChange = (key: string, value: string) => {
     setFilters(prev => ({ ...prev, [key]: value }));
     setPagination(prev => ({ ...prev, page: 1 }));
   };
 
-  // const _formatNumber = (num: number) => num.toLocaleString('es-ES');
-  // const _formatDuration = (seconds: number) => {
+  const formatNumber = (num: number) => num.toLocaleString('es-ES');
+  const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
@@ -219,7 +219,7 @@ export default function HubSpotUnifiedDashboard() {
   // CONFIGURACIÓN DE TABS
   // ========================================================================================
 
-  // const _tabs = [
+  const tabs = [
     { 
       id: 'overview', 
       label: 'Resumen General', 

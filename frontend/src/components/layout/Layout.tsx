@@ -1,6 +1,5 @@
-import Image from "next/image";
 'use client';
-
+import Image from "next/image";
 import { ReactNode, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePathname, useRouter } from 'next/navigation';
@@ -17,8 +16,8 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   const { user, isLoading, logout } = useAuth();
-  // const _pathname = usePathname();
-  // const _router = useRouter();
+  const pathname = usePathname();
+  const router = useRouter();
 
   // ✅ ARREGLO: useEffect debe ir ANTES de cualquier return
   useEffect(() => {
@@ -78,7 +77,7 @@ export default function Layout({ children }: LayoutProps) {
         <div className="border-t border-gray-200 dark:border-gray-700 p-4">
           <div className="flex items-center mb-3">
             <Image 
-              src={user.image} 
+              src={user.image || '/default-avatar.png'}
               alt={user.name || 'User'}
               className="w-8 h-8 rounded-full mr-3"
             />

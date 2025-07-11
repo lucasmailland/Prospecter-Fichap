@@ -1,6 +1,5 @@
-import Image from "next/image";
 'use client';
-
+import Image from "next/image";
 import { useState } from 'react';
 import { useTheme } from 'next-themes';
 import { useClickOutside } from '@/hooks/common/useClickOutside';
@@ -30,21 +29,36 @@ export default function Navbar({ user, logout }: NavbarProps) {
   const { theme, setTheme } = useTheme();
   
   // Usar hook centralizado para click outside
-  // const _userMenuRef = useClickOutside<HTMLDivElement>(() => setShowUserMenu(false), showUserMenu);
+  const userMenuRef = useClickOutside<HTMLDivElement>(() => setShowUserMenu(false), showUserMenu);
 
-
-
-  // const _handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-// console.log('Buscar:', searchQuery);
-      // Aquí implementarías la lógica de búsqueda
-    }
-  };
-
-  // const _toggleTheme = () => {
+  // Alternar tema
+  const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
+
+  // Función real para el submit de búsqueda
+  function handleSearch(e: React.FormEvent) {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      // Aquí implementarías la lógica de búsqueda
+    }
+  }
+
+  /*
+  const handleSearch = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   if (searchQuery.trim()) {
+  //     // console.log('Buscar:', searchQuery);
+  //     // Aquí implementarías la lógica de búsqueda
+  //   }
+  // };
+  */
+
+  /*
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  // };
+  */
 
   return (
     <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
@@ -100,8 +114,8 @@ export default function Navbar({ user, logout }: NavbarProps) {
                 className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
                 <Image 
-                  src={user.image} 
-                  alt={user.name}
+                  src={user.image || '/default-avatar.png'}
+                  alt={user.name || 'User'}
                   className="w-8 h-8 rounded-full border-2 border-gray-200 dark:border-gray-600"
                 />
                 <div className="text-left hidden sm:block">

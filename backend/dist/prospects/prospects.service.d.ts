@@ -13,6 +13,7 @@ export declare class ProspectsService {
         jobTitle?: string;
         phone?: string;
         source?: string;
+        userId: string;
     }): Promise<Lead>;
     update(id: string, leadData: Partial<Lead>): Promise<Lead>;
     delete(id: string): Promise<void>;

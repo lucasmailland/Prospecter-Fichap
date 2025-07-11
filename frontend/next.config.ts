@@ -16,8 +16,9 @@ const nextConfig: NextConfig = {
   // Configuración para trabajar con backend separado
   async rewrites() {
     return [
+      // No reescribir /api/auth/*, que lo maneje Next.js
       {
-        source: '/api/:path*',
+        source: '/api/:path((?!auth).*)',
         destination: `${process.env.NEXT_PUBLIC_API_URL}/api/:path*`,
       },
     ];

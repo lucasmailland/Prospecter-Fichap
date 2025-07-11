@@ -19,8 +19,22 @@ let TasksService = class TasksService {
     async findAll() {
         return this.prisma.task.findMany({
             include: {
-                user: true,
-                lead: true,
+                assignedTo: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                    },
+                },
+                lead: {
+                    select: {
+                        id: true,
+                        firstName: true,
+                        lastName: true,
+                        email: true,
+                        company: true,
+                    },
+                },
             },
         });
     }
@@ -28,8 +42,22 @@ let TasksService = class TasksService {
         return this.prisma.task.create({
             data: taskData,
             include: {
-                user: true,
-                lead: true,
+                assignedTo: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                    },
+                },
+                lead: {
+                    select: {
+                        id: true,
+                        firstName: true,
+                        lastName: true,
+                        email: true,
+                        company: true,
+                    },
+                },
             },
         });
     }

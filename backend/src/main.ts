@@ -3,7 +3,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import helmet from 'helmet';
-import compression from 'compression';
+const compression = require('compression');
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -41,7 +41,8 @@ async function bootstrap() {
   // Prefijo global para todas las rutas
   app.setGlobalPrefix('api');
 
-  const port = process.env.PORT || 4000;
+  // Forzar puerto a 4000 para evitar conflictos
+  const port = 4000;
   await app.listen(port);
   
   console.log(`🚀 Backend running on: http://localhost:${port}`);

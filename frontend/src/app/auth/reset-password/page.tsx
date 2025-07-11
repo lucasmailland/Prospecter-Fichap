@@ -16,8 +16,8 @@ import { cn } from '@/utils/sanitizer';
 import LoadingSystem from '@/components/ui/LoadingSystem';
 
 export default function ResetPasswordPage() {
-  // const _searchParams = useSearchParams();
-  // const _router = useRouter();
+  const searchParams = useSearchParams();
+  const router = useRouter();
   
   const [token, setToken] = useState('');
   const [email, setEmail] = useState('');
@@ -30,8 +30,8 @@ export default function ResetPasswordPage() {
   const [isValidToken, setIsValidToken] = useState<boolean | null>(null);
 
   useEffect(() => {
-    const urlToken = searchParams.get('token');
-    const urlEmail = searchParams.get('email');
+    const urlToken = searchParams?.get('token');
+    const urlEmail = searchParams?.get('email');
     
     if (urlToken && urlEmail) {
       setToken(urlToken);
@@ -42,7 +42,7 @@ export default function ResetPasswordPage() {
     }
   }, [searchParams]);
 
-  // const _validatePassword = (inputPassword: string) => {
+  const validatePassword = (inputPassword: string) => {
     const MIN_LENGTH = 8;
     const PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
     
@@ -55,7 +55,7 @@ export default function ResetPasswordPage() {
     return null;
   };
 
-  // const _handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
@@ -96,15 +96,15 @@ export default function ResetPasswordPage() {
         router.push('/auth/signin?message=password-reset-success');
       }, 3000);
 
-    } catch (_error) {
-      console.warn('Error:', error);
+    } catch (error) {
+        console.warn('Error:', error);
       setError(error instanceof Error ? error.message : 'Error al restablecer contraseña');
     } finally {
       setLoading(false);
     }
   };
 
-  // const _getPasswordStrength = (inputValue: string) => {
+  const getPasswordStrength = (inputValue: string) => {
     let strengthScore = 0;
     const checks = {
       hasMinLength: inputValue.length >= 8,
@@ -123,7 +123,7 @@ export default function ResetPasswordPage() {
     return { level: 'strong', color: 'green', text: 'Fuerte' };
   };
 
-  // const _passwordStrength = newPassword ? getPasswordStrength(newPassword) : null;
+  const passwordStrength = newPassword ? getPasswordStrength(newPassword) : null;
 
   // Token inválido
   if (isValidToken === false) {
